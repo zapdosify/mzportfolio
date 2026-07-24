@@ -17,6 +17,8 @@
   width: min(100%, calc(100dvh * (1672 / 941)));
   aspect-ratio: 1672 / 941;
   margin: auto;
+  /* size container so nameplates can scale with the stage (cqw units) */
+  container-type: inline-size;
   --mx: 0px;
   --my: 0px;
 }
@@ -281,7 +283,9 @@
   align-items: center;
   justify-content: center;
   box-sizing: border-box;
-  width: 152px;
+  /* 152px at full stage width (1672px = 9.1cqw); scales down with the stage
+     so plates stop overlapping/occluding each other on smaller screens */
+  width: clamp(96px, 9.1cqw, 152px);
   padding: 5px 8px;
   white-space: nowrap;
   border-radius: 3px;
@@ -301,10 +305,18 @@
 }
 .plateLabel {
   font-family: var(--font-mono);
-  font-size: 0.62rem;
+  font-size: clamp(0.46rem, 0.6cqw, 0.62rem);
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--text-secondary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+/* On smaller stages, tighten tracking + padding so even the longest labels
+   ("Exhibition Design", "Manifesto Design") fit without truncating. */
+@container (max-width: 1400px) {
+  .plate { padding: 4px 6px; }
+  .plateLabel { letter-spacing: 0.05em; }
 }
 .plate:hover .plateLabel,
 .plate:focus-visible .plateLabel,
@@ -448,6 +460,39 @@
 
 @media (max-width: 760px) {
   .worldMap { display: none; }
-  .plate { width: 118px; }
-  .plateLabel { font-size: 0.52rem; }
+}
+
+/* ---------- Small screens: plates become a chip grid ---------- */
+/* 13 nameplates cannot sit on a ~375px stage without occluding each other
+   and the art. Below 640px the archipelago stays as the visual hero and the
+   (already keyboard-accessible) srNav becomes the visible navigation — a
+   wrapped grid of plate-styled chips beneath the stage. */
+@media (max-width: 640px) {
+  .plates { display: none; }
+  .legend { display: none; }
+  /* leave room for the name to wrap instead of running under INDEX */
+  .titleBlock { right: 128px; }
+
+  .srNav {
+    opacity: 1;
+    pointer-events: auto;
+    bottom: var(--space-8);
+    width: 94vw;
+  }
+  .srNav ol { gap: var(--space-2); max-width: none; }
+  .srNav a {
+    display: inline-block;
+    padding: 7px 10px;
+    background: #070707;
+    border: 1px solid var(--border-dark);
+    border-radius: 3px;
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    color: var(--text-secondary);
+  }
+  .srNav a:active,
+  .srNav a:focus-visible {
+    border-color: var(--white);
+    color: var(--white);
+  }
 }
