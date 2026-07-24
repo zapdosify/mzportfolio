@@ -130,11 +130,13 @@
   -webkit-mask-composite: source-in;
   mask-composite: intersect;
 }
-/* Full motion: expand the reveal (0.9s), hold, then fade out (1.5s @ 5.9s). */
+/* Full motion: the colour flood rides the pulse wave — same 2.4s duration and
+   easing as .pulse so the wavefront and the colour edge travel together.
+   Expand (2.4s) → hold (5s) → fade (1.5s @ 7.4s). */
 .colorBurstAnim {
   animation:
-    burstExpand 900ms var(--ease-out) forwards,
-    burstFade 1500ms ease-in 5900ms forwards;
+    burstExpand 2400ms cubic-bezier(0.22, 0.5, 0.36, 1) forwards,
+    burstFade 1500ms ease-in 7400ms forwards;
 }
 /* Reduced motion: no expand — reveal everything at once, hold 5s, then fade. */
 .colorBurstReduced {
@@ -150,7 +152,10 @@
   to { opacity: 0; }
 }
 
-/* Visible pulse ring emitted from the orb's on-screen centre. */
+/* Visible pulse wave emitted from the orb's on-screen centre — a soft,
+   feathered band of light (gradient ring + slight blur, so the blur scales
+   with the transform into a wide radial glow) that rolls across the whole
+   archipelago. Slow and gentle: it reads as a wave, not a shockwave. */
 .pulse {
   position: absolute;
   left: 49.5%;
@@ -158,18 +163,25 @@
   width: 8%;
   aspect-ratio: 1;
   border-radius: 50%;
-  border: 2px solid rgba(255, 214, 120, 0.9);
-  box-shadow: 0 0 22px 6px rgba(255, 205, 90, 0.5), inset 0 0 14px rgba(255, 205, 90, 0.4);
+  background: radial-gradient(
+    circle,
+    transparent 46%,
+    rgba(255, 214, 120, 0.38) 60%,
+    rgba(255, 205, 90, 0.16) 72%,
+    transparent 84%
+  );
+  filter: blur(2px);
   transform: translate(-50%, -50%) scale(0.15);
   opacity: 0;
   pointer-events: none;
   z-index: 2;
-  animation: pulseRing 900ms var(--ease-out) forwards;
+  animation: pulseRing 2400ms cubic-bezier(0.22, 0.5, 0.36, 1) forwards;
 }
 @keyframes pulseRing {
   0% { transform: translate(-50%, -50%) scale(0.15); opacity: 0; }
-  12% { opacity: 0.9; }
-  100% { transform: translate(-50%, -50%) scale(16); opacity: 0; }
+  10% { opacity: 0.85; }
+  70% { opacity: 0.5; }
+  100% { transform: translate(-50%, -50%) scale(18); opacity: 0; }
 }
 
 /* ---------- Central yellow orb ---------- */
@@ -211,7 +223,7 @@
   border-radius: 50%;
   background: radial-gradient(circle, #fff6d8 0%, #ffd76b 44%, #f0b63c 70%, transparent 80%);
   box-shadow: 0 0 14px 3px rgba(255, 205, 90, 0.7);
-  animation: orbBreath 3.8s ease-in-out infinite;
+  animation: orbBreath 6.4s ease-in-out infinite;
 }
 .orbGlow {
   grid-area: 1 / 1;
@@ -219,29 +231,42 @@
   aspect-ratio: 1;
   border-radius: 50%;
   background: radial-gradient(circle, rgba(255, 205, 90, 0.36), rgba(255, 190, 60, 0.08) 50%, transparent 70%);
-  animation: orbGlowPulse 3.8s ease-in-out infinite;
+  animation: orbGlowPulse 6.4s ease-in-out infinite;
 }
-.orbEmit {
+/* Ambient ripple: a soft, blurred gradient band (not a hard border) that
+   drifts far out across the islands. Two rings run the same 6.4s cycle,
+   offset by half a period, so a gentle wave is always travelling. */
+.orbEmit,
+.orbEmit2 {
   grid-area: 1 / 1;
   width: 60%;
   aspect-ratio: 1;
   border-radius: 50%;
-  border: 1px solid rgba(255, 210, 100, 0.5);
-  animation: orbEmit 3.8s ease-out infinite;
+  background: radial-gradient(
+    circle,
+    transparent 48%,
+    rgba(255, 210, 100, 0.4) 62%,
+    rgba(255, 205, 90, 0.14) 74%,
+    transparent 86%
+  );
+  filter: blur(1.5px);
+  animation: orbEmit 6.4s cubic-bezier(0.22, 0.5, 0.36, 1) infinite;
 }
+.orbEmit2 { animation-delay: -3.2s; }
 @keyframes orbBreath {
   0%, 100% { transform: scale(1); box-shadow: 0 0 12px 3px rgba(255, 205, 90, 0.6); }
   50% { transform: scale(1.12); box-shadow: 0 0 22px 7px rgba(255, 205, 90, 0.95); }
 }
 @keyframes orbGlowPulse { 0%, 100% { opacity: 0.6; } 50% { opacity: 1; } }
 @keyframes orbEmit {
-  0% { transform: scale(0.6); opacity: 0.7; }
-  75% { opacity: 0; }
-  100% { transform: scale(3); opacity: 0; }
+  0% { transform: scale(0.5); opacity: 0; }
+  12% { opacity: 0.5; }
+  70% { opacity: 0.22; }
+  100% { transform: scale(9); opacity: 0; }
 }
 @media (prefers-reduced-motion: reduce) {
   .orbCore, .orbGlow { animation: none; }
-  .orbEmit { display: none; }
+  .orbEmit, .orbEmit2 { display: none; }
 }
 
 /* ---------- Nameplates ---------- */
@@ -382,18 +407,42 @@
 .srNav a:focus-visible { color: var(--white); }
 
 /* ---------- Warp transition (landing → category) ---------- */
+/* Two layers choreographed together:
+   1. the stage gently zooms forward (entering the world),
+   2. a soft light bloom swells, then settles to solid black — navigation
+      happens under cover of that black, and the destination page fades up
+      from the same black, so there is never a visible hard cut. */
+.stageLeaving {
+  animation: stageWarp 650ms ease-in forwards;
+}
+@keyframes stageWarp {
+  to { transform: scale(1.045); opacity: 0.6; }
+}
 .warp {
   position: fixed;
   inset: 0;
   z-index: 50;
   pointer-events: none;
-  /* a brief light bloom that settles to the shared black page background,
-     so the hand-off to the (also-black) category page is seamless */
-  background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.12), var(--black) 55%);
-  animation: warpIn 300ms var(--ease-out) forwards;
+  background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.14), var(--black) 60%);
+  animation: warpIn 650ms cubic-bezier(0.4, 0, 0.6, 1) forwards;
+}
+/* The bloom brightens mid-way, then a solid black layer takes over so the
+   route swap is invisible. */
+.warp::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--black);
+  opacity: 0;
+  animation: warpBlack 650ms cubic-bezier(0.55, 0, 0.75, 1) forwards;
 }
 @keyframes warpIn {
   from { opacity: 0; }
+  40% { opacity: 1; }
+  to { opacity: 1; }
+}
+@keyframes warpBlack {
+  0%, 45% { opacity: 0; }
   to { opacity: 1; }
 }
 

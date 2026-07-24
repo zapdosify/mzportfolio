@@ -70,7 +70,10 @@ export default function Landing() {
         return;
       }
       setLeaving(true);
-      window.setTimeout(() => navigate(route), 300);
+      // Navigate once the warp overlay has settled to solid black (650ms
+      // animation; by ~620ms the residual bloom is imperceptible), so the
+      // route swap happens invisibly and the new page fades up from black.
+      window.setTimeout(() => navigate(route), 620);
     },
     [navigate, reducedMotion],
   );
@@ -84,8 +87,8 @@ export default function Landing() {
     if (burstTimer.current) window.clearTimeout(burstTimer.current);
     setBurstId((n) => n + 1);
     setBurstOn(true);
-    // expand(0.9s, skipped under reduced motion) + hold(5s) + fade(1.5s)
-    const total = reducedMotion ? 5000 + 1500 : 900 + 5000 + 1500;
+    // expand(2.4s, skipped under reduced motion) + hold(5s) + fade(1.5s)
+    const total = reducedMotion ? 5000 + 1500 : 2400 + 5000 + 1500;
     burstTimer.current = window.setTimeout(() => {
       setBurstOn(false);
       burstTimer.current = null;
@@ -130,7 +133,10 @@ export default function Landing() {
 
   return (
     <section className={styles.world} aria-label="Pixel Archipelago — explore the portfolio">
-      <div className={styles.stage} ref={stageRef}>
+      <div
+        className={`${styles.stage} ${leaving ? styles.stageLeaving : ""}`}
+        ref={stageRef}
+      >
         {/* L0 background void + stars (minimal parallax) */}
         <div className={`${styles.layer} ${styles.parallax}`} style={fx(F_BG)} aria-hidden="true">
           <img src="/images/landing/background.png" alt="" className={`${styles.fill} ${styles.bg} pixelated`} />
@@ -188,6 +194,7 @@ export default function Landing() {
             aria-label="Illuminate the archipelago in colour"
           >
             <span className={styles.orbEmit} aria-hidden="true" />
+            <span className={styles.orbEmit2} aria-hidden="true" />
             <span className={styles.orbGlow} aria-hidden="true" />
             <span className={styles.orbCore} aria-hidden="true" />
           </button>
