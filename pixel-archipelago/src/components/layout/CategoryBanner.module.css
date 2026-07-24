@@ -12,9 +12,11 @@
   z-index: 0;
   pointer-events: none;
   background: var(--black);
-  /* the art is authored on black, so fade it out rather than hard-cutting it */
-  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 46%, transparent 100%);
-  mask-image: linear-gradient(to bottom, #000 0%, #000 46%, transparent 100%);
+  /* the art is authored on black, so fade it out rather than hard-cutting it.
+     Fully transparent by 85% — the landmark's baked nameplate sits low in the
+     art and would otherwise ghost through behind the page's own H1. */
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 42%, rgba(0, 0, 0, 0.35) 66%, transparent 85%);
+  mask-image: linear-gradient(to bottom, #000 0%, #000 42%, rgba(0, 0, 0, 0.35) 66%, transparent 85%);
 }
 
 .inner {
