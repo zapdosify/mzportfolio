@@ -31,6 +31,19 @@
   from { transform: translateX(24px); opacity: 0; }
 }
 
+/* Destination rows cascade in behind the panel slide. Gated to
+   no-preference: under reduced motion the delay would just leave rows
+   invisible for a beat, so they simply appear instead. */
+@media (prefers-reduced-motion: no-preference) {
+  .list li {
+    animation: itemIn 300ms var(--ease-out) backwards;
+    animation-delay: calc(60ms + var(--i, 0) * 26ms);
+  }
+  @keyframes itemIn {
+    from { opacity: 0; transform: translateX(14px); }
+  }
+}
+
 .head {
   display: flex;
   align-items: center;

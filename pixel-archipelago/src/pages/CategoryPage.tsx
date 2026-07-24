@@ -4,6 +4,7 @@ import { categoryById, categoryByRoute } from "../data/categories";
 import { projectsByCategory } from "../data/projects";
 import { useWorldStore } from "../hooks/useWorldStore";
 import { useHeroReveal } from "../hooks/useHeroReveal";
+import { useStaggerReveal } from "../hooks/useStaggerReveal";
 import ProjectCard from "../components/project/ProjectCard";
 import CategoryBanner from "../components/layout/CategoryBanner";
 import NotFound from "./NotFound";
@@ -16,6 +17,8 @@ export default function CategoryPage() {
   const markExplored = useWorldStore((st) => st.markExplored);
   const setLastCategory = useWorldStore((st) => st.setLastCategory);
   const heroRef = useHeroReveal([category?.id]);
+  const worksRef = useStaggerReveal<HTMLDivElement>([category?.id]);
+  const archiveRef = useStaggerReveal<HTMLDivElement>([category?.id]);
 
   useEffect(() => {
     if (category) {
@@ -69,7 +72,7 @@ export default function CategoryPage() {
         <p className={s.tagline} style={{ marginBottom: "var(--space-8)", maxWidth: "60ch" }}>
           {category.description}
         </p>
-        <div className={`${grid.gallery} ${grid.grid}`}>
+        <div className={`${grid.gallery} ${grid.grid}`} ref={worksRef}>
           {selected.map((p) => (
             <ProjectCard key={p.id} project={p} />
           ))}
@@ -83,7 +86,7 @@ export default function CategoryPage() {
             <h2 id="archive-h" className={s.sectionTitle}>Archive</h2>
             <span className={s.sectionMeta}>{rest.length}</span>
           </div>
-          <div className={`${grid.gallery} ${grid.grid}`}>
+          <div className={`${grid.gallery} ${grid.grid}`} ref={archiveRef}>
             {rest.map((p) => (
               <ProjectCard key={p.id} project={p} />
             ))}

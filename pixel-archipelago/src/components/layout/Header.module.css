@@ -73,6 +73,7 @@
   color: var(--white);
   border-color: var(--border-active);
 }
+.action:active { transform: translateY(1px); }
 
 .breadcrumb {
   font-family: var(--font-mono);

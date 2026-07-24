@@ -244,6 +244,7 @@
   transition: color var(--dur-fast), border-color var(--dur-fast);
 }
 .returnBtn:hover { color: var(--white); border-color: var(--border-active); }
+.returnBtn:active { transform: translateY(1px); }
 
 /* Related chips */
 .related { display: flex; flex-wrap: wrap; gap: var(--space-3); }
@@ -259,6 +260,7 @@
   transition: color var(--dur-fast), border-color var(--dur-fast);
 }
 .chip:hover { color: var(--white); border-color: var(--border-active); }
+.chip:active { transform: translateY(1px); }
 
 .note {
   font-size: var(--fs-14);

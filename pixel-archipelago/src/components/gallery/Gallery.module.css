@@ -47,6 +47,7 @@
   transform: translateY(-2px);
   outline: none;
 }
+.tile:active { transform: translateY(0) scale(0.99); }
 .tile:focus-visible {
   outline: 2px solid var(--border-active);
   outline-offset: 2px;

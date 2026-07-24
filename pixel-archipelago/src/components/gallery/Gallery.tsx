@@ -2,6 +2,7 @@ import { useState } from "react";
 import type { ProjectMedia } from "../../data/types";
 import MediaFigure from "../media/MediaFigure";
 import Lightbox from "./Lightbox";
+import { useStaggerReveal } from "../../hooks/useStaggerReveal";
 import styles from "./Gallery.module.css";
 
 export default function Gallery({
@@ -12,6 +13,10 @@ export default function Gallery({
   variant?: "grid" | "posters" | "cinema";
 }) {
   const [open, setOpen] = useState<number | null>(null);
+  // Staggered rise-in as the gallery scrolls into view (reduced-motion aware).
+  // Keyed by the first asset — galleries are reused across sibling routes.
+  const gridRef = useStaggerReveal<HTMLUListElement>([items[0]?.src]);
+  const cinemaRef = useStaggerReveal<HTMLDivElement>([items[0]?.src]);
 
   if (!items.length) return null;
 
@@ -21,7 +26,7 @@ export default function Gallery({
   // Cinema (video) galleries render exactly as before.
   if (variant === "cinema") {
     return (
-      <div className={`${styles.gallery} ${styles.cinema}`}>
+      <div className={`${styles.gallery} ${styles.cinema}`} ref={cinemaRef}>
         {items.map((m, i) => (
           <MediaFigure key={m.src + i} media={m} />
         ))}
@@ -31,7 +36,7 @@ export default function Gallery({
 
   return (
     <>
-      <ul className={`${styles.gallery} ${styles[variant]}`}>
+      <ul className={`${styles.gallery} ${styles[variant]}`} ref={gridRef}>
         {items.map((m, i) => {
           if (m.type === "video") {
             return (

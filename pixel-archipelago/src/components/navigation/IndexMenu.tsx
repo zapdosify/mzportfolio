@@ -125,8 +125,8 @@ export default function IndexMenu() {
 
         <nav aria-label="All destinations">
           <ol className={styles.list}>
-            {categories.map((c) => (
-              <li key={c.id}>
+            {categories.map((c, i) => (
+              <li key={c.id} style={{ "--i": i } as React.CSSProperties}>
                 <Link to={c.route} className={styles.item} onClick={() => setOpen(false)}>
                   <span className={styles.num}>{String(c.index).padStart(2, "0")}</span>
                   <span className={styles.label}>{c.title}</span>
