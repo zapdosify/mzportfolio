@@ -287,6 +287,7 @@
      so plates stop overlapping/occluding each other on smaller screens */
   width: clamp(96px, 9.1cqw, 152px);
   padding: 5px 8px;
+  touch-action: manipulation;
   white-space: nowrap;
   border-radius: 3px;
   background: #070707;
@@ -295,6 +296,16 @@
   transition: border-color var(--dur-fast) var(--ease-out),
     background-color var(--dur-fast) var(--ease-out),
     box-shadow var(--dur-fast) var(--ease-out);
+}
+/* invisible vertical hit-area extension — the visual plate is ~26px tall,
+   the touch/click target becomes ≥44px without moving a pixel */
+.plate::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -10px;
+  bottom: -10px;
 }
 .plate:hover,
 .plate:focus-visible,
@@ -481,8 +492,11 @@
   }
   .srNav ol { gap: var(--space-2); max-width: none; }
   .srNav a {
-    display: inline-block;
-    padding: 7px 10px;
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px; /* comfortable touch target */
+    padding: 7px 12px;
+    touch-action: manipulation;
     background: #070707;
     border: 1px solid var(--border-dark);
     border-radius: 3px;

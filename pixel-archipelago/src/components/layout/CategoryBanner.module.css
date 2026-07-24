@@ -49,6 +49,12 @@
 
 @media (max-width: 900px) {
   .img { object-position: center 45%; }
+  /* content starts higher inside the shorter mobile banner — finish the
+     fade sooner so the baked nameplate can't ghost behind the breadcrumb */
+  .banner {
+    -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 38%, rgba(0, 0, 0, 0.3) 58%, transparent 76%);
+    mask-image: linear-gradient(to bottom, #000 0%, #000 38%, rgba(0, 0, 0, 0.3) 58%, transparent 76%);
+  }
 }
 
 /* No transform work at all when motion is reduced. */

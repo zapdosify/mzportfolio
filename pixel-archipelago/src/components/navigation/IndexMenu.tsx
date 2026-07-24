@@ -8,8 +8,6 @@ import styles from "./IndexMenu.module.css";
 export default function IndexMenu() {
   const open = useWorldStore((s) => s.indexOpen);
   const setOpen = useWorldStore((s) => s.setIndexOpen);
-  const soundOn = useWorldStore((s) => s.soundOn);
-  const toggleSound = useWorldStore((s) => s.toggleSound);
   const [query, setQuery] = useState("");
   const navigate = useNavigate();
 
@@ -22,6 +20,18 @@ export default function IndexMenu() {
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [open, setOpen]);
+
+  // Modal semantics: lock body scroll while open, restore focus on close.
+  useEffect(() => {
+    if (!open) return;
+    const prev = document.activeElement as HTMLElement | null;
+    const { overflow } = document.body.style;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = overflow;
+      prev?.focus?.();
+    };
+  }, [open]);
 
   const results = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -44,8 +54,32 @@ export default function IndexMenu() {
     navigate(to);
   };
 
+  // Keep Tab cycling inside the dialog (matches the Lightbox behaviour).
+  const trapTab = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.key !== "Tab") return;
+    const els = e.currentTarget.querySelectorAll<HTMLElement>(
+      'button, [href], input, [tabindex]:not([tabindex="-1"])',
+    );
+    if (!els.length) return;
+    const first = els[0];
+    const last = els[els.length - 1];
+    if (e.shiftKey && document.activeElement === first) {
+      e.preventDefault();
+      last.focus();
+    } else if (!e.shiftKey && document.activeElement === last) {
+      e.preventDefault();
+      first.focus();
+    }
+  };
+
   return (
-    <div className={styles.overlay} role="dialog" aria-modal="true" aria-label="Index">
+    <div
+      className={styles.overlay}
+      role="dialog"
+      aria-modal="true"
+      aria-label="Index"
+      onKeyDown={trapTab}
+    >
       <button
         type="button"
         className={styles.scrim}
@@ -107,9 +141,6 @@ export default function IndexMenu() {
           <Link to="/" className={styles.control} onClick={() => setOpen(false)}>
             Return to World
           </Link>
-          <button type="button" className={styles.control} onClick={toggleSound}>
-            Sound: {soundOn ? "On" : "Off"}
-          </button>
         </div>
       </div>
     </div>
