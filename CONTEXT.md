@@ -1,6 +1,11 @@
 # CONTEXT — Pixel Archipelago Portfolio (session handoff)
 
-**Read this first in a new session.** Last updated: 2026-07-23
+**Read this first in a new session.** Last updated: 2026-07-23 (evening — git + motion rework + QA sweep)
+
+**⚡ GIT IS NOW LIVE.** `git init` done on `main` (local only, no remote). Commit at every
+milestone. History so far: initial snapshot → motion rework → responsive landing →
+poster/banner/header fixes → QA sweep. Media (~780M) is in history; ignore file excludes
+node_modules/dist.
 
 Project root: `C:\Users\zab\Desktop\Portfolio 2026\`
 App root: `pixel-archipelago/` · Dev: `npm run dev` (port 5173) · Build: `npm run build`
@@ -293,17 +298,50 @@ page-building — it was a **verification + correctness pass**. Done so far:
 - ✅ About portrait swapped to `public/images/about/New_Headshot.jpg` (1024×1024) via
   `siteContent.ts` `portraitImage`. Old `portrait.png` left in place, now unreferenced.
 
+### 2026-07-23 evening session (creative-director polish pass) — DONE
+All committed, build green, verified in preview where the pane allows:
+
+- **Orb motion rework (user-requested):** breath/glow 3.8s→6.4s; hard emit ring → two soft
+  blurred gradient ripples (6.4s cycle, half-period offset — one wave always travelling).
+  Click pulse 900ms hard ring → 2.4s feathered blurred wave; colour-burst expand rides the
+  same wavefront (2.4s, same easing; timeline expand 2.4/hold 5/fade 1.5 — JS total 8900ms).
+- **Warp transition rework (user-requested):** 650ms bloom that settles to solid black
+  (`.warp::after`), navigate at 620ms under cover; stage zooms slightly (`.stageLeaving`);
+  ALL route changes crossfade in via WAAPI opacity fade on `#main` in RootLayout (480ms,
+  reduced-motion aware; opacity only — transform would re-anchor fixed descendants).
+- **Responsive landing:** `.stage` is a size container; plates `clamp(96px, 9.1cqw, 152px)`
+  + label `clamp(0.46rem, 0.6cqw, 0.62rem)`; tracking/padding tighten under `@container
+  (max-width:1400px)` so the longest labels fit. **≤640px: plates hidden entirely; the srNav
+  becomes a visible plate-styled chip grid under the art** (13 plates can't fit 375px);
+  legend hidden, titleBlock given right:128px wrap room.
+- **Black poster fix:** animation short 01 + documentary 01 posters were fade-in black
+  frames (lum 0 and 3 of 255). Regenerated with ffmpeg `thumbnail` filter (installed
+  **Gyan.FFmpeg via winget** — at `%LOCALAPPDATA%/Microsoft/WinGet/Packages/Gyan.FFmpeg…/bin`,
+  new shells have it on PATH). Both public/media and root images/ copies replaced;
+  measure_media.py re-run (dimensions unchanged). Doc film is only 18.9s — frame taken ~9s+.
+- **Banner ghost-title fix:** CategoryBanner mask now fades art fully by 85% height
+  (42% hold → 0.35 @66% → transparent 85%) — the baked nameplate no longer ghosts behind H1.
+- **Header legibility:** stronger gradient (0.92→0.72@62%→0) + blur(6px) with matching
+  mask-image so the blur fades with the gradient (no hard edge).
+- **⚠️ Undefined-token bug class:** `--space-5` does not exist (scale jumps 4→6). Two uses
+  invalidated whole declarations (resume bullets: zero indent, em-dash struck through text;
+  process cards: ALL padding lost). Audited: no other undefined tokens remain. When adding
+  spacing, only use tokens that exist in tokens.css.
+- **Poster gallery:** tiles 3:4 → **1:1** (assets are square 4000×4000 wall mockups; zero crop).
+- Verified: Lightbox (dialog semantics, arrows, Esc, focus trap), contact mailto/tel links,
+  About/Contact/ProjectDetail heroes, 404 page, production build clean.
+
 **Still open:**
-1. ⚠️ **Verify the reduced-motion path of the orb-click burst by eye** (see §4 caveat) — couldn't
-   emulate `prefers-reduced-motion` in the preview pane.
+1. ⚠️ **Verify by eye** (preview pane can't): reduced-motion burst path; the new warp +
+   crossfade feel at real frame rate; ambient ripple softness (tune blur/opacity to taste).
 2. **Ripple** (`/website-design/ripple`) still has no imagery — renders the `imageryPending` note.
    Decide: leave flagged, or source/commission visuals.
-3. Per-discipline gallery column tuning now that real ratios are known (squares/9:16/16:9 mix).
+3. Remaining gallery tuning: `grid` variant tiles that read mostly-dark for tall dark-bodied
+   flow sheets (BookBabies gallery tiles 2–3) — acceptable, revisit if desired.
 4. The **résumé download is still .docx** — the earlier question about swapping to PDF remains open.
-5. On a very small stage the nameplates overlap each other and the centre (pre-existing cramped mobile
-   layout) — Phase 5 responsive pass should address plate spacing.
-
-Then Phase 5 (responsive + a11y) and Phase 6 (perf + deploy).
+5. Phase 5 leftovers: tablet/landscape passes, focus-visible audit, dynamic-type/zoom check.
+6. Phase 6: perf (495kB JS bundle — code-split GSAP?), media compression (ffmpeg now available),
+   deploy docs.
 
 **⚠️ Concurrency note:** for much of this work a second chat was editing the same tree (esp.
 `components/gallery/*`, `MediaFigure`, `projects.ts`) with no git safety net. Before trusting any single
