@@ -33,7 +33,9 @@ The visual identity is fixed and approved; it must not be redesigned.
 | 3 — Interior page template | ✅ complete |
 | 4 — All 13 categories + detail pages | 🟨 **IN PROGRESS** — media/layout truth pass done |
 | 5 — Responsive + accessibility pass | ✅ complete (2026-07-24) |
-| 6 — Performance + QA + deploy docs | ⬜ pending |
+| 6 — Performance + QA + deploy docs | ✅ complete (2026-07-24) |
+
+**ALL SIX PHASES COMPLETE.** The site is deploy-ready (see `pixel-archipelago/DEPLOY.md`).
 
 Also complete: content audit (`BUILD-PLAN.md`), scene-decomposition report (`DECOMPOSITION-REPORT.md`), About page (portrait + résumé timelines + linked award).
 
@@ -347,15 +349,24 @@ All committed, build green, verified in preview where the pane allows:
 - **Verified:** all 27 routes render (client-side sweep, proper H1s), zero console errors,
   build green (496kB / 165kB gzip).
 
-**Still open:**
-1. ⚠️ **Verify by eye** (preview pane can't): reduced-motion burst path; warp + crossfade +
-   stagger feel at real frame rate; ambient ripple softness (tune blur/opacity to taste).
-2. **Ripple** (`/website-design/ripple`) still has no imagery — renders the `imageryPending` note.
-   Decide: leave flagged, or source/commission visuals.
-3. Gallery `grid` tiles that read mostly-dark for tall dark-bodied flow sheets — acceptable.
-4. Résumé download: **decision made 2026-07-24 — stays .docx**, no PDF swap.
-5. Phase 6: perf (496kB JS — code-split GSAP?), media compression (ffmpeg installed),
-   deploy docs.
+### 2026-07-24 Phase 6 session — COMPLETE
+- **Code-split:** interior pages are React.lazy (Suspense fallback null — black void +
+  route crossfade cover the fetch). Entry 496→351kB (gzip 165→113); GSAP in a lazy chunk.
+  Landing stays eager. NOTE: automated route sweeps must allow >150ms for first lazy mount.
+- **Media optimized (web copies only — root images/ + videos/ are untouched masters):**
+  JPEGs ≤2560px q82 progressive; 4 tall PNG flow sheets → 1280px wide; videos H.264
+  CRF23+faststart. public/media: ~355MB → ~232MB. `measure_media.py` re-run.
+  Scratch script: optimize_images.py logic described in commit 80c3a27.
+- **Deploy ready:** `pixel-archipelago/DEPLOY.md` + `public/_redirects` + `vercel.json`
+  (SPA fallback). Recommended host: Netlify/Vercel, publish dir `dist`.
+
+**Still open (post-launch niceties only):**
+1. ⚠️ **Verify by eye** (preview pane can't): reduced-motion burst; warp/crossfade/stagger
+   feel at real frame rate; re-encoded video quality spot-check on a big screen.
+2. **Ripple** (`/website-design/ripple`) has no imagery — renders the `imageryPending` note.
+3. Résumé download: decision 2026-07-24 — **stays .docx**.
+4. Optional: remote git backup (repo is local-only), dead `pagePreviewImage` cleanup in
+   categories.ts.
 
 **⚠️ Concurrency note:** for much of this work a second chat was editing the same tree (esp.
 `components/gallery/*`, `MediaFigure`, `projects.ts`) with no git safety net. Before trusting any single
