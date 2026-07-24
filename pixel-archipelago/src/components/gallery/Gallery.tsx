@@ -1,0 +1,86 @@
+import { useState } from "react";
+import type { ProjectMedia } from "../../data/types";
+import MediaFigure from "../media/MediaFigure";
+import Lightbox from "./Lightbox";
+import styles from "./Gallery.module.css";
+
+export default function Gallery({
+  items,
+  variant = "grid",
+}: {
+  items: ProjectMedia[];
+  variant?: "grid" | "posters" | "cinema";
+}) {
+  const [open, setOpen] = useState<number | null>(null);
+
+  if (!items.length) return null;
+
+  // Videos keep their inline players; only images open in the lightbox.
+  const images = items.filter((m) => m.type !== "video");
+
+  // Cinema (video) galleries render exactly as before.
+  if (variant === "cinema") {
+    return (
+      <div className={`${styles.gallery} ${styles.cinema}`}>
+        {items.map((m, i) => (
+          <MediaFigure key={m.src + i} media={m} />
+        ))}
+      </div>
+    );
+  }
+
+  return (
+    <>
+      <ul className={`${styles.gallery} ${styles[variant]}`}>
+        {items.map((m, i) => {
+          if (m.type === "video") {
+            return (
+              <li key={m.src + i} className={styles.videoCell}>
+                <MediaFigure media={m} />
+              </li>
+            );
+          }
+          const imageIndex = images.indexOf(m);
+          return (
+            <li key={m.src + i}>
+              <button
+                type="button"
+                className={styles.tile}
+                onClick={() => setOpen(imageIndex)}
+                aria-label={`Enlarge${m.alt ? `: ${m.alt}` : " image"}`}
+              >
+                <img
+                  className={styles.thumb}
+                  src={m.src}
+                  alt={m.alt ?? ""}
+                  loading="lazy"
+                  decoding="async"
+                />
+                <span className={styles.expand} aria-hidden="true">
+                  <svg viewBox="0 0 24 24" width="18" height="18" focusable="false">
+                    <path
+                      d="M4 9V4h5M20 15v5h-5M15 4h5v5M9 20H4v-5"
+                      stroke="currentColor"
+                      strokeWidth="1.6"
+                      fill="none"
+                    />
+                  </svg>
+                </span>
+                {m.caption && <span className={styles.tileCaption}>{m.caption}</span>}
+              </button>
+            </li>
+          );
+        })}
+      </ul>
+
+      {open !== null && (
+        <Lightbox
+          items={images}
+          index={open}
+          onClose={() => setOpen(null)}
+          onNavigate={setOpen}
+        />
+      )}
+    </>
+  );
+}

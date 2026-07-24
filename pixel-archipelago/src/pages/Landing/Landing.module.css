@@ -1,0 +1,404 @@
+.world {
+  position: relative;
+  width: 100%;
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: var(--black);
+  cursor: none; /* the orb is the sole pointer across the scene */
+}
+.world a,
+.world button { cursor: none; }
+
+/* Fixed-aspect stage (matches the 1672×941 art). --mx/--my drive parallax. */
+.stage {
+  position: relative;
+  width: min(100%, calc(100dvh * (1672 / 941)));
+  aspect-ratio: 1672 / 941;
+  margin: auto;
+  --mx: 0px;
+  --my: 0px;
+}
+
+.layer { position: absolute; inset: -32px; } /* oversized so parallax never bares an edge */
+.fill { width: 100%; height: 100%; display: block; }
+.bg { object-fit: cover; }
+
+.parallax {
+  transform: translate3d(calc(var(--mx) * var(--f, 0)), calc(var(--my) * var(--f, 0)), 0);
+  will-change: transform;
+}
+
+/* world layer holds the transparent islands + the DOM nameplates so they move together */
+.worldLayer { position: absolute; inset: 0; }
+.islandsImg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.6));
+}
+
+/* ---------- Orb-powered colour reveal ---------- */
+/* The coloured islands sit directly over the mono ones (identical box + parallax).
+   Two intersected masks confine the reveal: a feathered circle that follows the
+   orb (--rx/--ry, updated per frame by OrbLayer) AND the islands' own alpha
+   (islands.png) so colour never bleeds onto the background. --reveal-rx is a %
+   of width; --reveal-ry compensates for the 1672:941 box so the reveal reads as
+   a true circle. Off until the orb reports a position (--reveal-on). */
+.colorReveal {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+  opacity: var(--reveal-on, 0);
+  transition: opacity var(--dur) var(--ease-out);
+
+  --reveal-rx: 7.5%;
+  --reveal-ry: calc(var(--reveal-rx) * 1.777);
+
+  -webkit-mask-image:
+    radial-gradient(
+      ellipse var(--reveal-rx) var(--reveal-ry) at var(--rx, -50%) var(--ry, -50%),
+      #000 0%, #000 40%, transparent 100%
+    ),
+    url("/images/landing/islands.png");
+  mask-image:
+    radial-gradient(
+      ellipse var(--reveal-rx) var(--reveal-ry) at var(--rx, -50%) var(--ry, -50%),
+      #000 0%, #000 40%, transparent 100%
+    ),
+    url("/images/landing/islands.png");
+  -webkit-mask-repeat: no-repeat, no-repeat;
+  mask-repeat: no-repeat, no-repeat;
+  -webkit-mask-size: 100% 100%, 100% 100%;
+  mask-size: 100% 100%, 100% 100%;
+  -webkit-mask-position: 0 0, 0 0;
+  mask-position: 0 0, 0 0;
+  /* intersect the two masks: colour shows only where both are opaque */
+  -webkit-mask-composite: source-in;
+  mask-composite: intersect;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .colorReveal { display: none; }
+}
+
+/* ---------- Orb-click colour burst ---------- */
+/* A second coloured twin, revealed by an expanding radial mask centred on the
+   orb (49.5% / 50.4%) and intersected with the islands' alpha — so it floods
+   every island with colour but never touches the background. Registering
+   --burst-rx lets the radius interpolate smoothly. */
+@property --burst-rx {
+  syntax: "<length-percentage>";
+  inherits: false;
+  initial-value: 0%;
+}
+.colorBurst {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+
+  --burst-rx: 0%;
+  --burst-ry: calc(var(--burst-rx) * 1.777);
+
+  -webkit-mask-image:
+    radial-gradient(
+      ellipse var(--burst-rx) var(--burst-ry) at 49.5% 50.4%,
+      #000 0%, #000 78%, transparent 100%
+    ),
+    url("/images/landing/islands.png");
+  mask-image:
+    radial-gradient(
+      ellipse var(--burst-rx) var(--burst-ry) at 49.5% 50.4%,
+      #000 0%, #000 78%, transparent 100%
+    ),
+    url("/images/landing/islands.png");
+  -webkit-mask-repeat: no-repeat, no-repeat;
+  mask-repeat: no-repeat, no-repeat;
+  -webkit-mask-size: 100% 100%, 100% 100%;
+  mask-size: 100% 100%, 100% 100%;
+  -webkit-mask-position: 0 0, 0 0;
+  mask-position: 0 0, 0 0;
+  -webkit-mask-composite: source-in;
+  mask-composite: intersect;
+}
+/* Full motion: expand the reveal (0.9s), hold, then fade out (1.5s @ 5.9s). */
+.colorBurstAnim {
+  animation:
+    burstExpand 900ms var(--ease-out) forwards,
+    burstFade 1500ms ease-in 5900ms forwards;
+}
+/* Reduced motion: no expand — reveal everything at once, hold 5s, then fade. */
+.colorBurstReduced {
+  --burst-rx: 135%;
+  animation: burstFade 1500ms ease-in 5000ms forwards;
+}
+@keyframes burstExpand {
+  from { --burst-rx: 0%; }
+  to { --burst-rx: 135%; }
+}
+@keyframes burstFade {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+/* Visible pulse ring emitted from the orb's on-screen centre. */
+.pulse {
+  position: absolute;
+  left: 49.5%;
+  top: 50.4%;
+  width: 8%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 214, 120, 0.9);
+  box-shadow: 0 0 22px 6px rgba(255, 205, 90, 0.5), inset 0 0 14px rgba(255, 205, 90, 0.4);
+  transform: translate(-50%, -50%) scale(0.15);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 2;
+  animation: pulseRing 900ms var(--ease-out) forwards;
+}
+@keyframes pulseRing {
+  0% { transform: translate(-50%, -50%) scale(0.15); opacity: 0; }
+  12% { opacity: 0.9; }
+  100% { transform: translate(-50%, -50%) scale(16); opacity: 0; }
+}
+
+/* ---------- Central yellow orb ---------- */
+.centerOrb {
+  position: absolute;
+  width: 3.4%;
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  /* above the nameplates (z-index 4) so the orb stays tappable where the
+     plates crowd the centre on small screens */
+  z-index: 5;
+  pointer-events: auto;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: none;
+}
+/* Guarantee a ≥44px tap target even when the orb renders small. */
+.centerOrb::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: max(100%, 44px);
+  height: max(100%, 44px);
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+}
+.centerOrb:focus-visible { outline: none; }
+.centerOrb:focus-visible .orbCore {
+  box-shadow: 0 0 0 2px var(--white), 0 0 20px 6px rgba(255, 205, 90, 0.95);
+}
+.orbCore {
+  grid-area: 1 / 1;
+  width: 44%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle, #fff6d8 0%, #ffd76b 44%, #f0b63c 70%, transparent 80%);
+  box-shadow: 0 0 14px 3px rgba(255, 205, 90, 0.7);
+  animation: orbBreath 3.8s ease-in-out infinite;
+}
+.orbGlow {
+  grid-area: 1 / 1;
+  width: 130%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 205, 90, 0.36), rgba(255, 190, 60, 0.08) 50%, transparent 70%);
+  animation: orbGlowPulse 3.8s ease-in-out infinite;
+}
+.orbEmit {
+  grid-area: 1 / 1;
+  width: 60%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 210, 100, 0.5);
+  animation: orbEmit 3.8s ease-out infinite;
+}
+@keyframes orbBreath {
+  0%, 100% { transform: scale(1); box-shadow: 0 0 12px 3px rgba(255, 205, 90, 0.6); }
+  50% { transform: scale(1.12); box-shadow: 0 0 22px 7px rgba(255, 205, 90, 0.95); }
+}
+@keyframes orbGlowPulse { 0%, 100% { opacity: 0.6; } 50% { opacity: 1; } }
+@keyframes orbEmit {
+  0% { transform: scale(0.6); opacity: 0.7; }
+  75% { opacity: 0; }
+  100% { transform: scale(3); opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .orbCore, .orbGlow { animation: none; }
+  .orbEmit { display: none; }
+}
+
+/* ---------- Nameplates ---------- */
+/* The ul spans the whole layer; making only the plates themselves hit-testable
+   keeps the gaps (incl. the centre orb) clickable. */
+.plates { list-style: none; position: absolute; inset: 0; z-index: 4; pointer-events: none; }
+.plateItem { position: absolute; transform: translate(-50%, -50%); }
+.plate {
+  pointer-events: auto;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 152px;
+  padding: 5px 8px;
+  white-space: nowrap;
+  border-radius: 3px;
+  background: #070707;
+  border: 1px solid var(--border-dark);
+  box-shadow: 0 0 0 3px #070707;
+  transition: border-color var(--dur-fast) var(--ease-out),
+    background-color var(--dur-fast) var(--ease-out),
+    box-shadow var(--dur-fast) var(--ease-out);
+}
+.plate:hover,
+.plate:focus-visible,
+.plateOn {
+  border-color: var(--white);
+  background: #0c0c0c;
+  box-shadow: 0 0 0 3px #070707, 0 0 18px rgba(255, 255, 255, 0.28);
+}
+.plateLabel {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+.plate:hover .plateLabel,
+.plate:focus-visible .plateLabel,
+.plateOn .plateLabel { color: var(--white); }
+
+/* ---------- Fixed HUD ---------- */
+.hud { position: absolute; inset: 0; z-index: 7; pointer-events: none; }
+.hud button, .hud a { pointer-events: auto; }
+
+.titleBlock { position: absolute; top: var(--space-6); left: var(--space-6); }
+.name { font-family: var(--font-mono); font-size: clamp(1.1rem, 2vw, 1.6rem); font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-primary); }
+.role { font-family: var(--font-mono); font-size: clamp(0.7rem, 1vw, 0.85rem); letter-spacing: 0.22em; text-transform: uppercase; color: var(--text-muted); margin-top: 2px; }
+.rule { display: block; width: 190px; max-width: 40vw; height: 1px; background: var(--border-active); margin: var(--space-4) 0; }
+.explore { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-secondary); display: flex; align-items: center; gap: var(--space-2); }
+.exploreMark { color: var(--white); animation: twinkle 2.6s ease-in-out infinite; }
+@keyframes twinkle { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
+
+.indexBtn {
+  position: absolute;
+  top: var(--space-6);
+  right: var(--space-6);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-4);
+  background: rgba(9, 9, 9, 0.6);
+  border: 1px solid var(--border-active);
+  border-radius: var(--radius);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  transition: border-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out);
+}
+.indexBtn:hover, .indexBtn:focus-visible { border-color: var(--white); color: var(--white); box-shadow: 0 0 16px rgba(255, 255, 255, 0.2); }
+.indexGlyph { font-size: 0.9rem; }
+
+.worldMap {
+  position: absolute;
+  bottom: var(--space-6);
+  left: var(--space-6);
+  width: clamp(120px, 12vw, 168px);
+  padding: var(--space-3);
+  background: rgba(9, 9, 9, 0.55);
+  border: 1px solid var(--border-dark);
+  border-radius: var(--radius);
+}
+.mapTitle { font-family: var(--font-mono); font-size: 0.56rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-muted); display: block; margin-bottom: var(--space-2); }
+.mapSvg { width: 100%; height: auto; display: block; }
+.mapFrame { fill: none; stroke: var(--border-dark); stroke-width: 0.6; }
+.mapDot { fill: var(--text-muted); }
+.mapDotOn { fill: var(--white); }
+.mapOrb { fill: var(--white); filter: drop-shadow(0 0 2px rgba(255,255,255,0.9)); }
+
+.legend {
+  position: absolute;
+  bottom: var(--space-6);
+  right: var(--space-6);
+  list-style: none;
+  display: grid;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  background: rgba(9, 9, 9, 0.55);
+  border: 1px solid var(--border-dark);
+  border-radius: var(--radius);
+}
+.legend li { display: flex; align-items: center; gap: var(--space-3); font-family: var(--font-mono); font-size: 0.58rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-muted); }
+.legendIcon { width: 13px; height: 13px; color: var(--text-secondary); flex: none; }
+
+/* ---------- Enter prompt ---------- */
+.enterPrompt {
+  position: fixed;
+  bottom: var(--space-12);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9;
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+  min-width: 240px;
+  padding: var(--space-4) var(--space-8);
+  background: rgba(9, 9, 9, 0.92);
+  border: 1px solid var(--white);
+  border-radius: var(--radius);
+  box-shadow: var(--glow-orb);
+  animation: rise var(--dur) var(--ease-out);
+}
+@keyframes rise { from { opacity: 0; transform: translate(-50%, 8px); } }
+.enterTitle { font-family: var(--font-mono); font-size: var(--fs-16); letter-spacing: 0.1em; text-transform: uppercase; color: var(--white); }
+.enterDesc { font-size: var(--fs-12); color: var(--text-secondary); }
+.enterKey { margin-top: var(--space-2); font-family: var(--font-mono); font-size: var(--fs-12); letter-spacing: 0.16em; text-transform: uppercase; color: var(--text-primary); display: flex; align-items: center; gap: var(--space-2); }
+.enterKey kbd { border: var(--border-hover); border-radius: 3px; padding: 1px 6px; font-family: var(--font-mono); }
+
+/* keyboard-reachable text nav (visually hidden until focused) */
+.srNav { position: absolute; bottom: var(--space-2); left: 50%; transform: translateX(-50%); z-index: 8; opacity: 0; pointer-events: none; }
+.srNav:focus-within { opacity: 1; pointer-events: auto; }
+.srNav ol { list-style: none; display: flex; flex-wrap: wrap; gap: var(--space-1) var(--space-4); justify-content: center; max-width: 80vw; }
+.srNav a { font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); }
+.srNav a:focus-visible { color: var(--white); }
+
+/* ---------- Warp transition (landing → category) ---------- */
+.warp {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  pointer-events: none;
+  /* a brief light bloom that settles to the shared black page background,
+     so the hand-off to the (also-black) category page is seamless */
+  background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.12), var(--black) 55%);
+  animation: warpIn 300ms var(--ease-out) forwards;
+}
+@keyframes warpIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@media (max-width: 760px) {
+  .worldMap { display: none; }
+  .plate { width: 118px; }
+  .plateLabel { font-size: 0.52rem; }
+}

@@ -1,0 +1,55 @@
+/* Full-bleed landmark banner sitting behind the top of an interior page.
+   The landmark art already carries the category name on a baked nameplate,
+   so this is the page's visual title card. */
+
+.banner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: var(--banner-h);
+  overflow: hidden;
+  z-index: 0;
+  pointer-events: none;
+  background: var(--black);
+  /* the art is authored on black, so fade it out rather than hard-cutting it */
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 46%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 0%, #000 46%, transparent 100%);
+}
+
+.inner {
+  position: absolute;
+  inset: 0;
+  /* scale gives the parallax travel room so no edge is exposed */
+  transform: translate3d(0, var(--banner-y, 0px), 0) scale(1.08);
+  will-change: transform;
+}
+
+.img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 42%;
+  display: block;
+}
+
+/* Sink the art back so foreground type stays legible over it. */
+.scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(5, 5, 5, 0.55) 0%,
+    rgba(5, 5, 5, 0.3) 38%,
+    rgba(5, 5, 5, 0.85) 100%
+  );
+}
+
+@media (max-width: 900px) {
+  .img { object-position: center 45%; }
+}
+
+/* No transform work at all when motion is reduced. */
+@media (prefers-reduced-motion: reduce) {
+  .inner { transform: none; }
+}

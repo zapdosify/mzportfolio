@@ -1,0 +1,112 @@
+{
+ "world": {
+  "w": 1672,
+  "h": 941
+ },
+ "islands": [
+  {
+   "id": "app-design",
+   "src": "/world/islands/app-design.png",
+   "cx": 47.34,
+   "cy": 16.05,
+   "w": 24.46,
+   "h": 31.03
+  },
+  {
+   "id": "website-design",
+   "src": "/world/islands/website-design.png",
+   "cx": 28.38,
+   "cy": 23.43,
+   "w": 29.96,
+   "h": 29.86
+  },
+  {
+   "id": "visual-artwork",
+   "src": "/world/islands/visual-artwork.png",
+   "cx": 64.8,
+   "cy": 24.44,
+   "w": 26.73,
+   "h": 28.69
+  },
+  {
+   "id": "manifesto-design",
+   "src": "/world/islands/manifesto-design.png",
+   "cx": 83.52,
+   "cy": 31.99,
+   "w": 28.29,
+   "h": 28.06
+  },
+  {
+   "id": "exhibition-design",
+   "src": "/world/islands/exhibition-design.png",
+   "cx": 17.4,
+   "cy": 44.37,
+   "w": 27.51,
+   "h": 26.46
+  },
+  {
+   "id": "poster-design",
+   "src": "/world/islands/poster-design.png",
+   "cx": 36.96,
+   "cy": 49.36,
+   "w": 23.56,
+   "h": 26.46
+  },
+  {
+   "id": "animation",
+   "src": "/world/islands/animation.png",
+   "cx": 57.33,
+   "cy": 48.83,
+   "w": 21.71,
+   "h": 29.22
+  },
+  {
+   "id": "documentary",
+   "src": "/world/islands/documentary.png",
+   "cx": 75.45,
+   "cy": 52.5,
+   "w": 26.26,
+   "h": 24.44
+  },
+  {
+   "id": "renders",
+   "src": "/world/islands/renders.png",
+   "cx": 20.19,
+   "cy": 69.87,
+   "w": 22.07,
+   "h": 27.74
+  },
+  {
+   "id": "3d-lettering",
+   "src": "/world/islands/3d-lettering.png",
+   "cx": 37.86,
+   "cy": 72.9,
+   "w": 23.92,
+   "h": 25.5
+  },
+  {
+   "id": "t-mobile",
+   "src": "/world/islands/t-mobile.png",
+   "cx": 58.88,
+   "cy": 72.53,
+   "w": 22.07,
+   "h": 25.61
+  },
+  {
+   "id": "about",
+   "src": "/world/islands/about.png",
+   "cx": 79.28,
+   "cy": 75.03,
+   "w": 23.27,
+   "h": 26.57
+  },
+  {
+   "id": "contact",
+   "src": "/world/islands/contact.png",
+   "cx": 48.24,
+   "cy": 86.56,
+   "w": 30.2,
+   "h": 22.0
+  }
+ ]
+}

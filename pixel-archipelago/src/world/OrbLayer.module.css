@@ -1,0 +1,12 @@
+.canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2; /* painted above the world layer, so the orb sits over the art */
+  /* The canvas covers the whole stage; without this it would swallow every
+     click before it reached the nameplate links beneath it. Pointer tracking
+     is handled via listeners on the stage/window, so it needs no hit-testing. */
+  pointer-events: none;
+  cursor: none; /* the orb itself is the cursor */
+}

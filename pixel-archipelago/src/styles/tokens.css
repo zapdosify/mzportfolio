@@ -1,0 +1,75 @@
+/* Pixel Archipelago — design tokens. Monochrome, cinematic, pixel-art. */
+:root {
+  /* Grayscale palette (color appears ONLY inside project imagery) */
+  --black: #050505;
+  --near-black: #090909;
+  --surface-dark: #101010;
+  --surface-mid: #171717;
+  --surface-raised: #1c1c1c;
+  --border-dark: #292929;
+  --border-active: #575757;
+  --text-muted: #777777;
+  --text-secondary: #b6b6b6;
+  --text-primary: #f2f2f2;
+  --white: #ffffff;
+
+  /* Restrained T-Mobile accent — used ONLY on the T-Mobile page where authentic */
+  --tmobile: #e20074;
+
+  /* Typography */
+  --font-mono: "IBM Plex Mono", "Geist Mono", ui-monospace, "SFMono-Regular", monospace;
+  --font-sans: "Inter", "Geist", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+
+  --fs-12: 0.75rem;
+  --fs-14: 0.875rem;
+  --fs-16: 1rem;
+  --fs-18: 1.125rem;
+  --fs-24: 1.5rem;
+  --fs-32: 2rem;
+  --fs-48: 3rem;
+  --fs-64: clamp(2.5rem, 6vw, 4.5rem);
+
+  --lh-tight: 1.15;
+  --lh-body: 1.6;
+
+  /* Spacing scale (8pt rhythm) */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-24: 96px;
+
+  /* Structure */
+  --border: 1px solid var(--border-dark);
+  --border-hover: 1px solid var(--border-active);
+  --radius: 2px;
+  --maxw: 1280px;
+  --header-h: 60px;
+  /* height of the full-bleed landmark banner on interior pages */
+  --banner-h: clamp(360px, 58vh, 680px);
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --dur-fast: 160ms;
+  --dur: 260ms;
+  --dur-slow: 400ms;
+
+  /* Layers */
+  --z-world: 0;
+  --z-content: 10;
+  --z-header: 40;
+  --z-overlay: 100;
+  --z-modal: 1000;
+
+  /* Glow */
+  --glow-orb: 0 0 24px rgba(255, 255, 255, 0.35);
+  --glow-soft: 0 0 12px rgba(255, 255, 255, 0.12);
+}
+
+@media (max-width: 900px) {
+  :root { --banner-h: clamp(240px, 40vh, 400px); }
+}

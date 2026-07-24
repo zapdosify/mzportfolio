@@ -1,0 +1,140 @@
+/* Full-screen image viewer. Monochrome, matches the pixel-interface aesthetic. */
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal);
+  display: grid;
+  grid-template-columns: 1fr;
+  place-items: center;
+  padding: var(--space-16) var(--space-12);
+  background: rgba(5, 5, 5, 0.92);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  animation: fade var(--dur) var(--ease-out);
+}
+
+/* Top bar: counter + close */
+.bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--header-h);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--space-6);
+  z-index: 2;
+}
+.counter {
+  font-family: var(--font-mono);
+  font-size: var(--fs-14);
+  letter-spacing: 0.16em;
+  color: var(--text-secondary);
+}
+
+/* Shared icon-button chrome (close + nav) */
+.iconBtn,
+.nav {
+  display: grid;
+  place-items: center;
+  min-width: 44px;
+  min-height: 44px;
+  color: var(--text-secondary);
+  background: rgba(16, 16, 16, 0.6);
+  border: 1px solid var(--border-dark);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition:
+    color var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out),
+    background var(--dur-fast) var(--ease-out);
+}
+.iconBtn:hover,
+.nav:hover {
+  color: var(--white);
+  border-color: var(--border-active);
+  background: rgba(28, 28, 28, 0.85);
+}
+.iconBtn:focus-visible,
+.nav:focus-visible {
+  outline: 2px solid var(--border-active);
+  outline-offset: 2px;
+}
+
+/* Prev/next anchored to the vertical centre, clear of the image */
+.nav {
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 48px;
+  height: 48px;
+  z-index: 2;
+}
+.prev { left: var(--space-4); }
+.next { right: var(--space-4); }
+
+/* Image stage */
+.stage {
+  margin: 0;
+  max-width: min(1100px, 92vw);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+}
+.image {
+  max-width: 100%;
+  max-height: 78vh;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  display: block;
+  border: 1px solid var(--border-dark);
+  background: var(--surface-dark);
+  animation: rise var(--dur) var(--ease-out);
+}
+
+/* Tall "scroll sheet" flows: bounded height, scrolled rather than shrunk. */
+.tall {
+  max-width: min(560px, 92vw);
+  width: 100%;
+}
+.tall .image {
+  max-height: 82vh;
+  overflow-y: auto;
+  object-fit: contain;
+}
+
+.caption {
+  font-family: var(--font-mono);
+  font-size: var(--fs-12);
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+  text-align: center;
+  max-width: 60ch;
+}
+
+@keyframes fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes rise {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
+}
+
+@media (max-width: 640px) {
+  .overlay { padding: var(--space-12) var(--space-2); }
+  .prev { left: var(--space-1); }
+  .next { right: var(--space-1); }
+  .nav { width: 44px; height: 44px; background: rgba(16, 16, 16, 0.8); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .overlay,
+  .image { animation: none; }
+  .iconBtn,
+  .nav { transition: none; }
+}
