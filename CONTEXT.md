@@ -32,7 +32,7 @@ The visual identity is fixed and approved; it must not be redesigned.
 | 2 — World engine (orb navigator) | ✅ complete |
 | 3 — Interior page template | ✅ complete |
 | 4 — All 13 categories + detail pages | 🟨 **IN PROGRESS** — media/layout truth pass done |
-| 5 — Responsive + accessibility pass | ⬜ pending |
+| 5 — Responsive + accessibility pass | ✅ complete (2026-07-24) |
 | 6 — Performance + QA + deploy docs | ⬜ pending |
 
 Also complete: content audit (`BUILD-PLAN.md`), scene-decomposition report (`DECOMPOSITION-REPORT.md`), About page (portrait + résumé timelines + linked award).
@@ -331,16 +331,30 @@ All committed, build green, verified in preview where the pane allows:
 - Verified: Lightbox (dialog semantics, arrows, Esc, focus trap), contact mailto/tel links,
   About/Contact/ProjectDetail heroes, 404 page, production build clean.
 
+### 2026-07-24 Phase 5 session — COMPLETE
+- **Responsive:** interior pages verified at 375/768; mobile banner mask steepened
+  (ghost nameplate fix at short banner heights); everything stacks cleanly.
+- **A11y:** IndexMenu is now a real modal (scroll lock, Tab trap, focus restore to opener —
+  verified live: open→focus in input, Esc→closed+restored). Global :focus-visible, skip link,
+  h1/h2 hierarchy confirmed. Touch targets: plates get an invisible ±10px vertical hit
+  extension (`.plate::after` inset), mobile chips min-height 44px, touch-action manipulation.
+- **Sound toggle REMOVED** — no audio exists in the app; soundOn/toggleSound purged from the
+  store + persisted state. Don't re-add a control without a feature behind it.
+- **Motion system:** new `hooks/useStaggerReveal.ts` (ScrollTrigger, y24/0.5s/60ms stagger,
+  once, reduced-motion aware, deps-keyed like useHeroReveal). On CategoryPage grids + all
+  Gallery variants. IndexMenu rows cascade via `--i` CSS delay (gated no-preference).
+  Press feedback (:active 1px nudge) on tiles/chips/buttons/header actions.
+- **Verified:** all 27 routes render (client-side sweep, proper H1s), zero console errors,
+  build green (496kB / 165kB gzip).
+
 **Still open:**
-1. ⚠️ **Verify by eye** (preview pane can't): reduced-motion burst path; the new warp +
-   crossfade feel at real frame rate; ambient ripple softness (tune blur/opacity to taste).
+1. ⚠️ **Verify by eye** (preview pane can't): reduced-motion burst path; warp + crossfade +
+   stagger feel at real frame rate; ambient ripple softness (tune blur/opacity to taste).
 2. **Ripple** (`/website-design/ripple`) still has no imagery — renders the `imageryPending` note.
    Decide: leave flagged, or source/commission visuals.
-3. Remaining gallery tuning: `grid` variant tiles that read mostly-dark for tall dark-bodied
-   flow sheets (BookBabies gallery tiles 2–3) — acceptable, revisit if desired.
-4. The **résumé download is still .docx** — the earlier question about swapping to PDF remains open.
-5. Phase 5 leftovers: tablet/landscape passes, focus-visible audit, dynamic-type/zoom check.
-6. Phase 6: perf (495kB JS bundle — code-split GSAP?), media compression (ffmpeg now available),
+3. Gallery `grid` tiles that read mostly-dark for tall dark-bodied flow sheets — acceptable.
+4. Résumé download: **decision made 2026-07-24 — stays .docx**, no PDF swap.
+5. Phase 6: perf (496kB JS — code-split GSAP?), media compression (ffmpeg installed),
    deploy docs.
 
 **⚠️ Concurrency note:** for much of this work a second chat was editing the same tree (esp.
