@@ -14,9 +14,11 @@
 .grid {
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
 }
-/* posters stay vertical and slimmer */
+/* posters: the real assets are square 4000×4000 gallery-wall mockups
+   (measured — the old "posters stay vertical" plan predates measurement),
+   so square tiles show the full mockup with zero crop */
 .posters {
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
 }
 /* cinema = wide video frames, fewer per row */
 .cinema {
@@ -59,7 +61,7 @@
   display: block;
   transition: transform var(--dur) var(--ease-out);
 }
-.posters .thumb { aspect-ratio: 3 / 4; }
+.posters .thumb { aspect-ratio: 1 / 1; object-position: center; }
 .tile:hover .thumb { transform: scale(1.03); }
 
 /* Expand affordance — appears on hover/focus */
