@@ -35,7 +35,7 @@ The visual identity is fixed and approved; it must not be redesigned.
 | 1 — Scaffold + content migration | ✅ complete |
 | 2 — World engine (orb navigator) | ✅ complete |
 | 3 — Interior page template | ✅ complete |
-| 4 — All 13 categories + detail pages | 🟨 **IN PROGRESS** — media/layout truth pass done |
+| 4 — All 13 categories + detail pages | ✅ complete |
 | 5 — Responsive + accessibility pass | ✅ complete (2026-07-24) |
 | 6 — Performance + QA + deploy docs | ✅ complete (2026-07-24) |
 | Post — content pass + polish | ✅ complete (2026-07-25) |
@@ -52,13 +52,19 @@ React + Vite + TypeScript + React Router + Zustand + GSAP. Canvas for the orb; *
 
 ```
 pixel-archipelago/src/
-├── app/          RootLayout.tsx (header hidden on landing), router.tsx
+├── app/          RootLayout.tsx (header hidden on landing; route crossfade), router.tsx
+│                 — interior pages are React.lazy behind Suspense; Landing stays eager
 ├── pages/        Landing/, CategoryPage.tsx, ProjectDetail.tsx, About.tsx, Contact.tsx, NotFound.tsx
 ├── components/   layout/(Header,Footer,CategoryBanner) navigation/IndexMenu
-│                 gallery/(Gallery,Lightbox) project/ProjectCard media/MediaFigure
+│                 gallery/(Gallery,Lightbox) project/ProjectCard
+│                 media/(MediaFigure, AmbientVideo, VideoEmbed)
+│                 story/StoryScroll      contact/ContactDialog
 ├── world/        OrbLayer.tsx (cursor-following orb), Starfield.tsx
-├── data/         categories.ts, projects.ts, siteContent.ts, types.ts, worldManifest.json
-├── hooks/        useWorldStore.ts (Zustand: orb pos, explored, indexOpen, reducedMotion; persisted)
+├── data/         categories.ts, projects.ts, solarpunkStory.ts, siteContent.ts,
+│                 types.ts, mediaDimensions.ts (generated), worldManifest.json
+├── hooks/        useWorldStore.ts (Zustand: orb pos, explored, indexOpen, contactOpen,
+│                 reducedMotion; partially persisted)
+│                 useHeroReveal.ts, useStaggerReveal.ts (GSAP ScrollTrigger)
 └── styles/       tokens.css, global.css, interior.module.css
 ```
 
@@ -96,7 +102,9 @@ the target, not just the label.
 
 ### Landing → category "warp" transition (`Landing.tsx` `go()`)
 All landing navigations (plates, orb Enter, enter-prompt, sr-nav) funnel through one `go(route)`:
-plays a ~300ms `.warp` light-bloom overlay, then `navigate()`. A `leavingRef` latch makes repeated
+plays a `.warp` light-bloom overlay, then `navigate()`. (**Timing was reworked to 650ms —
+see the 2026-07-23 entry in §9; the original 300ms value is historical.**)
+A `leavingRef` latch makes repeated
 clicks fire **once** (double-nav guard). Plates keep their real `<Link to>` (href/right-click intact)
 but `onClick` `preventDefault`s to run the transition; Enter uses the native link-click path, and
 `onKeyDown` adds **Space** activation. Under reduced motion `go()` navigates immediately (no warp).
@@ -153,15 +161,16 @@ One box, at the bottom, never obscuring the art.
 
 ## 5 · Content (already migrated — do not invent facts)
 
-14 projects + About/Contact, scraped from the old Wix site and stored as markdown in
-`projects/` and `pages/`, then typed into `src/data/projects.ts`.
+**15 projects** + About/Contact. 14 were scraped from the old Wix site and stored as markdown in
+`projects/` and `pages/`, then typed into `src/data/projects.ts`; Solarpunk was added
+2026-07-24 from the user's own capstone files.
 
 | Category | Projects |
 |---|---|
 | App Design | BookBabies · HODL · Frontline Readiness |
-| Website Design | Ripple Symposium *(text-only — no imagery exists)* |
+| Website Design | Ripple Symposium *(written case + looping motion piece; no site screenshots)* |
 | Visual Artwork | Digital Painting (10 pieces) |
-| Manifesto Design | Design Manifesto |
+| Manifesto Design | Design Manifesto · **Worldbuilding Through Solarpunk** (masters, 2023) |
 | Exhibition Design | Exhibit Design (3 sub-cases) |
 | Poster Design | Poster series (9) |
 | Animation | Animated Shorts (3 videos) |
@@ -175,7 +184,10 @@ web copies live under `pixel-archipelago/public/media/`.
 
 ### Known content gaps — mark as missing, never fabricate
 Most **years**, **clients**, and **collaborators** are unknown (only Documentary = 2021, award = 2019).
-Ripple has **no screenshots**. External film/flipbook links were never real `href`s. T-Mobile's 3D viewer isn't downloadable.
+Ripple has **no website screenshots** (it does now have the looping motion piece).
+T-Mobile's 3D viewer isn't downloadable. Most external film/flipbook links were never real
+`href`s and render as "— unavailable" chips — **except the documentary's full film**, which
+is now a real YouTube embed (2026-07-24); its stale chip was removed.
 
 ---
 
@@ -275,7 +287,16 @@ Deliberate override: the `/ui-ux-pro-max` skill suggests Press Start 2P + VT323 
 ## 7 · Environment
 
 Node LTS 24.18 + npm 11.16 and Python 3.14 (`py` launcher) were installed via winget during this project.
-Python needs **Pillow + numpy** for the asset scripts in `tools/`.
+Python needs **Pillow + numpy** for the asset scripts in `tools/`, plus **pymupdf**
+(`py -m pip install pymupdf`, added 2026-07-24) to read/extract the capstone PDFs.
+
+**ffmpeg** (winget `Gyan.FFmpeg`, added 2026-07-23) does all video work — re-encoding and
+poster-frame extraction. New shells have `ffmpeg`/`ffprobe` on PATH; if a shell predates the
+install, the binaries are at
+`%LOCALAPPDATA%/Microsoft/WinGet/Packages/Gyan.FFmpeg…/ffmpeg-8.1.2-full_build/bin/`.
+Gotchas hit in practice: `-ss` past a clip's end silently produces a broken file (check
+durations first), and some sources need `-strict unofficial` for JPEG poster extraction.
+
 Bash tool has TLS issues fetching remote images — **use PowerShell + `Invoke-WebRequest -UseBasicParsing`** for downloads.
 
 ---
