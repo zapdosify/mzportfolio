@@ -1,5 +1,6 @@
 import { useState } from "react";
 import type { ProjectMedia } from "../../data/types";
+import { dimensionsFor } from "../../data/mediaDimensions";
 import MediaFigure from "../media/MediaFigure";
 import Lightbox from "./Lightbox";
 import { useStaggerReveal } from "../../hooks/useStaggerReveal";
@@ -10,7 +11,12 @@ export default function Gallery({
   variant = "grid",
 }: {
   items: ProjectMedia[];
-  variant?: "grid" | "posters" | "cinema";
+  /**
+   * `boards` presents design decks the way the work was made to be read —
+   * one board per row at the full column width and its own true aspect,
+   * never cropped and never shrunk to a thumbnail.
+   */
+  variant?: "grid" | "posters" | "cinema" | "boards";
 }) {
   const [open, setOpen] = useState<number | null>(null);
   // Staggered rise-in as the gallery scrolls into view (reduced-motion aware).
@@ -46,6 +52,9 @@ export default function Gallery({
             );
           }
           const imageIndex = images.indexOf(m);
+          // Boards render at their measured size so the browser reserves the
+          // right space — a 22-board deck must not shift the page as it loads.
+          const dims = variant === "boards" ? dimensionsFor(m.src) : undefined;
           return (
             <li key={m.src + i}>
               <button
@@ -58,6 +67,9 @@ export default function Gallery({
                   className={styles.thumb}
                   src={m.src}
                   alt={m.alt ?? ""}
+                  width={dims?.[0]}
+                  height={dims?.[1]}
+                  style={dims ? { aspectRatio: `${dims[0]} / ${dims[1]}` } : undefined}
                   loading="lazy"
                   decoding="async"
                 />

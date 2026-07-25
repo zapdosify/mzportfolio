@@ -3,10 +3,15 @@ import type { Project } from "../../data/types";
 import styles from "./ProjectCard.module.css";
 
 export default function ProjectCard({ project }: { project: Project }) {
-  const cover = project.coverImage ?? project.gallery?.[0]?.src ?? project.videos?.[0]?.poster;
+  const cover =
+    project.cardImage ??
+    project.coverImage ??
+    project.gallery?.[0]?.src ??
+    project.videos?.[0]?.poster;
+  const contain = project.cardImageFit === "contain";
   return (
     <Link to={`/${project.categoryId}/${project.slug}`} className={styles.card}>
-      <div className={styles.thumb}>
+      <div className={`${styles.thumb} ${contain ? styles.thumbContain : ""}`}>
         {cover ? (
           <img src={cover} alt="" loading="lazy" decoding="async" />
         ) : (

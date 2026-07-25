@@ -66,6 +66,9 @@
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
 }
 .heroArt img { width: 100%; height: 100%; object-fit: cover; display: block; }
+/* A hero title sequence keeps its own frame shape rather than being cropped to
+   the column — the motion piece is the artwork, not a backdrop. */
+.heroArtVideo { aspect-ratio: 16 / 9; }
 /* bracketed corner ticks — the signature "built in pixels" frame */
 .heroArt::before,
 .heroArt::after {

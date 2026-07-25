@@ -31,6 +31,13 @@
   grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
   gap: var(--space-6);
 }
+/* boards = a design deck read as a deck: one board per row, full column width,
+   each at its own true aspect. Presentation boards and app-flow sheets are made
+   to be read at size — a thumbnail grid makes their type illegible. */
+.boards {
+  grid-template-columns: 1fr;
+  gap: var(--space-6);
+}
 
 /* ---------- Clickable image tile ---------- */
 .tile {
@@ -71,6 +78,14 @@
   transition: transform var(--dur) var(--ease-out);
 }
 .posters .thumb { aspect-ratio: 1 / 1; object-position: center; }
+/* Boards keep their real proportions. The ratio is set inline from the measured
+   dimensions — `aspect-ratio: auto` would throw away the width/height hint and
+   collapse a not-yet-loaded lazy image to zero height. No crop, ever. */
+.boards .thumb { height: auto; object-fit: contain; }
+/* A hover zoom on a full-width board would push its own edges out of frame. */
+.boards .tile:hover .thumb { transform: none; }
+.boards .tile:hover,
+.boards .tile:focus-visible { transform: none; }
 .tile:hover .thumb { transform: scale(1.03); }
 
 /* Expand affordance — appears on hover/focus */
@@ -115,6 +130,7 @@
   .grid,
   .posters { grid-template-columns: repeat(2, 1fr); gap: var(--space-3); }
   .cinema { grid-template-columns: 1fr; }
+  .boards { gap: var(--space-4); }
 }
 
 @media (prefers-reduced-motion: reduce) {

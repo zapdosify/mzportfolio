@@ -58,6 +58,8 @@ export const projects: Project[] = [
       { title: "High-Fidelity Design & Prototyping", description: "Polished mockups of key screens and interactions, built into an interactive prototype to test and validate the user experience." },
     ],
     coverImage: `${IMG}/bookbabies-app/01_A.png`,
+    // Presentation boards — read full width in sequence, as they were designed.
+    galleryVariant: "boards",
     gallery: Array.from({ length: 22 }, (_, i) => {
       const n = String(i + 1).padStart(2, "0");
       const letter = String.fromCharCode(65 + i); // A..V
@@ -89,6 +91,13 @@ export const projects: Project[] = [
       { title: "App Showcase", description: "Final high-fidelity interface across dashboard, portfolio, and community." },
     ],
     coverImage: `${IMG}/hodl-crypto-app/01_NFT_APP.jpg`,
+    heroVideo: {
+      src: `${VID}/hodl-crypto-app/hodl-loop.mp4`,
+      poster: `${IMG}/hodl-crypto-app/hodl-loop-poster.jpg`,
+      caption: "HODL Watch OS — title sequence",
+    },
+    // Personas and full app-flow sheets — legible only at full width.
+    galleryVariant: "boards",
     gallery: [
       im("hodl-crypto-app", "01_NFT_APP.jpg", "HODL app cover"),
       im("hodl-crypto-app", "02_persona_1.png", "Persona 1"),
@@ -118,6 +127,8 @@ export const projects: Project[] = [
       "The app features gamification elements, such as rewards and badges, to encourage users to engage with the content and make learning a fun and enjoyable experience. With its focus on learning and development, this app could revolutionize the way T-Mobile for Business sellers approach their training and development.",
     ],
     coverImage: `${IMG}/frontline-readiness-app/03_1-min.png`,
+    // Full app-flow sheets — legible only at full width.
+    galleryVariant: "boards",
     gallery: [
       im("frontline-readiness-app", "01_T-Mobile_logo.png", "T-Mobile logo"),
       im("frontline-readiness-app", "03_1-min.png", "Frontline app screen 1"),
@@ -152,6 +163,9 @@ export const projects: Project[] = [
       "Since Ripple is a hybrid event, we had to design the website with both in-person and virtual attendees in mind. This included designing the website to be responsive across different devices, providing information on how to attend the event in person or online, and creating interactive features such as chat rooms and virtual breakout rooms to promote networking and community-building.",
       "The Ripple project not only allowed me to exercise my creative and technical skills but also served as a valuable lesson in the power of collaboration. By working in unison with diverse teams, I discovered how harmonizing different talents and visions could generate a more cohesive, innovative, and successful design outcome.",
     ],
+    // No website screenshots exist; the symposium wordmark stands in on the card.
+    cardImage: `${IMG}/ripple-symposium-website/ripple-wordmark.png`,
+    cardImageFit: "contain",
     relatedProjectIds: ["solarpunk", "bookbabies"],
     sourceUrl: "https://mznoor8.wixsite.com/portfolio/website-design",
   },
@@ -478,6 +492,8 @@ export const projects: Project[] = [
       "This project was a unique and innovative approach to sales training that combined instructional design, graphic design, and project management. By creating an engaging and interactive learning experience, we equipped the sales team with the tools and knowledge to excel — a testament to the power of creative, out-of-the-box thinking in instructional design.",
     ],
     coverImage: `${IMG}/internship-t-mobile/03_Project_Presentation.png`,
+    // Presentation slides and kit photography — read full width in sequence.
+    galleryVariant: "boards",
     gallery: [
       im("internship-t-mobile", "01_photo_2023-03-16_14-50-52.jpg", "Physical box photo 1"),
       im("internship-t-mobile", "02_photo_2023-05-03_11-03-47_(2).jpg", "Physical box photo 2"),

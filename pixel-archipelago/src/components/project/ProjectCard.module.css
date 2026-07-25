@@ -56,6 +56,10 @@
   transition: transform var(--dur-slow) var(--ease-out);
 }
 .card:hover .thumb img { transform: scale(1.04); }
+/* Wordmarks/logos: show the whole mark inside the tile rather than cropping it.
+   Padding insets it off the card edge; the 4:3 box is unchanged so rows stay level. */
+.thumbContain { padding: var(--space-6); background: var(--surface-dark); }
+.thumbContain img { object-fit: contain; object-position: center; }
 .placeholder {
   display: grid;
   place-items: center;

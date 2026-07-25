@@ -3,6 +3,7 @@ import { categoryById } from "../data/categories";
 import { projectBySlug, projectById } from "../data/projects";
 import Gallery from "../components/gallery/Gallery";
 import AmbientVideo from "../components/media/AmbientVideo";
+import HeroLoop from "../components/media/HeroLoop";
 import VideoEmbed from "../components/media/VideoEmbed";
 import StoryScroll from "../components/story/StoryScroll";
 import { useHeroReveal } from "../hooks/useHeroReveal";
@@ -51,10 +52,18 @@ export default function ProjectDetail() {
             </div>
           )}
         </div>
-        {project.coverImage && (
-          <div className={s.heroArt}>
-            <img src={project.coverImage} alt={`${project.title} cover`} />
+        {/* A looping title sequence takes the art slot when one exists;
+            otherwise the still cover image does. */}
+        {project.heroVideo ? (
+          <div className={`${s.heroArt} ${s.heroArtVideo}`}>
+            <HeroLoop video={project.heroVideo} />
           </div>
+        ) : (
+          project.coverImage && (
+            <div className={s.heroArt}>
+              <img src={project.coverImage} alt={`${project.title} cover`} />
+            </div>
+          )
         )}
       </header>
 
@@ -169,7 +178,9 @@ export default function ProjectDetail() {
           </div>
           <Gallery
             items={project.gallery}
-            variant={category.id === "poster-design" ? "posters" : "grid"}
+            variant={
+              project.galleryVariant ?? (category.id === "poster-design" ? "posters" : "grid")
+            }
           />
         </section>
       )}

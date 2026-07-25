@@ -75,7 +75,19 @@ export interface Project {
   outcome?: string;
   credits?: string[];
   coverImage?: string;
+  /** looping title sequence shown in the hero art slot instead of coverImage */
+  heroVideo?: AmbientVideo;
+  /** thumbnail override — used by ProjectCard only, never by the detail hero */
+  cardImage?: string;
+  /** logos/wordmarks must not be cropped: fit them inside the 4:3 tile instead */
+  cardImageFit?: "cover" | "contain";
   gallery?: ProjectMedia[];
+  /**
+   * How the gallery is presented. `boards` is for design decks and app-flow
+   * sheets that were made to be read full width, one after another; omit it
+   * and the category's default (thumbnail grid) applies.
+   */
+  galleryVariant?: "grid" | "posters" | "boards";
   process?: ProcessStage[];
   videos?: ProjectMedia[];
   /** looping muted motion piece shown directly under the hero */

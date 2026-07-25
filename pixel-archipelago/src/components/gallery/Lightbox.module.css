@@ -75,6 +75,17 @@
 .prev { left: var(--space-4); }
 .next { right: var(--space-4); }
 
+/* The viewport is the scroll container: fitted it just centres the asset,
+   zoomed it scrolls around the asset at its real pixel size. */
+.viewport {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+
 /* Image stage */
 .stage {
   margin: 0;
@@ -93,19 +104,36 @@
   display: block;
   border: 1px solid var(--border-dark);
   background: var(--surface-dark);
+  cursor: zoom-in;
   animation: rise var(--dur) var(--ease-out);
 }
 
-/* Tall "scroll sheet" flows: bounded height, scrolled rather than shrunk. */
+/* Tall "scroll sheet" flows: fitted to a readable column width and scrolled
+   vertically, rather than squeezed into the viewport height as a sliver. */
 .tall {
   max-width: min(560px, 92vw);
   width: 100%;
 }
 .tall .image {
-  max-height: 82vh;
-  overflow-y: auto;
-  object-fit: contain;
+  width: 100%;
+  max-height: none;
 }
+
+/* ---------- Zoomed: 1:1 with the asset's own pixels ---------- */
+.zoomed { place-items: start; cursor: grab; }
+.zoomed:active { cursor: grabbing; }
+.zoomed .stage { max-width: none; }
+.zoomed .image {
+  /* width/height attributes carry the measured intrinsic size, so unsetting
+     every constraint renders the asset at full resolution */
+  max-width: none;
+  max-height: none;
+  width: auto;
+  height: auto;
+  cursor: inherit;
+  animation: none;
+}
+.barActions { display: flex; align-items: center; gap: var(--space-2); }
 
 .caption {
   font-family: var(--font-mono);
