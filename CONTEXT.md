@@ -360,6 +360,40 @@ All committed, build green, verified in preview where the pane allows:
 - **Deploy ready:** `pixel-archipelago/DEPLOY.md` + `public/_redirects` + `vercel.json`
   (SPA fallback). Recommended host: Netlify/Vercel, publish dir `dist`.
 
+### 2026-07-24 pre-deploy content pass — COMPLETE
+Eight requested changes, all landed and verified live:
+
+- **Contact/socials:** location → "Phoenix, Arizona" (street address gone), **phone removed**
+  (field + `tel:` link + `socials.phone`), LinkedIn → `/in/mzaabi/`, **Instagram removed**
+  everywhere (Contact chips + Footer + data). Socials = LinkedIn · DeviantArt · email.
+- **No archives:** CategoryPage no longer splits featured/rest. All projects render under
+  Selected Works (featured first). `Archive` appears nowhere in src.
+- **Documentary film:** `components/media/VideoEmbed` — YouTube `SwhkFe3__Ps` behind a
+  **click-to-load facade** (thumbnail only until play is pressed; zero iframes/scripts/cookies
+  on page view; player is youtube-nocookie). Verified: 0 iframes before click, 1 after.
+- **Ripple motion:** `components/media/AmbientVideo` — silent looping title band under the
+  hero. muted+loop+playsInline for autoplay; plays only while on-screen (IntersectionObserver);
+  under reduced motion it does NOT autoplay (poster + real controls). Audio stripped in encode.
+  Ripple's `imageryPending` flag removed.
+- **NEW PROJECT — Worldbuilding Through Solarpunk** (`/manifesto-design/solarpunk`).
+  ⚠️ **Category choice was mine**: Manifesto Design ("manifestos that declare intent"), since
+  it's a declaration about how we should live. It is cross-linked both ways with Ripple
+  (the symposium) and Design Manifesto. Move it by changing `categoryId` + the two
+  `projectIds` arrays if you'd rather it sit elsewhere.
+- **The progressive story** (`components/story/StoryScroll`): **21 chapters** pairing each
+  passage of the masters speech with the publication illustration that carries it. Source
+  files live OUTSIDE the repo at `Desktop/University Stuff after grad/`:
+  `Publication.pdf` (6 spreads @4800×3000 — the 8.7MB "Final Publication.pdf" is only the
+  LAST spread) and `Capstone final files/Final speech done and duster.pdf`.
+  27 illustrations were cropped from the spreads via a scratch script (boxes measured on
+  1500px previews, ×3.2 to full res) — **verified by contact sheet, not assumed**. The 6 full
+  spreads also ship as the lightbox gallery.
+  ⚠️ The speech PDF drops "ti"/"tt" ligatures on text extraction ("corporaons"). The story
+  text was therefore transcribed from the **spread images**, which render clean. All wording
+  is Mohammed's own; handwritten margin notes kept as `aside`. Nothing invented.
+- **Types gained** `story` / `ambientVideo` / `embeds`; `mediaDimensions.ts` → 137 assets.
+- **PyMuPDF was installed** (`py -m pip install pymupdf`) to read/extract the PDFs.
+
 **Still open (post-launch niceties only):**
 1. ⚠️ **Verify by eye** (preview pane can't): reduced-motion burst; warp/crossfade/stagger
    feel at real frame rate; re-encoded video quality spot-check on a big screen.
