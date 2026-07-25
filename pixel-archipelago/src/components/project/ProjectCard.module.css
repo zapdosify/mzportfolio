@@ -2,6 +2,8 @@
   position: relative;
   display: flex;
   flex-direction: column;
+  /* fill the grid row so sibling cards are always the same height */
+  height: 100%;
   border: 1px solid var(--border-dark);
   border-radius: var(--radius);
   overflow: hidden;
@@ -40,6 +42,7 @@
 }
 .thumb {
   aspect-ratio: 4 / 3;
+  flex: none; /* the thumb keeps its ratio; only .meta absorbs extra height */
   overflow: hidden;
   background: var(--black);
 }
@@ -60,7 +63,13 @@
   color: var(--text-muted);
   font-size: var(--fs-32);
 }
-.meta { padding: var(--space-4); display: grid; gap: var(--space-1); }
+.meta {
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  flex: 1; /* take the leftover height so "View →" can sit on the baseline */
+}
 .titleRow { display: flex; justify-content: space-between; align-items: baseline; gap: var(--space-3); }
 .title {
   font-family: var(--font-mono);
@@ -73,7 +82,9 @@
 .subtitle { font-size: var(--fs-14); color: var(--text-secondary); }
 .role { font-family: var(--font-mono); font-size: var(--fs-12); color: var(--text-muted); letter-spacing: 0.04em; }
 .enter {
-  margin-top: var(--space-2);
+  /* pinned to the bottom of every card, so the row reads on one baseline */
+  margin-top: auto;
+  padding-top: var(--space-2);
   font-family: var(--font-mono);
   font-size: var(--fs-12);
   letter-spacing: 0.12em;
