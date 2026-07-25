@@ -10,9 +10,6 @@ export default function Footer() {
           <a href={socials.linkedin} target="_blank" rel="noopener noreferrer">
             LinkedIn
           </a>
-          <a href={socials.instagram} target="_blank" rel="noopener noreferrer">
-            Instagram
-          </a>
           <a href={socials.deviantart} target="_blank" rel="noopener noreferrer">
             DeviantArt
           </a>

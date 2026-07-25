@@ -1,0 +1,211 @@
+/* Progressive story: publication illustrations matched to the speech.
+   The art is full-colour (it is project imagery); everything around it stays
+   in the site's monochrome interface language. */
+
+.wrap {
+  position: relative;
+  /* room for the fixed rail on wide screens */
+  padding-left: 0;
+}
+
+/* ---------- reading rail ---------- */
+.rail {
+  position: sticky;
+  top: calc(var(--header-h) + var(--space-8));
+  float: left;
+  width: 132px;
+  margin-left: -164px;
+  display: none; /* enabled at >=1180px, where the margin exists */
+  flex-direction: column;
+  gap: var(--space-3);
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+}
+.railCount {
+  font-size: 0.62rem;
+  letter-spacing: 0.18em;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+.railTrack {
+  position: relative;
+  width: 1px;
+  height: 120px;
+  background: var(--border-dark);
+}
+.railFill {
+  position: absolute;
+  inset: 0;
+  background: var(--text-secondary);
+  transform-origin: top;
+  transform: scaleY(0);
+}
+.railLabel {
+  font-size: 0.58rem;
+  letter-spacing: 0.14em;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+@media (min-width: 1180px) {
+  .wrap { padding-left: 164px; }
+  .rail { display: flex; }
+}
+
+/* ---------- beats ---------- */
+.beats {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--space-24);
+}
+
+.beat {
+  opacity: 1;
+}
+/* Motion is opt-in: only elements the observer has NOT yet shown are hidden,
+   and only when JS is running (the class is added by script). */
+@media (prefers-reduced-motion: no-preference) {
+  .beat {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 640ms var(--ease-out), transform 640ms var(--ease-out);
+  }
+  .shown {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.chapter {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: var(--space-3);
+}
+.num {
+  color: var(--text-primary);
+  border: 1px solid var(--border-active);
+  border-radius: 3px;
+  padding: 2px 6px;
+  font-variant-numeric: tabular-nums;
+}
+
+.beatTitle {
+  font-family: var(--font-mono);
+  font-size: clamp(1.15rem, 2.4vw, 1.75rem);
+  line-height: 1.2;
+  letter-spacing: 0.01em;
+  color: var(--white);
+  max-width: 24ch;
+  margin-bottom: var(--space-6);
+  text-wrap: balance;
+}
+
+.body {
+  display: grid;
+  gap: var(--space-4);
+  max-width: 66ch;
+}
+.body p {
+  color: var(--text-secondary);
+  font-size: var(--fs-16);
+  line-height: 1.7;
+}
+
+.quote {
+  margin-top: var(--space-2);
+  padding-left: var(--space-6);
+  border-left: 1px solid var(--border-active);
+  display: grid;
+  gap: var(--space-2);
+}
+.quote p {
+  color: var(--text-primary);
+  font-size: var(--fs-18);
+  line-height: 1.55;
+  text-wrap: pretty;
+}
+.quote cite {
+  font-family: var(--font-mono);
+  font-style: normal;
+  font-size: 0.62rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+/* ---------- illustration plates ---------- */
+.plates {
+  margin-top: var(--space-8);
+  display: grid;
+  gap: var(--space-4);
+}
+.platesMulti {
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  align-items: start;
+}
+
+.plate {
+  position: relative;
+  margin: 0;
+  border: 1px solid var(--border-dark);
+  border-radius: var(--radius);
+  background: var(--surface-dark);
+  overflow: hidden;
+}
+.plate img {
+  width: 100%;
+  height: auto;
+  display: block;
+  /* keep any single illustration inside one screen so the story keeps its
+     reading rhythm; the surface behind it absorbs the letterboxing */
+  max-height: 74vh;
+  object-fit: contain;
+}
+
+/* corner ticks — the same "built in pixels" frame used across interiors */
+.plate::before,
+.plate::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  --c: var(--border-active);
+  --s: 14px;
+}
+.plate::before {
+  background:
+    linear-gradient(var(--c), var(--c)) left top / var(--s) 1px no-repeat,
+    linear-gradient(var(--c), var(--c)) left top / 1px var(--s) no-repeat,
+    linear-gradient(var(--c), var(--c)) right top / var(--s) 1px no-repeat,
+    linear-gradient(var(--c), var(--c)) right top / 1px var(--s) no-repeat;
+}
+.plate::after {
+  background:
+    linear-gradient(var(--c), var(--c)) left bottom / var(--s) 1px no-repeat,
+    linear-gradient(var(--c), var(--c)) left bottom / 1px var(--s) no-repeat,
+    linear-gradient(var(--c), var(--c)) right bottom / var(--s) 1px no-repeat,
+    linear-gradient(var(--c), var(--c)) right bottom / 1px var(--s) no-repeat;
+}
+
+/* ---------- margin note (Mia's diary voice from the spreads) ---------- */
+.aside {
+  margin-top: var(--space-4);
+  font-family: var(--font-mono);
+  font-size: var(--fs-12);
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+@media (max-width: 640px) {
+  .beats { gap: var(--space-16); }
+  .platesMulti { grid-template-columns: 1fr; }
+}

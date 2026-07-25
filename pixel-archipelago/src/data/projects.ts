@@ -1,4 +1,5 @@
 import type { Project, ProjectMedia } from "./types";
+import { solarpunkStory } from "./solarpunkStory";
 
 // ---------------------------------------------------------------------------
 // Media helpers. Content migrated verbatim from the previous portfolio.
@@ -137,7 +138,12 @@ export const projects: Project[] = [
     subtitle: "Masters of Visual Communication and Design",
     categoryId: "website-design",
     role: "Web / UX Designer (collaborative team project)",
-    imageryPending: true,
+    featured: true,
+    ambientVideo: {
+      src: `${VID}/ripple-symposium-website/ripple-motion.mp4`,
+      poster: `${IMG}/ripple-symposium-website/ripple-motion-poster.jpg`,
+      caption: "Ripple — identity in motion",
+    },
     summary:
       "A website for Ripple, a hybrid graduate symposium showcasing the next generation of innovative projects — designed collaboratively across teams for both in-person and virtual attendees.",
     body: [
@@ -146,7 +152,7 @@ export const projects: Project[] = [
       "Since Ripple is a hybrid event, we had to design the website with both in-person and virtual attendees in mind. This included designing the website to be responsive across different devices, providing information on how to attend the event in person or online, and creating interactive features such as chat rooms and virtual breakout rooms to promote networking and community-building.",
       "The Ripple project not only allowed me to exercise my creative and technical skills but also served as a valuable lesson in the power of collaboration. By working in unison with diverse teams, I discovered how harmonizing different talents and visions could generate a more cohesive, innovative, and successful design outcome.",
     ],
-    relatedProjectIds: ["bookbabies"],
+    relatedProjectIds: ["solarpunk", "bookbabies"],
     sourceUrl: "https://mznoor8.wixsite.com/portfolio/website-design",
   },
 
@@ -196,8 +202,51 @@ export const projects: Project[] = [
       { label: "Manifesto website", note: "Referenced on the original site; URL not recoverable." },
       { label: "Flipbook", note: "Referenced on the original site; URL not recoverable." },
     ],
-    relatedProjectIds: ["poster-design"],
+    relatedProjectIds: ["solarpunk", "poster-design"],
     sourceUrl: "https://mznoor8.wixsite.com/portfolio/manifesto",
+  },
+  {
+    id: "solarpunk",
+    slug: "solarpunk",
+    title: "Worldbuilding Through Solarpunk",
+    subtitle: "Final masters project · Ripple Symposium, 2023",
+    categoryId: "manifesto-design",
+    year: "2023",
+    context:
+      "Master of Visual Communication and Design, Arizona State University — presented at the Ripple graduate symposium",
+    role: "Designer, Author & Worldbuilder",
+    tools: ["Adobe Illustrator", "Adobe Photoshop", "InDesign", "After Effects"],
+    featured: true,
+    summary:
+      "A speculative design thesis that reimagines Phoenix, Arizona as Greater Phoenix — Solaris: a solarpunk city built on prefigurative politics, degrowth and conviviality. Delivered as a printed publication, an illustrated world, and a symposium address.",
+    body: [
+      "Worldbuilding Through Solarpunk asks what a city looks like when it is designed around sustainability, social justice, and a harmonious blend of nature and technology rather than around growth. Rather than argue the case abstractly, the project builds the place: Greater Phoenix — Solaris, an arid, sun-drenched metropolis reorganised beneath a vast solar disc.",
+      "The argument runs through four ideas — prefigurative politics (embodying now the society we want), degrowth (that less production and consumption can mean more wellbeing), conviviality (Illich's tools that empower communities instead of bureaucracies), and solarpunk itself as an optimistic aesthetic and ethic.",
+      "To make the vision tangible it is narrowed from macro to micro: a week in the life of Mia Greenfield, an urban agriculture specialist, moving through Solaris' water, energy and canopy districts. Each speculative scene is anchored to a real precedent — Curitiba's transit and green space, Vauban's car-free streets, Costa Rica's renewable grid.",
+      "The work was published as a printed publication of six illustrated spreads and presented as the closing address of the Ripple graduate symposium. Both are gathered below: the film of the talk, and the publication read as a progressive story.",
+    ],
+    coverImage: `${IMG}/solarpunk-worldbuilding/08-solaris-aerial.jpg`,
+    videos: [
+      vid(
+        "solarpunk-worldbuilding",
+        "worldbuilding-through-solarpunk.mp4",
+        "solarpunk-worldbuilding",
+        "solarpunk-talk-poster.jpg",
+        "Worldbuilding Through Solarpunk — the symposium presentation",
+        "The full symposium address, envisioning Greater Phoenix — Solaris.",
+      ),
+    ],
+    story: solarpunkStory,
+    gallery: Array.from({ length: 6 }, (_, i) =>
+      im(
+        "solarpunk-worldbuilding",
+        `spread-${i + 1}.jpg`,
+        `Publication spread ${i + 1} of 6`,
+        undefined,
+        `Spread ${i + 1} — full printed layout`,
+      ),
+    ),
+    relatedProjectIds: ["ripple", "design-manifesto"],
   },
 
   // ========================= EXHIBITION DESIGN =========================
@@ -327,6 +376,15 @@ export const projects: Project[] = [
       "In the end, I am incredibly proud of the final product. \"The Social Pandemic\" is a powerful and thought-provoking documentary that effectively communicates the dangers and risks children face on social media, and I am confident it will help raise awareness about this important issue.",
     ],
     coverImage: `${IMG}/documentary-social-pandemic/02_53ff1d_78c63e40fd2048539f279c81e9410fdef000.jpg`,
+    embeds: [
+      {
+        provider: "youtube",
+        id: "SwhkFe3__Ps",
+        title: "The Social Pandemic — full documentary",
+        caption:
+          "The complete film, hosted on YouTube. Click to load the player.",
+      },
+    ],
     gallery: [im("documentary-social-pandemic", "01_pngegg.png", "Introduction logo")],
     videos: [
       vid("documentary-social-pandemic", "01_78c63e40fd.mp4", "documentary-social-pandemic", "02_53ff1d_78c63e40fd2048539f279c81e9410fdef000.jpg", "Motion graphics news reel 1"),
@@ -336,7 +394,6 @@ export const projects: Project[] = [
     ],
     externalLinks: [
       { label: "Live stream event", note: "Referenced on the original site; URL not recoverable." },
-      { label: "Full documentary", note: "Referenced on the original site; URL not recoverable." },
       { label: "Event trailer", note: "Featured on the De Montfort University Design Building; URL not recoverable." },
     ],
     relatedProjectIds: ["animated-shorts"],

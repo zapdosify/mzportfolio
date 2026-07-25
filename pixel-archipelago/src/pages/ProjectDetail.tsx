@@ -2,6 +2,9 @@ import { Link, useParams } from "react-router-dom";
 import { categoryById } from "../data/categories";
 import { projectBySlug, projectById } from "../data/projects";
 import Gallery from "../components/gallery/Gallery";
+import AmbientVideo from "../components/media/AmbientVideo";
+import VideoEmbed from "../components/media/VideoEmbed";
+import StoryScroll from "../components/story/StoryScroll";
 import { useHeroReveal } from "../hooks/useHeroReveal";
 import NotFound from "./NotFound";
 import s from "../styles/interior.module.css";
@@ -54,6 +57,9 @@ export default function ProjectDetail() {
           </div>
         )}
       </header>
+
+      {/* Looping title sequence, directly under the hero */}
+      {project.ambientVideo && <AmbientVideo video={project.ambientVideo} />}
 
       {project.imageryPending && (
         <p className={s.note} style={{ marginBottom: "var(--space-12)" }}>
@@ -108,6 +114,34 @@ export default function ProjectDetail() {
               </li>
             ))}
           </ol>
+        </section>
+      )}
+
+      {/* Externally hosted films (YouTube, click-to-load) */}
+      {project.embeds && project.embeds.length > 0 && (
+        <section className={s.section} aria-labelledby="film-h">
+          <div className={s.sectionHead}>
+            <h2 id="film-h" className={s.sectionTitle}>Film</h2>
+            <span className={s.sectionMeta}>
+              {project.embeds.length} film{project.embeds.length === 1 ? "" : "s"}
+            </span>
+          </div>
+          <div className={s.embedStack}>
+            {project.embeds.map((e) => (
+              <VideoEmbed key={e.id} embed={e} />
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* Progressive story (publication illustrations + the speech) */}
+      {project.story && project.story.length > 0 && (
+        <section className={s.section} aria-labelledby="story-h">
+          <div className={s.sectionHead}>
+            <h2 id="story-h" className={s.sectionTitle}>The Publication</h2>
+            <span className={s.sectionMeta}>{project.story.length} chapters</span>
+          </div>
+          <StoryScroll beats={project.story} />
         </section>
       )}
 

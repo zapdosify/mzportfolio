@@ -15,6 +15,36 @@ export interface ProjectMedia {
   ratio?: "portrait" | "landscape" | "square" | "cinematic";
 }
 
+/** One chapter of a progressive scroll narrative (image + matched prose). */
+export interface StoryBeat {
+  /** short mono/uppercase chapter label shown in the rail */
+  chapter: string;
+  title: string;
+  /** narrative text, in the author's own words */
+  text: string[];
+  /** pull-quote with attribution, if the passage cites one */
+  quote?: { text: string; source: string };
+  /** the publication's handwritten margin note for this scene */
+  aside?: string;
+  images: { src: string; alt: string }[];
+}
+
+/** A looping, muted ambient video used as a project's opening motion piece. */
+export interface AmbientVideo {
+  src: string;
+  poster?: string;
+  caption?: string;
+}
+
+/** An externally hosted video (YouTube), embedded rather than self-served. */
+export interface VideoEmbed {
+  provider: "youtube";
+  /** the watch?v= id */
+  id: string;
+  title: string;
+  caption?: string;
+}
+
 export interface ProcessStage {
   title: string;
   description?: string;
@@ -49,6 +79,12 @@ export interface Project {
   gallery?: ProjectMedia[];
   process?: ProcessStage[];
   videos?: ProjectMedia[];
+  /** looping muted motion piece shown directly under the hero */
+  ambientVideo?: AmbientVideo;
+  /** externally hosted films (YouTube) */
+  embeds?: VideoEmbed[];
+  /** progressive scroll narrative built from a publication + its speech */
+  story?: StoryBeat[];
   externalLinks?: ExternalLink[];
   /** sub-cases inside one project (e.g. Exhibition Design's three prompts) */
   subProjects?: SubProject[];

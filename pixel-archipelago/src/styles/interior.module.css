@@ -224,6 +224,14 @@
 }
 .processDesc { color: var(--text-secondary); font-size: var(--fs-12); line-height: 1.55; }
 
+/* Externally hosted films — one per row, capped so a single film doesn't
+   sprawl to full container width on wide screens. */
+.embedStack {
+  display: grid;
+  gap: var(--space-8);
+  max-width: 960px;
+}
+
 /* Return-to-world footer strip */
 .returnStrip {
   display: flex;

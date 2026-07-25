@@ -32,10 +32,6 @@ export default function Contact() {
               <a className={s.metaValue} href={`mailto:${socials.email}`}>{socials.email}</a>
             </div>
             <div className={s.metaItem}>
-              <span className={s.metaLabel}>Phone</span>
-              <a className={s.metaValue} href={`tel:${socials.phone.replace(/\s/g, "")}`}>{socials.phone}</a>
-            </div>
-            <div className={s.metaItem}>
               <span className={s.metaLabel}>Location</span>
               <span className={s.metaValue}>{contact.address.join(", ")}</span>
             </div>
@@ -43,7 +39,6 @@ export default function Contact() {
 
           <div className={s.related} style={{ marginTop: "var(--space-8)" }}>
             <a href={socials.linkedin} target="_blank" rel="noopener noreferrer" className={s.chip}>LinkedIn ↗</a>
-            <a href={socials.instagram} target="_blank" rel="noopener noreferrer" className={s.chip}>Instagram ↗</a>
             <a href={socials.deviantart} target="_blank" rel="noopener noreferrer" className={s.chip}>DeviantArt ↗</a>
           </div>
         </div>

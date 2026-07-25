@@ -61,7 +61,7 @@ export const categories: Category[] = [
     pagePreviewImage: img("manifesto-design", "page-preview.png"),
     worldPosition: { x: 81.9, y: 33.7 },
     activationRadius: 9,
-    projectIds: ["design-manifesto"],
+    projectIds: ["design-manifesto", "solarpunk"],
     relatedCategoryIds: ["poster-design"],
     kind: "projects",
   },

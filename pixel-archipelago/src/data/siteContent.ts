@@ -10,9 +10,7 @@ export const identity = {
 
 export const socials = {
   email: "mznoor@asu.edu",
-  phone: "+1 602-326-6292",
-  linkedin: "https://www.linkedin.com/in/mohammed-zaabi-noor/",
-  instagram: "https://www.instagram.com/zapdosify/",
+  linkedin: "https://www.linkedin.com/in/mzaabi/",
   deviantart: "https://www.deviantart.com/zapdosify",
 };
 
@@ -129,7 +127,7 @@ export const about = {
 
 export const contact = {
   heading: "Get in touch — let's collaborate",
-  address: ["1655 East University Drive", "APT CE-2073", "Tempe, Arizona 85281"],
+  address: ["Phoenix, Arizona"],
   formFields: ["First Name", "Last Name", "Email", "Subject", "Message"],
 };
 

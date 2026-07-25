@@ -1,0 +1,50 @@
+/* Full-bleed looping motion band — the project's title sequence. */
+
+.band {
+  position: relative;
+  margin: 0 0 var(--space-16);
+  border: 1px solid var(--border-dark);
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--black);
+}
+
+.video {
+  display: block;
+  width: 100%;
+  height: auto;
+  /* reserve the 16:9 box before metadata loads so nothing jumps (CLS) */
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+
+/* Sink the edges into the page so the band reads as part of the world
+   rather than a pasted-in rectangle. */
+.vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(120% 100% at 50% 50%, transparent 55%, rgba(5, 5, 5, 0.55) 100%),
+    linear-gradient(to top, rgba(5, 5, 5, 0.5), transparent 32%);
+}
+
+.caption {
+  position: absolute;
+  left: var(--space-6);
+  bottom: var(--space-4);
+  font-family: var(--font-mono);
+  font-size: var(--fs-12);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.9);
+}
+
+/* With controls shown (reduced motion) the caption would sit on top of them. */
+.video[controls] ~ .caption { display: none; }
+.video[controls] ~ .vignette { display: none; }
+
+@media (max-width: 640px) {
+  .caption { left: var(--space-4); font-size: 0.6rem; }
+}

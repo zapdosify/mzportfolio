@@ -18,7 +18,6 @@ export default function CategoryPage() {
   const setLastCategory = useWorldStore((st) => st.setLastCategory);
   const heroRef = useHeroReveal([category?.id]);
   const worksRef = useStaggerReveal<HTMLDivElement>([category?.id]);
-  const archiveRef = useStaggerReveal<HTMLDivElement>([category?.id]);
 
   useEffect(() => {
     if (category) {
@@ -33,10 +32,13 @@ export default function CategoryPage() {
     return <NotFound />;
   }
 
+  // Every project sits under Selected Works — there is no archive here.
+  // Featured ones lead, the rest follow in their original order.
   const projects = projectsByCategory(category.id);
-  const featured = projects.filter((p) => p.featured);
-  const rest = projects.filter((p) => !p.featured);
-  const selected = featured.length ? featured : projects;
+  const selected = [
+    ...projects.filter((p) => p.featured),
+    ...projects.filter((p) => !p.featured),
+  ];
 
   return (
     <>
@@ -78,21 +80,6 @@ export default function CategoryPage() {
           ))}
         </div>
       </section>
-
-      {/* Archive (non-featured) */}
-      {rest.length > 0 && (
-        <section className={s.section} aria-labelledby="archive-h">
-          <div className={s.sectionHead}>
-            <h2 id="archive-h" className={s.sectionTitle}>Archive</h2>
-            <span className={s.sectionMeta}>{rest.length}</span>
-          </div>
-          <div className={`${grid.gallery} ${grid.grid}`} ref={archiveRef}>
-            {rest.map((p) => (
-              <ProjectCard key={p.id} project={p} />
-            ))}
-          </div>
-        </section>
-      )}
 
       {/* Related + Return */}
       {category.relatedCategoryIds && category.relatedCategoryIds.length > 0 && (
