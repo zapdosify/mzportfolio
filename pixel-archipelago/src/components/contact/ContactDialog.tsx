@@ -47,12 +47,18 @@ export default function ContactDialog() {
     return () => window.removeEventListener("keydown", onKey);
   }, [open, setOpen]);
 
-  // Scroll lock + focus restore, and reset the "sent" state on each open
+  // Scroll lock + focus restore. The dialog always opens blank — the
+  // component stays mounted for the life of the page, so without this reset
+  // the previous draft would still be sitting there waiting to be deleted.
   useEffect(() => {
     if (!open) return;
     const prev = document.activeElement as HTMLElement | null;
     const { overflow } = document.body.style;
     document.body.style.overflow = "hidden";
+    setName("");
+    setEmail("");
+    setSubject("");
+    setMessage("");
     setHandedOff(false);
     setCopied(false);
     setErrors({});
