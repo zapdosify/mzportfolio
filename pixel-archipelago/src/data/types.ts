@@ -15,7 +15,7 @@ export interface ProjectMedia {
   ratio?: "portrait" | "landscape" | "square" | "cinematic";
 }
 
-/** One chapter of a progressive scroll narrative (image + matched prose). */
+/** One chapter of a progressive scroll narrative. */
 export interface StoryBeat {
   /** short mono/uppercase chapter label shown in the rail */
   chapter: string;
@@ -26,7 +26,6 @@ export interface StoryBeat {
   quote?: { text: string; source: string };
   /** the publication's handwritten margin note for this scene */
   aside?: string;
-  images: { src: string; alt: string }[];
 }
 
 /** A looping, muted ambient video used as a project's opening motion piece. */
@@ -85,6 +84,8 @@ export interface Project {
   embeds?: VideoEmbed[];
   /** progressive scroll narrative built from a publication + its speech */
   story?: StoryBeat[];
+  /** the printed spreads the story is read from, in page order */
+  storySpreads?: ProjectMedia[];
   externalLinks?: ExternalLink[];
   /** sub-cases inside one project (e.g. Exhibition Design's three prompts) */
   subProjects?: SubProject[];

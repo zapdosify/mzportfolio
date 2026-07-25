@@ -139,9 +139,13 @@ export default function ProjectDetail() {
         <section className={s.section} aria-labelledby="story-h">
           <div className={s.sectionHead}>
             <h2 id="story-h" className={s.sectionTitle}>The Publication</h2>
-            <span className={s.sectionMeta}>{project.story.length} chapters</span>
+            <span className={s.sectionMeta}>
+              {project.storySpreads?.length
+                ? `${project.storySpreads.length} spreads · ${project.story.length} chapters`
+                : `${project.story.length} chapters`}
+            </span>
           </div>
-          <StoryScroll beats={project.story} />
+          <StoryScroll beats={project.story} spreads={project.storySpreads} />
         </section>
       )}
 

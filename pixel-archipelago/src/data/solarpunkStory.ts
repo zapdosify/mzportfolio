@@ -1,18 +1,18 @@
-// "Worldbuilding Through Solarpunk" — the progressive story.
+// "Worldbuilding Through Solarpunk" — the symposium address.
 //
 // Every passage below is Mohammed's own writing, taken from the masters
-// symposium speech ("Final speech done and duster.pdf") and matched to the
-// illustration that carries it in the printed publication (Publication.pdf,
-// 6 spreads). Handwritten margin notes from the spreads are kept as `aside`
-// — they are Mia's diary voice and part of the piece's design.
+// symposium speech ("Final speech done and duster.pdf") and sequenced to
+// follow the printed publication (Publication.pdf, 6 spreads), which is
+// shown above it on the page. Handwritten margin notes from the spreads are
+// kept as `aside` — they are Mia's diary voice and part of the design.
 //
 // Nothing here is invented. Where the speech and the publication differ in
 // wording, the publication (the finished artifact) wins.
+//
+// NOTE: the speech PDF drops "ti"/"tt" ligatures when text is extracted
+// ("corporaons"), so this was transcribed from the spread images instead.
 
 import type { StoryBeat } from "./types";
-
-const IMG = "/media/images/solarpunk-worldbuilding";
-const im = (file: string, alt: string) => ({ src: `${IMG}/${file}`, alt });
 
 export const solarpunkStory: StoryBeat[] = [
   // ---------------------------------------------------------------- Act I
@@ -24,7 +24,6 @@ export const solarpunkStory: StoryBeat[] = [
       "I invite you all to embark on this journey with me, as we explore how prefigurative politics, degrowth, conviviality, and solarpunk can contribute to the realization of this vision.",
     ],
     aside: "Sustainability · Social Justice · Nature and Technology",
-    images: [im("04-ark-garden.jpg", "A vessel carrying a garden, drawn in yellow and green ink")],
   },
   {
     chapter: "The Cost",
@@ -36,7 +35,6 @@ export const solarpunkStory: StoryBeat[] = [
       text: "We abuse land because we regard it as a commodity belonging to us. When we see land as a community to which we belong, we may begin to use it with love and respect.",
       source: "Aldo Leopold, 1949",
     },
-    images: [im("03-rooted-tree.jpg", "Pencil study of a tree with exposed roots on an eroding cliff")],
   },
   {
     chapter: "Prefigurative Politics",
@@ -46,7 +44,6 @@ export const solarpunkStory: StoryBeat[] = [
       "In essence, it is the practice of “being the change you wish to see in the world.” By adopting prefigurative politics, we can begin to nurture a society that is more equitable, compassionate, and environmentally responsible.",
     ],
     aside: "Empower · Act · Encourage",
-    images: [im("01-planting.jpg", "Figures gathered around a plinth from which a tree is growing")],
   },
   {
     chapter: "Degrowth & Conviviality",
@@ -56,7 +53,6 @@ export const solarpunkStory: StoryBeat[] = [
       "Conviviality, a term popularized by the social critic Ivan Illich, emphasizes the importance of social interaction, cooperation, and mutual aid within communities (Illich, 1973). A convivial society is one where people come together to address local issues, share resources, and foster a sense of belonging.",
     ],
     aside: "Emphasize · Celebrate · Harmonize",
-    images: [im("02-assembly.jpg", "Ink drawing of a dense crowd of stylised faces")],
   },
 
   // --------------------------------------------------------------- Act II
@@ -67,10 +63,6 @@ export const solarpunkStory: StoryBeat[] = [
       "My journey into the world of solarpunk and sustainability began as a creative exploration. I was inspired by the city of Curitiba, Brazil, which serves as a prime example of sustainable development, combining innovative public transportation systems, extensive green spaces, and social inclusion initiatives.",
       "I started with sketches of iconic cities like Seattle and New York reimagined through the lens of green technologies and harmonious integration with nature. These initial illustrations sparked my curiosity and passion for the solarpunk ethos, leading me to question how I could showcase the transformative potential of these principles in a more tangible and impactful way.",
     ],
-    images: [
-      im("05-seattle.jpg", "Watercolour of Seattle overgrown with forest and waterways"),
-      im("06-new-york.jpg", "Watercolour of New York towers wrapped in dense green canopy"),
-    ],
   },
   {
     chapter: "The Proposition",
@@ -79,7 +71,6 @@ export const solarpunkStory: StoryBeat[] = [
       "It was then that I conceived the idea of reimagining Phoenix, Arizona, into a solarpunk city called Greater Phoenix — Solaris. By transforming a city situated in an arid, sun-drenched environment, I could demonstrate the resilience and adaptability inherent in solarpunk design.",
     ],
     aside: "Nature · Humanity · Technology",
-    images: [im("07-solaris-mark.jpg", "The Solaris emblem — a green solar disc over a city skyline")],
   },
 
   // -------------------------------------------------------------- Act III
@@ -91,7 +82,6 @@ export const solarpunkStory: StoryBeat[] = [
       "A massive solar-disc hovers above the city, capturing sunlight to power the metropolis below. This megastructure not only generates clean energy but also creates a visually stunning and iconic symbol of the city's commitment to sustainability, and serves as a major public transit hub.",
     ],
     aside: "My City My Love",
-    images: [im("08-solaris-aerial.jpg", "Aerial view of Solaris with the vast solar disc above the desert city")],
   },
   {
     chapter: "Green Infrastructure",
@@ -99,7 +89,6 @@ export const solarpunkStory: StoryBeat[] = [
     text: [
       "Green infrastructure is the cornerstone of Solaris, with buildings and streets adorned with verdant vegetation. Living walls and rooftop gardens soften the urban landscape, improving air quality and promoting biodiversity.",
     ],
-    images: [im("09-green-street.jpg", "Pencil perspective sketch of a Solaris street lined with planting")],
   },
   {
     chapter: "Inside the Disc",
@@ -109,10 +98,6 @@ export const solarpunkStory: StoryBeat[] = [
       "Another view of the interior showcases a multi-level gardening system allowing for life to thrive alongside us even in the busiest of days — a prime example of how we can learn to co-exist with nature and embody the values of solarpunk and convivial living.",
     ],
     aside: "Interiors so beautiful I could stay here all day",
-    images: [
-      im("10-disc-atrium.jpg", "Interior of the solar disc with a great tree at its centre"),
-      im("11-disc-gardens.jpg", "Multi-level gardens and transit lines inside the solar disc"),
-    ],
   },
 
   // --------------------------------------------------------------- Act IV
@@ -124,7 +109,6 @@ export const solarpunkStory: StoryBeat[] = [
       "Mia Greenfield, age 29, Urban Agriculture Specialist. Mia was born and raised in Greater Phoenix — Solaris. Her parents were early adopters of the solarpunk movement and instilled in her a deep appreciation for the environment and sustainable living. She is passionate about fostering a harmonious relationship between nature and urban living.",
     ],
     aside: "Mia xoxo",
-    images: [im("12-mia-sheet.jpg", "Character sheet for Mia Greenfield with three costume studies")],
   },
   {
     chapter: "Monday",
@@ -134,11 +118,6 @@ export const solarpunkStory: StoryBeat[] = [
       "Mia then heads to her kitchen to prepare breakfast, selecting fresh fruits harvested from her vertical garden that grows lushly on her terrace. The garden is a testament to sustainable living, maximizing space while providing fresh, organic produce right at her fingertips.",
     ],
     aside: "Home Sweet Home",
-    images: [
-      im("13-mia-home.jpg", "Isometric cutaway of Mia's solar-powered apartment"),
-      im("14-living-room.jpg", "Interior sketch of the open-plan living room"),
-      im("15-kitchen.jpg", "Interior sketch of the kitchen with plants on every shelf"),
-    ],
   },
   {
     chapter: "Monday",
@@ -147,7 +126,6 @@ export const solarpunkStory: StoryBeat[] = [
       "After enjoying a nutritious meal, Mia hops on her electric solar-powered bike and sets off for work. This ease of interconnectedness that Solaris has been built upon can be seen in Vauban in Freiburg, Germany. Vauban has been designed as a sustainable, eco-friendly community, where cars are largely unnecessary, and public transportation, walking, and cycling are prioritized (Freytag, Löw, & Röhle, 2016).",
     ],
     aside: "I love my bike. I think I will name her Luna",
-    images: [im("16-mia-bike.jpg", "Mia cycling through a sunlit Solaris street")],
   },
   {
     chapter: "The Districts",
@@ -157,10 +135,6 @@ export const solarpunkStory: StoryBeat[] = [
       "In the second neighborhood, houses can be seen integrated with solar panels, and wind turbines span across the horizon utilizing wind energy to its maximum potential. An example of this being implemented today can be seen in Costa Rica, which has been able to generate more than 98% of its electricity from renewable sources in recent years (IRENA, 2018).",
     ],
     aside: "Oh how I love this city",
-    images: [
-      im("17-water-district.jpg", "The water-harvesting district rendered in ink and watercolour"),
-      im("18-energy-district.jpg", "The energy district with solar roofs and distant wind turbines"),
-    ],
   },
   {
     chapter: "The Canopy District",
@@ -170,10 +144,6 @@ export const solarpunkStory: StoryBeat[] = [
       "In the heart of the Canopy District, Mia comes across a quaint café that serves locally sourced, organic food. The café's terrace and walls are enveloped in fragrant jasmine and vibrant bougainvillea, creating an intimate atmosphere that encourages conversation and connection among its patrons, fostering conviviality.",
     ],
     aside: "When can I move here · I can smell the jasmine",
-    images: [
-      im("19-canopy-district.jpg", "The Canopy District, homes wrapped in vertical gardens"),
-      im("20-verdant-cafe.jpg", "The Verdant Haven Café, its walls covered in flowering vines"),
-    ],
   },
   {
     chapter: "Tuesday",
@@ -183,7 +153,6 @@ export const solarpunkStory: StoryBeat[] = [
       "The center is a marvel of sustainable design, with its geodesic dome, solar panels, and walls adorned with plants that capture the spirit of the solarpunk movement. One proposal during this meeting suggests expanding the city's network of vertical gardens, providing workshops and resources for residents to create green spaces on their balconies and rooftops.",
     ],
     aside: "I love that decisions actually get made",
-    images: [im("21-community-center.jpg", "The Solaris Community Center under its geodesic dome")],
   },
   {
     chapter: "Wednesday",
@@ -193,7 +162,6 @@ export const solarpunkStory: StoryBeat[] = [
       "In this context, education plays a crucial role in Solaris, equipping individuals with the knowledge and skills needed to drive change. As they raise the new generation, they prioritize ecological literacy, creative problem-solving, and empathy.",
     ],
     aside: "These children are the future",
-    images: [im("22-urban-farm.jpg", "The vertical urban farm with its angled solar glasshouse")],
   },
   {
     chapter: "Thursday",
@@ -202,7 +170,6 @@ export const solarpunkStory: StoryBeat[] = [
       "Mia visits the Phoenix Solaris Botanical Gardens to research new plant species that can be incorporated into the city's urban farms and green spaces. The gardens boast a biodome powered by solar energy and a mix of desert flora and exotic plants, all thriving in harmony.",
     ],
     aside: "Work couldn't get any better",
-    images: [im("23-botanical.jpg", "The botanical gardens' solar-powered biodomes in the desert")],
   },
   {
     chapter: "Friday",
@@ -211,7 +178,6 @@ export const solarpunkStory: StoryBeat[] = [
       "Mia and her friends attend a concert at the Solaris Amphitheater, an open-air venue that harnesses solar energy to power the stage and light displays. The concert promotes local musicians who create music inspired by the solarpunk movement, blending traditional instruments with innovative technology.",
     ],
     aside: "My favorite place",
-    images: [im("24-amphitheater.jpg", "A crowd at the open-air Solaris Amphitheater at dusk")],
   },
   {
     chapter: "Saturday",
@@ -221,10 +187,6 @@ export const solarpunkStory: StoryBeat[] = [
       "She visits the Solaris Art Walk in the evening, where local artists showcase their solarpunk-inspired creations made from recycled and sustainable materials.",
     ],
     aside: "Everyone here is so nice · Couldn't think of a better place to relax",
-    images: [
-      im("25-community-kitchen.jpg", "Cutaway of the neighbourhood community kitchen"),
-      im("26-art-walk.jpg", "The Solaris Art Walk lit up at night"),
-    ],
   },
   {
     chapter: "Sunday",
@@ -233,7 +195,6 @@ export const solarpunkStory: StoryBeat[] = [
       "Unfortunately, Mia refused to offer any further comments as to what she does on a Sunday, as those are her days off. Can you imagine having a whole day off in the future to recharge yourself?",
     ],
     aside: "Sundays? Sundazed. I need a nap",
-    images: [im("27-sunday.jpg", "A figure resting on a sofa under the word Sundays")],
   },
 
   // ---------------------------------------------------------------- Act V
@@ -250,6 +211,5 @@ export const solarpunkStory: StoryBeat[] = [
       source: "Margaret Mead",
     },
     aside: "Thank you, and let us embark on this journey together.",
-    images: [],
   },
 ];

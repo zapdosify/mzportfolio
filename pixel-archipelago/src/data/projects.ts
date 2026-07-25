@@ -225,7 +225,7 @@ export const projects: Project[] = [
       "To make the vision tangible it is narrowed from macro to micro: a week in the life of Mia Greenfield, an urban agriculture specialist, moving through Solaris' water, energy and canopy districts. Each speculative scene is anchored to a real precedent — Curitiba's transit and green space, Vauban's car-free streets, Costa Rica's renewable grid.",
       "The work was published as a printed publication of six illustrated spreads and presented as the closing address of the Ripple graduate symposium. Both are gathered below: the film of the talk, and the publication read as a progressive story.",
     ],
-    coverImage: `${IMG}/solarpunk-worldbuilding/08-solaris-aerial.jpg`,
+    coverImage: `${IMG}/solarpunk-worldbuilding/solarpunk-talk-poster.jpg`,
     videos: [
       vid(
         "solarpunk-worldbuilding",
@@ -237,13 +237,15 @@ export const projects: Project[] = [
       ),
     ],
     story: solarpunkStory,
-    gallery: Array.from({ length: 6 }, (_, i) =>
+    // The six printed spreads, shown whole and in page order above the
+    // address (they are a designed artifact — read as designed, not cropped).
+    storySpreads: Array.from({ length: 6 }, (_, i) =>
       im(
         "solarpunk-worldbuilding",
         `spread-${i + 1}.jpg`,
         `Publication spread ${i + 1} of 6`,
         undefined,
-        `Spread ${i + 1} — full printed layout`,
+        `Spread ${i + 1} of 6`,
       ),
     ),
     relatedProjectIds: ["ripple", "design-manifesto"],

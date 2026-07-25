@@ -1,14 +1,118 @@
-/* Progressive story: publication illustrations matched to the speech.
-   The art is full-colour (it is project imagery); everything around it stays
-   in the site's monochrome interface language. */
+/* The publication (printed spreads, as designed) followed by the address.
+   The spreads are full colour — they are project imagery; everything around
+   them stays in the site's monochrome interface language. */
 
-.wrap {
+.wrap { position: relative; }
+
+/* ---------- printed spreads ---------- */
+.spreads {
+  list-style: none;
+  margin: 0 0 var(--space-24);
+  padding: 0;
+  display: grid;
+  gap: var(--space-8);
+}
+.spreadItem { margin: 0; }
+
+.spread {
   position: relative;
-  /* room for the fixed rail on wide screens */
-  padding-left: 0;
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 1px solid var(--border-dark);
+  border-radius: var(--radius);
+  background: var(--surface-dark);
+  overflow: hidden;
+  cursor: pointer;
+  touch-action: manipulation;
+  transition:
+    border-color var(--dur-fast) var(--ease-out),
+    transform var(--dur-fast) var(--ease-out);
+}
+.spread:hover,
+.spread:focus-visible {
+  border-color: var(--border-active);
+  transform: translateY(-2px);
+  outline: none;
+}
+.spread:focus-visible {
+  outline: 2px solid var(--border-active);
+  outline-offset: 2px;
+}
+.spread:active { transform: translateY(0) scale(0.995); }
+
+/* The spread is a designed page: show it whole, never cropped. */
+.spread img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 8 / 5; /* the publication's 4800×3000 trim */
+  object-fit: contain;
 }
 
-/* ---------- reading rail ---------- */
+.spreadNum {
+  position: absolute;
+  left: var(--space-4);
+  bottom: var(--space-3);
+  font-family: var(--font-mono);
+  font-size: var(--fs-12);
+  letter-spacing: 0.16em;
+  color: var(--text-secondary);
+  font-variant-numeric: tabular-nums;
+  background: rgba(5, 5, 5, 0.72);
+  border: 1px solid var(--border-dark);
+  border-radius: 3px;
+  padding: 3px 8px;
+}
+
+.expand {
+  position: absolute;
+  top: var(--space-3);
+  right: var(--space-3);
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  color: var(--text-primary);
+  background: rgba(5, 5, 5, 0.72);
+  border: 1px solid var(--border-active);
+  border-radius: var(--radius);
+  opacity: 0;
+  transform: translateY(-2px);
+  transition:
+    opacity var(--dur-fast) var(--ease-out),
+    transform var(--dur-fast) var(--ease-out);
+  pointer-events: none;
+}
+.spread:hover .expand,
+.spread:focus-visible .expand {
+  opacity: 1;
+  transform: none;
+}
+
+/* ---------- the address ---------- */
+.speech { position: relative; }
+
+.speechHead {
+  border-top: var(--border);
+  padding-top: var(--space-6);
+  margin-bottom: var(--space-16);
+}
+.speechTitle {
+  font-family: var(--font-mono);
+  font-size: var(--fs-24);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--white);
+}
+.speechNote {
+  margin-top: var(--space-2);
+  font-size: var(--fs-14);
+  color: var(--text-muted);
+  max-width: 60ch;
+}
+
+/* reading rail */
 .rail {
   position: sticky;
   top: calc(var(--header-h) + var(--space-8));
@@ -48,29 +152,27 @@
 }
 
 @media (min-width: 1180px) {
-  .wrap { padding-left: 164px; }
+  .speech { padding-left: 164px; }
   .rail { display: flex; }
 }
 
-/* ---------- beats ---------- */
+/* ---------- chapters ---------- */
 .beats {
   list-style: none;
   margin: 0;
   padding: 0;
   display: grid;
-  gap: var(--space-24);
+  gap: var(--space-16);
 }
 
-.beat {
-  opacity: 1;
-}
-/* Motion is opt-in: only elements the observer has NOT yet shown are hidden,
-   and only when JS is running (the class is added by script). */
+.beat { opacity: 1; }
+/* Motion is opt-in: the .shown class is added by script, so with JS off
+   every chapter simply stays visible. */
 @media (prefers-reduced-motion: no-preference) {
   .beat {
     opacity: 0;
-    transform: translateY(28px);
-    transition: opacity 640ms var(--ease-out), transform 640ms var(--ease-out);
+    transform: translateY(24px);
+    transition: opacity 620ms var(--ease-out), transform 620ms var(--ease-out);
   }
   .shown {
     opacity: 1;
@@ -99,19 +201,19 @@
 
 .beatTitle {
   font-family: var(--font-mono);
-  font-size: clamp(1.15rem, 2.4vw, 1.75rem);
-  line-height: 1.2;
+  font-size: clamp(1.05rem, 2vw, 1.45rem);
+  line-height: 1.25;
   letter-spacing: 0.01em;
   color: var(--white);
-  max-width: 24ch;
-  margin-bottom: var(--space-6);
+  max-width: 28ch;
+  margin-bottom: var(--space-5, var(--space-4));
   text-wrap: balance;
 }
 
 .body {
   display: grid;
   gap: var(--space-4);
-  max-width: 66ch;
+  max-width: 68ch;
 }
 .body p {
   color: var(--text-secondary);
@@ -141,61 +243,7 @@
   color: var(--text-muted);
 }
 
-/* ---------- illustration plates ---------- */
-.plates {
-  margin-top: var(--space-8);
-  display: grid;
-  gap: var(--space-4);
-}
-.platesMulti {
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  align-items: start;
-}
-
-.plate {
-  position: relative;
-  margin: 0;
-  border: 1px solid var(--border-dark);
-  border-radius: var(--radius);
-  background: var(--surface-dark);
-  overflow: hidden;
-}
-.plate img {
-  width: 100%;
-  height: auto;
-  display: block;
-  /* keep any single illustration inside one screen so the story keeps its
-     reading rhythm; the surface behind it absorbs the letterboxing */
-  max-height: 74vh;
-  object-fit: contain;
-}
-
-/* corner ticks — the same "built in pixels" frame used across interiors */
-.plate::before,
-.plate::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  --c: var(--border-active);
-  --s: 14px;
-}
-.plate::before {
-  background:
-    linear-gradient(var(--c), var(--c)) left top / var(--s) 1px no-repeat,
-    linear-gradient(var(--c), var(--c)) left top / 1px var(--s) no-repeat,
-    linear-gradient(var(--c), var(--c)) right top / var(--s) 1px no-repeat,
-    linear-gradient(var(--c), var(--c)) right top / 1px var(--s) no-repeat;
-}
-.plate::after {
-  background:
-    linear-gradient(var(--c), var(--c)) left bottom / var(--s) 1px no-repeat,
-    linear-gradient(var(--c), var(--c)) left bottom / 1px var(--s) no-repeat,
-    linear-gradient(var(--c), var(--c)) right bottom / var(--s) 1px no-repeat,
-    linear-gradient(var(--c), var(--c)) right bottom / 1px var(--s) no-repeat;
-}
-
-/* ---------- margin note (Mia's diary voice from the spreads) ---------- */
+/* margin note (Mia's diary voice from the spreads) */
 .aside {
   margin-top: var(--space-4);
   font-family: var(--font-mono);
@@ -206,6 +254,12 @@
 }
 
 @media (max-width: 640px) {
-  .beats { gap: var(--space-16); }
-  .platesMulti { grid-template-columns: 1fr; }
+  .spreads { gap: var(--space-6); margin-bottom: var(--space-16); }
+  .beats { gap: var(--space-12); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spread,
+  .expand { transition: none; }
+  .spread:hover { transform: none; }
 }
