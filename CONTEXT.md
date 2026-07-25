@@ -460,6 +460,58 @@ row height.
   "Portfolio enquiry from {name}".
 - Store gained `contactOpen` / `setContactOpen` (not persisted).
 
+### 2026-07-25 late session — media presentation pass
+
+**Ripple card art.** `/website-design`'s Ripple card had no cover, so it drew the `◇`
+placeholder. Now uses the symposium wordmark, sourced from
+`Website Redesign Assets/…/categories/website-design/Ripple Wordmark.png` (1152×648, white
+on transparent) → `public/media/images/ripple-symposium-website/ripple-wordmark.png`.
+- Two new `Project` fields: **`cardImage`** (thumbnail override read by `ProjectCard` **only**,
+  so it never becomes the detail-page hero — the hero already has the looping motion band)
+  and **`cardImageFit: "contain"`**. The contain variant keeps the 4:3 box so row heights stay
+  level (the 2026-07-25 alignment work) but insets the mark 24px instead of cropping it.
+- ⚠️ A wider `Ripple Wordmark (DF).png` (3346×947) also exists on the Desktop; the one filed
+  under the project's own assets was chosen.
+
+**Product images now match the old Wix presentation (user-requested).** Verified against
+`mznoor8.wixsite.com/portfolio/appdesign` + `/project-2`: the old site renders **every board at
+the content width, at its true aspect, uncropped, stacked in sequence** — including the tall
+app-flow sheets (it rendered HODL's at 984×7655, page height 22,024px). It never used a
+thumbnail grid.
+- New Gallery variant **`boards`**, selected per project by the new **`galleryVariant`** field
+  (not by category). Applied to **BookBabies (22), HODL (7), Frontline Readiness (6),
+  Magenta Moves (20)**. Measured: HODL now 998×7767 / page 22,693px — the old site's layout.
+- ⚠️ The aspect is set **inline from `mediaDimensions`**, not via `aspect-ratio: auto`. That
+  keyword *discards* the width/height attribute hint, so every lazy board collapsed to height 0
+  before loading. Do not "simplify" it back.
+- This deliberately reverts the "uniform tiles" principle **for these four projects only** —
+  every other gallery keeps the cropped grid (verified: Digital Painting still 3-col `cover`).
+
+**Lightbox gained real zoom.** The old `.tall .image { overflow-y: auto }` did nothing — an
+`<img>` ignores overflow — so tall sheets were just squashed into 82vh with no way to magnify.
+- Fit ⇄ 100% toggle: button, click the image, or **Z**. Zoomed renders at native pixels
+  (verified 1282×9964 for a 1280×9962 asset) with drag-to-pan; centred horizontally on zoom,
+  top-anchored vertically.
+- While zoomed, prev/next and swipe are suppressed (panning must not navigate). Every new
+  asset opens fitted. Verified: Esc closes, focus restores to the opening tile, scroll unlocks.
+
+**HODL hero is now the looping title sequence** (`components/media/HeroLoop`), replacing the
+still cover. Source `videos/Crypto APP/HODL.mp4` → `public/media/videos/hodl-crypto-app/hodl-loop.mp4`.
+- Encode **trimmed to 4.2s**: the original's last ~1s is dead black (measured via `signalstats`
+  YAVG — content runs 0.17→3.5s), which looped badly. Audio stripped, CRF23 + faststart, 266kB.
+- ⚠️ **A poster overlay is required.** The `poster` attribute stops applying once *any* frame
+  decodes, and the sequence opens on black — so a deferred/suspended autoplay showed a black
+  box. `HeroLoop` keeps a poster `<img>` over the video whenever it is `idle`
+  (paused/waiting/stalled), not merely "not yet started".
+- ⚠️ Its poster needed `.frame .poster` specificity to beat `.heroArt img { object-fit: cover }`
+  from `interior.module.css`, which was cropping the poster while the video stayed `contain`.
+
+**Preview-pane gotchas hit this session** (all documented in §10, all cost time):
+screenshots served **stale frames** repeatedly (a hero that looked black was in fact painting);
+the console buffer **persists across navigations and even server restarts**, so HMR-era
+`ReferenceError`s from a half-finished rename kept reappearing — confirm against `tsc -b` and
+whether the component still renders, not the buffer.
+
 ---
 
 ## 10 · ⏭️ Resume here (next session)
