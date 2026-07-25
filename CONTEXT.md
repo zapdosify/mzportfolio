@@ -1,11 +1,15 @@
 # CONTEXT — Pixel Archipelago Portfolio (session handoff)
 
-**Read this first in a new session.** Last updated: 2026-07-23 (evening — git + motion rework + QA sweep)
+**Read this first in a new session.** Last updated: **2026-07-25** (all 6 phases done +
+pre-deploy content pass + contact composer). Working tree clean, build green, **ready to deploy**.
 
-**⚡ GIT IS NOW LIVE.** `git init` done on `main` (local only, no remote). Commit at every
-milestone. History so far: initial snapshot → motion rework → responsive landing →
-poster/banner/header fixes → QA sweep. Media (~780M) is in history; ignore file excludes
-node_modules/dist.
+**⚡ GIT IS LIVE.** `main`, local only — **no remote** (nothing is backed up off this machine).
+Commit at every milestone. Media (~780M of masters) is in history; `.gitignore` excludes
+`node_modules/` and `dist/`.
+
+**Dev server + caches:** nothing is running and `dist/` + `node_modules/.vite` were cleared at
+the end of the last session — `npm run dev` will do a cold (slightly slower) first start. That
+is expected, not a fault.
 
 Project root: `C:\Users\zab\Desktop\Portfolio 2026\`
 App root: `pixel-archipelago/` · Dev: `npm run dev` (port 5173) · Build: `npm run build`
@@ -34,6 +38,7 @@ The visual identity is fixed and approved; it must not be redesigned.
 | 4 — All 13 categories + detail pages | 🟨 **IN PROGRESS** — media/layout truth pass done |
 | 5 — Responsive + accessibility pass | ✅ complete (2026-07-24) |
 | 6 — Performance + QA + deploy docs | ✅ complete (2026-07-24) |
+| Post — content pass + polish | ✅ complete (2026-07-25) |
 
 **ALL SIX PHASES COMPLETE.** The site is deploy-ready (see `pixel-archipelago/DEPLOY.md`).
 
@@ -284,7 +289,9 @@ Bash tool has TLS issues fetching remote images — **use PowerShell + `Invoke-W
 
 ---
 
-## 9 · ⏭️ Resume here
+## 9 · Session log (history — newest at the bottom)
+
+*Kept for the "why", not for what to do next. **Jump to §10 for that.***
 
 **Phase 4 status.** The shared template turned out to already cover every case (videos, sub-projects,
 process, missing links), and all content was already typed in `projects.ts`. So Phase 4 was not new
@@ -380,32 +387,92 @@ Eight requested changes, all landed and verified live:
   it's a declaration about how we should live. It is cross-linked both ways with Ripple
   (the symposium) and Design Manifesto. Move it by changing `categoryId` + the two
   `projectIds` arrays if you'd rather it sit elsewhere.
-- **The progressive story** (`components/story/StoryScroll`): **21 chapters** pairing each
-  passage of the masters speech with the publication illustration that carries it. Source
-  files live OUTSIDE the repo at `Desktop/University Stuff after grad/`:
-  `Publication.pdf` (6 spreads @4800×3000 — the 8.7MB "Final Publication.pdf" is only the
-  LAST spread) and `Capstone final files/Final speech done and duster.pdf`.
-  27 illustrations were cropped from the spreads via a scratch script (boxes measured on
-  1500px previews, ×3.2 to full res) — **verified by contact sheet, not assumed**. The 6 full
-  spreads also ship as the lightbox gallery.
+- **The publication + address** (`components/story/StoryScroll`): the **6 printed spreads
+  shown whole** (uncropped, page order, `NN / 06` badge, click → shared Lightbox), then the
+  speech underneath as **21 numbered chapters** ("The Address") with quotes and margin notes.
+  ⚠️ **This replaced an earlier cropped-illustration layout** — 27 crops were cut from the
+  spreads and interleaved with the text, but they framed awkwardly and the user rejected
+  them (2026-07-25). The crops were deleted; **do not reintroduce them.** The publication is
+  a designed artifact and is read as designed.
+  Source files live OUTSIDE the repo at `Desktop/University Stuff after grad/`:
+  `Publication.pdf` (6 spreads @4800×3000 — note the 8.7MB "Final Publication.pdf" in
+  `videos/Ripple/` is only the LAST spread) and
+  `Capstone final files/Final speech done and duster.pdf`.
   ⚠️ The speech PDF drops "ti"/"tt" ligatures on text extraction ("corporaons"). The story
   text was therefore transcribed from the **spread images**, which render clean. All wording
   is Mohammed's own; handwritten margin notes kept as `aside`. Nothing invented.
+  Cover image is the talk's title frame (`solarpunk-talk-poster.jpg`, the UTOPIA globe).
 - **Types gained** `story` / `ambientVideo` / `embeds`; `mediaDimensions.ts` → 137 assets.
 - **PyMuPDF was installed** (`py -m pip install pymupdf`) to read/extract the PDFs.
 
-**Still open (post-launch niceties only):**
-1. ⚠️ **Verify by eye** (preview pane can't): reduced-motion burst; warp/crossfade/stagger
-   feel at real frame rate; re-encoded video quality spot-check on a big screen.
-2. **Ripple** (`/website-design/ripple`) has no imagery — renders the `imageryPending` note.
-3. Résumé download: decision 2026-07-24 — **stays .docx**.
-4. Optional: remote git backup (repo is local-only), dead `pagePreviewImage` cleanup in
-   categories.ts.
+### 2026-07-25 final polish — COMPLETE
 
-**⚠️ Concurrency note:** for much of this work a second chat was editing the same tree (esp.
-`components/gallery/*`, `MediaFigure`, `projects.ts`) with no git safety net. Before trusting any single
-file, re-read it — another session may have changed it. Consider `git init` to get a net.
+**Card alignment (user-reported).** Project cards sized to their own content, so a card with
+a longer title / subtitle / year badge grew taller than its neighbour (seen on Manifesto
+Design). Cause: `.gallery` had `align-items:start`, which stops grid items stretching to the
+row height.
+- `.gallery` → `align-items:stretch`, and the stretch is passed through the `<li>` wrappers.
+- `ProjectCard` fills the row (`height:100%`); `.thumb` is `flex:none` (keeps 4:3), `.meta`
+  takes the leftover, and **`View →` is pinned with `margin-top:auto`** so a row shares one
+  baseline. Gallery tiles got the same treatment.
+- **Audited all 27 routes at 375 / 768 / 1280**: every row of cards, tiles, process steps,
+  spreads and plates is 0px delta in height and width. Remaining width variance is limited to
+  chips / tags / meta pairs / buttons — content-hugging by design, **leave them alone**.
+
+**Contact composer** (`components/contact/ContactDialog`). "Send a message →" (Contact) and
+**Email** (footer) now open a styled modal with Name / Your email / Subject / Message.
+- ⚠️ **The site is static — nothing is sent from the page.** Submit builds a `mailto:` and
+  hands off to the visitor's own mail app. **The UI says so explicitly** before ("the website
+  doesn't send it for you") and after ("nothing has been sent yet"). The confirmation step
+  offers a copy-address button + selectable address for anyone with no mail client.
+  **Do not reword these into "message sent".**
+- The user chose the mail-app handoff over Netlify Forms / Web3Forms / Formspree when asked
+  (2026-07-25). To switch to real delivery later, only the submit handler changes — the
+  dialog is already built.
+- Form handling: visible labels, inline errors with `role="alert"`, `aria-invalid` +
+  `aria-describedby`, focus moves to the first invalid field, 16px inputs (no iOS zoom),
+  ≥44px targets, Esc / Tab-trap / scroll-lock / focus-restore shared with IndexMenu+Lightbox,
+  message capped at 1800 chars (mailto gets unreliable past ~2k).
+- **Fields reset on every open.** The dialog stays mounted for the page's life, so drafts used
+  to persist and had to be deleted by hand — the user asked for blank every time. The grey
+  "Portfolio enquiry" in Subject is a *placeholder*, not a value; empty subject becomes
+  "Portfolio enquiry from {name}".
+- Store gained `contactOpen` / `setContactOpen` (not persisted).
+
+---
+
+## 10 · ⏭️ Resume here (next session)
+
+The site is **finished and deploy-ready**. Nothing is half-done. Suggested order:
+
+1. **Deploy** — see `pixel-archipelago/DEPLOY.md`. `npm run build` → publish `dist/` on
+   Netlify or Vercel (SPA fallback configs for both are already committed). This also
+   permanently fixes the "site won't load" problem, since it no longer depends on a dev server.
+2. **A remote git backup** — the repo is local-only, so a disk failure loses everything.
+   Offer to set up a GitHub remote; **confirm with the user before pushing** (outward action,
+   and the history carries ~780M of media).
+
+**Open items — all judgement calls for the user, none blocking:**
+1. ⚠️ **Things only a human eye can confirm** (the Browser pane can't): reduced-motion orb
+   burst; warp / crossfade / stagger feel at real frame rate; the 720p re-encode of the
+   Solarpunk talk on a big screen.
+2. **Ripple** (`/website-design/ripple`) — the case study is written and the looping motion
+   piece plays, but there are still no website screenshots. Leave, or source visuals.
+3. **Solarpunk category placement was my call**, not the user's: it sits in Manifesto Design,
+   cross-linked with Ripple. One-line move if they disagree (`categoryId` + two `projectIds`).
+4. Résumé download **stays .docx** (decided 2026-07-24 — don't re-raise).
+5. Cosmetic cleanup: `pagePreviewImage` in `categories.ts` is dead data.
 
 **Dev-server note:** the root `.claude/launch.json` config `dev` binds 5173; a second config
-`dev-alt` (port 5183, `autoPort`) was added so a session can start its own server when 5173 is
-held by another chat.
+`dev-alt` (port 5183, `autoPort`) exists so a session can start its own server when 5173 is
+held by another chat. **A dead dev server is the #1 cause of "the site won't load"** — it only
+lives as long as the session that started it. Restart it, don't debug the app.
+
+**Verifying in the Browser pane — known limits (don't chase these as bugs):**
+- It reports `document.hidden === true`, so `requestAnimationFrame` and real `scroll` events
+  never fire. Exercise handlers with `window.scrollTo(...)` +
+  `window.dispatchEvent(new Event('scroll'))`.
+- Screenshots sometimes ignore scroll position or time out. Fall back to DOM /
+  `getComputedStyle` assertions — that is how most of this work was verified.
+- `prefers-reduced-motion` cannot be emulated there.
+- Lazy routes need >150ms before asserting, or a sweep sees "NO H1" on a page that is fine.
