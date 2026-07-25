@@ -21,7 +21,10 @@
   gap: var(--space-6);
   flex-wrap: wrap;
 }
-.links a {
+/* the Email item opens the message composer, so it's a button — styled to
+   sit level with the sibling links */
+.links a,
+.linkBtn {
   font-family: var(--font-mono);
   font-size: var(--fs-12);
   letter-spacing: 0.1em;
@@ -29,6 +32,12 @@
   color: var(--text-secondary);
   transition: color var(--dur-fast) var(--ease-out);
 }
-.links a:hover {
+.linkBtn {
+  padding: 0;
+  line-height: inherit;
+  touch-action: manipulation;
+}
+.links a:hover,
+.linkBtn:hover {
   color: var(--white);
 }

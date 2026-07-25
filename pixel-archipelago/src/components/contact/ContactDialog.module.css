@@ -1,0 +1,248 @@
+/* Compose-a-message dialog. Same interface language as IndexMenu/Lightbox:
+   dark surface, mono labels, hairline borders, corner ticks. */
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal);
+  display: grid;
+  place-items: center;
+  padding: var(--space-4);
+}
+
+.scrim {
+  position: absolute;
+  inset: 0;
+  background: rgba(5, 5, 5, 0.78);
+  backdrop-filter: blur(3px);
+  border: none;
+  cursor: pointer;
+  animation: fade var(--dur) var(--ease-out);
+}
+@keyframes fade { from { opacity: 0; } }
+
+.panel {
+  position: relative;
+  width: min(560px, 100%);
+  max-height: min(88dvh, 780px);
+  overflow-y: auto;
+  background: var(--near-black);
+  border: 1px solid var(--border-active);
+  border-radius: var(--radius);
+  padding: var(--space-8) var(--space-6) var(--space-6);
+  animation: rise var(--dur-slow) var(--ease-out);
+}
+@keyframes rise { from { opacity: 0; transform: translateY(12px); } }
+
+/* corner ticks — the signature frame */
+.panel::before,
+.panel::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  --c: var(--border-active);
+  --s: 16px;
+}
+.panel::before {
+  background:
+    linear-gradient(var(--c), var(--c)) left top / var(--s) 1px no-repeat,
+    linear-gradient(var(--c), var(--c)) left top / 1px var(--s) no-repeat,
+    linear-gradient(var(--c), var(--c)) right top / var(--s) 1px no-repeat,
+    linear-gradient(var(--c), var(--c)) right top / 1px var(--s) no-repeat;
+}
+.panel::after {
+  background:
+    linear-gradient(var(--c), var(--c)) left bottom / var(--s) 1px no-repeat,
+    linear-gradient(var(--c), var(--c)) left bottom / 1px var(--s) no-repeat,
+    linear-gradient(var(--c), var(--c)) right bottom / var(--s) 1px no-repeat,
+    linear-gradient(var(--c), var(--c)) right bottom / 1px var(--s) no-repeat;
+}
+
+/* ---------- head ---------- */
+.head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+}
+.title {
+  font-family: var(--font-mono);
+  font-size: var(--fs-18);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--white);
+}
+.to {
+  margin-top: 4px;
+  font-family: var(--font-mono);
+  font-size: var(--fs-12);
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+}
+.toAddr { color: var(--text-secondary); }
+
+.close {
+  flex: none;
+  min-height: 44px;
+  padding: 0 var(--space-2);
+  font-family: var(--font-mono);
+  font-size: var(--fs-12);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  touch-action: manipulation;
+  transition: color var(--dur-fast) var(--ease-out);
+}
+.close:hover { color: var(--white); }
+
+/* ---------- form ---------- */
+.form { display: grid; gap: var(--space-5, var(--space-4)); }
+
+.lead {
+  font-size: var(--fs-14);
+  line-height: 1.6;
+  color: var(--text-muted);
+  border-left: 1px solid var(--border-active);
+  padding-left: var(--space-4);
+}
+
+.field { display: grid; gap: var(--space-2); }
+
+.label {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.input,
+.textarea {
+  width: 100%;
+  min-height: 44px; /* comfortable touch target */
+  background: var(--surface-dark);
+  border: 1px solid var(--border-dark);
+  border-radius: var(--radius);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-size: var(--fs-16); /* 16px stops iOS zooming the page on focus */
+  line-height: 1.5;
+  padding: var(--space-3) var(--space-4);
+  transition: border-color var(--dur-fast) var(--ease-out);
+}
+.textarea {
+  resize: vertical;
+  min-height: 132px;
+}
+.input::placeholder,
+.textarea::placeholder { color: var(--text-muted); }
+.input:focus,
+.textarea:focus {
+  outline: none;
+  border-color: var(--border-active);
+}
+.input:focus-visible,
+.textarea:focus-visible {
+  outline: 2px solid var(--white);
+  outline-offset: 1px;
+}
+.inputBad { border-color: #b45b5b; }
+
+.hint {
+  font-size: var(--fs-12);
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+.hintWarn { color: var(--text-secondary); }
+
+.error {
+  font-size: var(--fs-12);
+  line-height: 1.5;
+  color: #e08b8b; /* readable on near-black; paired with text, never colour alone */
+}
+.error::before {
+  content: "! ";
+  font-family: var(--font-mono);
+}
+
+/* ---------- actions ---------- */
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-top: var(--space-2);
+}
+
+.submit,
+.ghost {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-3) var(--space-6);
+  font-family: var(--font-mono);
+  font-size: var(--fs-12);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  border-radius: var(--radius);
+  touch-action: manipulation;
+  transition:
+    color var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out),
+    background-color var(--dur-fast) var(--ease-out);
+}
+.submit {
+  background: var(--white);
+  color: var(--black);
+  border: 1px solid var(--white);
+}
+.submit:hover { background: var(--text-primary); }
+.submit:active { transform: translateY(1px); }
+
+.ghost {
+  background: none;
+  color: var(--text-secondary);
+  border: 1px solid var(--border-dark);
+}
+.ghost:hover { color: var(--white); border-color: var(--border-active); }
+.ghost:active { transform: translateY(1px); }
+
+/* ---------- handed-off state ---------- */
+.done { display: grid; gap: var(--space-4); }
+.doneLead {
+  font-size: var(--fs-16);
+  line-height: 1.6;
+  color: var(--text-primary);
+  border-left: 1px solid var(--border-active);
+  padding-left: var(--space-4);
+}
+.doneNote {
+  font-size: var(--fs-14);
+  line-height: 1.6;
+  color: var(--text-muted);
+}
+.doneActions { display: flex; flex-wrap: wrap; gap: var(--space-3); }
+.addrOut {
+  font-family: var(--font-mono);
+  font-size: var(--fs-14);
+  letter-spacing: 0.06em;
+  color: var(--text-secondary);
+  padding: var(--space-3) var(--space-4);
+  border: 1px dashed var(--border-dark);
+  border-radius: var(--radius);
+  user-select: all; /* one click selects the whole address */
+  word-break: break-all;
+}
+
+@media (max-width: 560px) {
+  .panel { padding: var(--space-6) var(--space-4) var(--space-4); }
+  .actions .submit,
+  .actions .ghost { flex: 1 1 auto; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scrim, .panel { animation: none; }
+  .submit:active, .ghost:active { transform: none; }
+}

@@ -10,12 +10,15 @@ export interface WorldState {
   lastCategoryId: string | null;
   reducedMotion: boolean;
   indexOpen: boolean;
+  /** the compose-a-message dialog (hands off to the visitor's mail app) */
+  contactOpen: boolean;
 
   setOrb: (x: number, y: number) => void;
   markExplored: (categoryId: string) => void;
   setLastCategory: (categoryId: string | null) => void;
   setReducedMotion: (v: boolean) => void;
   setIndexOpen: (v: boolean) => void;
+  setContactOpen: (v: boolean) => void;
 }
 
 export const useWorldStore = create<WorldState>()(
@@ -26,6 +29,7 @@ export const useWorldStore = create<WorldState>()(
       lastCategoryId: null,
       reducedMotion: false,
       indexOpen: false,
+      contactOpen: false,
 
       setOrb: (x, y) => set({ orb: { x, y } }),
       markExplored: (categoryId) =>
@@ -37,6 +41,7 @@ export const useWorldStore = create<WorldState>()(
       setLastCategory: (categoryId) => set({ lastCategoryId: categoryId }),
       setReducedMotion: (v) => set({ reducedMotion: v }),
       setIndexOpen: (v) => set({ indexOpen: v }),
+      setContactOpen: (v) => set({ contactOpen: v }),
     }),
     {
       name: "mzn-archipelago",

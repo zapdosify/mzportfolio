@@ -1,7 +1,9 @@
 import { footerFlourish, socials } from "../../data/siteContent";
+import { useWorldStore } from "../../hooks/useWorldStore";
 import styles from "./Footer.module.css";
 
 export default function Footer() {
+  const setContactOpen = useWorldStore((s) => s.setContactOpen);
   return (
     <footer className={styles.footer}>
       <div className={`container ${styles.inner}`}>
@@ -13,7 +15,9 @@ export default function Footer() {
           <a href={socials.deviantart} target="_blank" rel="noopener noreferrer">
             DeviantArt
           </a>
-          <a href={`mailto:${socials.email}`}>Email</a>
+          <button type="button" className={styles.linkBtn} onClick={() => setContactOpen(true)}>
+            Email
+          </button>
         </nav>
       </div>
     </footer>

@@ -9,6 +9,7 @@ import s from "../styles/interior.module.css";
 
 export default function Contact() {
   const markExplored = useWorldStore((st) => st.markExplored);
+  const setContactOpen = useWorldStore((st) => st.setContactOpen);
   const category = categoryById("contact");
   const heroRef = useHeroReveal();
   useEffect(() => {
@@ -45,7 +46,9 @@ export default function Contact() {
       </header>
 
       <div className={s.returnStrip}>
-        <a href={`mailto:${socials.email}`} className={s.returnBtn}>Send a message →</a>
+        <button type="button" className={s.returnBtn} onClick={() => setContactOpen(true)}>
+          Send a message →
+        </button>
         <Link to="/" className={s.returnBtn}>Return to World</Link>
       </div>
       </div>

@@ -3,6 +3,7 @@ import { Outlet, useLocation, ScrollRestoration } from "react-router-dom";
 import Header from "../components/layout/Header";
 import Footer from "../components/layout/Footer";
 import IndexMenu from "../components/navigation/IndexMenu";
+import ContactDialog from "../components/contact/ContactDialog";
 
 export default function RootLayout() {
   const location = useLocation();
@@ -38,6 +39,7 @@ export default function RootLayout() {
       </main>
       {!isLanding && <Footer />}
       <IndexMenu />
+      <ContactDialog />
       <ScrollRestoration />
     </>
   );
