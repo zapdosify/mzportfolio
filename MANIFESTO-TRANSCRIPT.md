@@ -33,7 +33,9 @@ the identity is locked (CONTEXT.md §6). Keep the measure at 65–75 characters.
    for cross-checking, **never** to paste in directly.
 2. **Nothing may be invented or paraphrased.** If a word is unreadable, crop tighter and
    look again; do not guess.
-3. Words shown olive/green in the book are **inline links** to the reference list (the 12
+3. **Printed typos are quietly fixed** — see the table at the end of this file for the rule
+   and its limits. Corrections are silent; no marginal note, no `[sic]`.
+4. Words shown olive/green in the book are **inline links** to the reference list (the 12
    references are at the end of the docx). Marked `[text](LINK)` below.
 4. `images/design-manifesto/*.jpg` are 3840×2160. Crop to the text area and upscale to
    ~1500px wide for legibility — e.g. `im.crop((w*0.26, h*0.10, w*0.78, h*0.95))`.
@@ -118,7 +120,7 @@ The torch represents my spark; despite all odds, we all had that starting point;
 
 Exposure to negativity at an early age leads to the belief that this is the way of the world and how it operates. Your birth determines your future. In my area of the globe, you are hailed as a doctor, engineer, or IT professional from the minute you are born. I thought that's what I wanted to be because that's all I thought mattered. The media bolstered these views by depicting day and night the great exploits and triumphs attained by engaging in these professions; you practically win at life, they asserted.
 
-There I was, staring at my unsharpened pencil and crumpled up paper, wondering if these few written sentences had the capacity to gain the world's admiration. What if I wanted to be different? It couldn't be that this is what everyone is meant for. Personally, there was always a dark figure towering over my creative dreams; the figure symbolized expectations, expectations to live in accordance with what others wanted, societal expectations. You may have arrived on the life spectrum where you were certain of what you wanted to be, and then there's the spectrum where you're holding on to the slightest piece of thought, the invisible silver thread, just maybe, just maybe I'm supposed to be this visionary in my own way. But these were merely the folly of an immature intellect, and I had no choice but to reject them and be drawn into the blackhole of becoming what was advertised. I was conscious, but it was drowned out by the white noise of the world; little did I realize that my future would be filled with upheaval until I was eventually satisfied with where i wanted to be.
+There I was, staring at my unsharpened pencil and crumpled up paper, wondering if these few written sentences had the capacity to gain the world's admiration. What if I wanted to be different? It couldn't be that this is what everyone is meant for. Personally, there was always a dark figure towering over my creative dreams; the figure symbolized expectations, expectations to live in accordance with what others wanted, societal expectations. You may have arrived on the life spectrum where you were certain of what you wanted to be, and then there's the spectrum where you're holding on to the slightest piece of thought, the invisible silver thread, just maybe, just maybe I'm supposed to be this visionary in my own way. But these were merely the folly of an immature intellect, and I had no choice but to reject them and be drawn into the blackhole of becoming what was advertised. I was conscious, but it was drowned out by the white noise of the world; little did I realize that my future would be filled with upheaval until I was eventually satisfied with where I wanted to be.
 
 ## SPREAD 12 — Chapter Two, The Bonfire
 
@@ -159,7 +161,7 @@ Right column continues "…did not. Rather, it expanded from the workplace to th
 
 Opens: "The perfect example of the stray path can be tied back to the many interpretations of the poem by Robert Frost's "The road not taken" / The stray path throws our journey into a bind. There are two roads presented, probably because of the one road splitting, and there is nothing to do except select one of the roads and continue life's journey."
 
-Right column ends with a passage **not in the docx**: "…This was the path I had taken, the route which led me to who i am today, it was indeed the decisive…" — transcribe the remainder.
+Right column ends with a passage **not in the docx**: "…This was the path I had taken, the route which led me to who i am today, it was indeed the decisive…" — transcribe the remainder. (The lowercase `i` there is corrected to `I` under the quiet-fix rule.)
 
 ## SPREAD 20 — Chapter Six, The Weary Traveler ✅ (diverges from docx — this is the book)
 
@@ -175,7 +177,7 @@ Opens: "After almost giving up, when all looked lost, there it was. The finish w
 
 ## SPREAD 23a — Chapter Eight, Enlightenment ✅ (diverges from docx — this is the book)
 
-This is the stage to which we all aspire; it was here that I recognized I was the magician; the magician is wise, thoughtful, introspective, healing, contemplative, and transforming. This is relating back to to all I've been through in our journey. It was a longer a stray path, it conformed to one that you control.
+This is the stage to which we all aspire; it was here that I recognized I was the magician; the magician is wise, thoughtful, introspective, healing, contemplative, and transforming. This is relating back to all I've been through in our journey. It was a longer stray path, it conformed to one that you control.
 
 The obstacles were never intended to stop me or you from growing; rather, they were designed to help us learn and grow, conquer, and adapt. A fresh perspective and clarity with the universe on our side, ready to take on obstacles and make a difference in the world with the most powerful non-lethal weapon we have - our artistic and creative minds. Knowing that we are the backbone and framework of the foundations of the world, much like the principles of design, we have now joined the ranks of the shamans who carry the light.
 
@@ -183,7 +185,8 @@ And while I type my personal manifesto, I feel more in control of my surrounding
 
 I hope that my personal experiences have directed you towards being the person you want to be; if you have resonated with my path, then this is only the beginning.
 
-(Note: the doubled "back to to" and "was a longer a stray path" are as printed.)
+(The book prints "relating back to to all" and "It was a longer a stray path"; both are
+silently corrected above under the quiet-fix rule.)
 
 ## SPREAD 23c — epigraph ✅
 
@@ -192,14 +195,35 @@ I hope that my personal experiences have directed you towards being the person y
 
 ## SPREAD 24 — closing 🟨 PARTIAL
 
-> "we are nothing but a speck in this univerise but that doesn't mean each speck does not have its own importance to keep the world running like clockwork.
+> "we are nothing but a speck in this universe but that doesn't mean each speck does not have its own importance to keep the world running like clockwork.
 
 I will inspire others and never forget the power of my voice, I will laugh at myself and help others experience joy, I will act on my passions and honor my commitments. I will continually improve myself and … **[remainder to transcribe]**
 
 Ends with the line "MAY YOU BE THE BEST VERSION OF YOURSELF".
 
-## Queries for Mohammed
+## Typos — decided: quietly fix (user, 2026-07-25)
 
-- `univerise` (spread 24) is a typo in the printed book. Reproduce as printed, or correct?
-- Spread 23a prints "relating back to to all" and "It was a longer a stray path". Same question.
-- Spread 10 ends "satisfied with where i wanted to be" — lowercase `i` as printed.
+Printed slips are corrected silently on the site, with no visible note. Fixes applied to the
+text above; apply the same rule to spreads still to be transcribed.
+
+| Spread | Printed | On the site |
+|---|---|---|
+| 10 | "where i wanted to be" | "where I wanted to be" |
+| 18 | "who i am today" | "who I am today" |
+| 23a | "relating back to to all" | "relating back to all" |
+| 23a | "It was a longer a stray path" | "It was a longer stray path" |
+| 24 | "this univerise" | "this universe" |
+
+**Scope of the fix.** Spelling, doubled words, stray articles, and a lowercase `i` for the
+pronoun. That is the whole licence — **do not** smooth the author's voice, split his long
+sentences, or "correct" his comma splices, which are stylistic and deliberate throughout.
+
+**Flagged, NOT fixed** — these are garbled rather than mistyped, so fixing them would mean
+choosing a meaning on the author's behalf. Left as printed; raise with him:
+
+- Spread 12: "the more you gain knowledge, the more you genuinely opens up numerous doors"
+  (subject–verb disagreement; the intended subject is unclear).
+- Spread 7: "an array of mental copulations that attract and repel each other, resulting in
+  an array of mental copulations that set the stage for an array of mental copulations that
+  attract and repel each other" — the phrase repeats three times. Present identically in the
+  draft docx, so it is in the source, but it reads as an editing accident.
