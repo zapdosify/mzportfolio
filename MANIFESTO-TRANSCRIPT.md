@@ -3,6 +3,23 @@
 **Purpose.** Source text for typesetting the Manifesto's text spreads as real DOM
 text (replacing the flat text images) on `/manifesto-design/design-manifesto`.
 
+## The build, once transcription is done
+
+**Decided by the user, 2026-07-25: the typeset text REPLACES the text spreads.** They do
+not sit side by side. So in the deck:
+
+- **Removed** (become typeset text): 3, 4, 6, 7, 8, 10, 12, 14, 16, 18, 20, 21a, 23a, 23c, 24.
+- **Kept as media**, in place, in book order: spread 1 (emblem), the intro loop video
+  (was spread 2), spread 5 (PROLOGUE), the eight chapter loop videos, spread 23b (EPILOGUE).
+
+The reading order therefore alternates artwork and typeset text, e.g.
+`1 · intro loop · [Giacometti] · [journey lines] · 5 PROLOGUE · [prologue text] ·
+▶Ch1 · [Ch1 text] · ▶Ch2 · [Ch2 text] · … · 23b EPILOGUE · [Albom] · [closing]`.
+
+Typeset in the site's own voice — IBM Plex Mono for chapter labels/headings, Inter for the
+prose, grayscale only. Do **not** imitate the book's geometric sans or its dark-red ground;
+the identity is locked (CONTEXT.md §6). Keep the measure at 65–75 characters.
+
 ## Rules for whoever continues this
 
 1. **The printed spreads are the source of truth**, not the docx.
@@ -37,9 +54,9 @@ text (replacing the flat text images) on `/manifesto-design/design-manifesto`.
 | 14 | Ch3 The Journey | 🟨 McLuhan quote done; **body still to do** |
 | 16 | Ch4 The Oasis | ❌ (opening read only; matches docx closely) |
 | 18 | Ch5 The Stray Path | ❌ (opening read only; has an extra closing passage vs docx) |
-| 20 | Ch6 The Weary Traveler | ❌ **diverges from docx — must transcribe** |
+| 20 | Ch6 The Weary Traveler | ✅ (diverges from docx) |
 | 21a | Ch7 The Final Ascent | ❌ **diverges from docx — must transcribe** |
-| 23a | Ch8 Enlightenment | ❌ **diverges from docx — must transcribe** |
+| 23a | Ch8 Enlightenment | ✅ (diverges from docx) |
 | 23b | EPILOGUE title card | n/a — artwork |
 | 23c | Mitch Albom epigraph | ✅ |
 | 24 | closing | 🟨 partial |
@@ -144,21 +161,29 @@ Opens: "The perfect example of the stray path can be tied back to the many inter
 
 Right column ends with a passage **not in the docx**: "…This was the path I had taken, the route which led me to who i am today, it was indeed the decisive…" — transcribe the remainder.
 
-## SPREAD 20 — Chapter Six, The Weary Traveler ❌ DIVERGES FROM DOCX
+## SPREAD 20 — Chapter Six, The Weary Traveler ✅ (diverges from docx — this is the book)
 
-Opens: "The events that almost made me give up, the continual battering of the winds of social, parental, and peer pressure were taking their toll, and at one point, everything went from carrying an Olympic torch like a brave athlete to becoming a weary traveler."
+The events that almost made me give up, the continual battering of the winds of social, parental, and peer pressure were taking their toll, and at one point, everything went from carrying an Olympic torch like a brave athlete to becoming a weary traveler.
 
-(The docx instead opens "Knowledge can be overwhelming, at this stage in life…". Use the spread.)
+Knowledge may be daunting, and at this time in life, many variables can wear you down, including the weight of wanting to prove yourself and the weight of being able to make a difference in this world. It makes you wonder if all the work is actually worth it, the terrifying possibility that the peak would be riddled with more hurdles, rendering the entire journey pointless. You always look back and realize why you started in the first place.
+
+You choose to flee something, its claws may extend far and wide and still have an impact over you, the dark figure looming over you while you held the torch is still watching you from the distance, this time further away but waiting for you to make the same mistake. The error of wanting you to pursue your aspirations. You will get stronger if you persevere. You will be able to resist everything life throws at you. You will develop the type of soft skills that will make others marvel how you do it. The longer you continue, the more determined you are to finish the endeavor. On an intellectual level, we all realize that it is about the trip rather than the goal; nevertheless, the biggest reality is that it is about both. The trip is for fun, but the goal is for learning. After all, isn't this what makes us human beings resilient ?
 
 ## SPREAD 21a — Chapter Seven, The Final Ascent ❌ DIVERGES FROM DOCX
 
 Opens: "After almost giving up, when all looked lost, there it was. The finish was in sight, a dazzling shining beacon on the summit of the mountain, was it a haven to finally lay all of this to rest? Or was it someone else opening the way for me, another human who had already walked the route I dreaded, who offered me hope? It was too late to turn back; the decisions that set"
 
-## SPREAD 23a — Chapter Eight, Enlightenment ❌ DIVERGES FROM DOCX
+## SPREAD 23a — Chapter Eight, Enlightenment ✅ (diverges from docx — this is the book)
 
-Opens: "This is the stage to which we all aspire; it was here that I recognized I was the magician; the magician is wise, thoughtful, introspective, healing, contemplative, and transforming. This is relating back to to all I've been through in our journey. It was a longer a stray path, it conformed to one that you control."
+This is the stage to which we all aspire; it was here that I recognized I was the magician; the magician is wise, thoughtful, introspective, healing, contemplative, and transforming. This is relating back to to all I've been through in our journey. It was a longer a stray path, it conformed to one that you control.
 
-(Note the doubled "back to to" and "was a longer a stray path" are as printed.)
+The obstacles were never intended to stop me or you from growing; rather, they were designed to help us learn and grow, conquer, and adapt. A fresh perspective and clarity with the universe on our side, ready to take on obstacles and make a difference in the world with the most powerful non-lethal weapon we have - our artistic and creative minds. Knowing that we are the backbone and framework of the foundations of the world, much like the principles of design, we have now joined the ranks of the shamans who carry the light.
+
+And while I type my personal manifesto, I feel more in control of my surroundings, more conscious of my own existence and ideas; does any of this make me feel powerless? Certainly not. What began as a spark has now erupted into a full-fledged flame that cannot be extinguished; it is only capable of lighting the torch for others around me in the hopes that we can carry on this legacy for everyone around us. This is who I am, and this is what my journey has made me.
+
+I hope that my personal experiences have directed you towards being the person you want to be; if you have resonated with my path, then this is only the beginning.
+
+(Note: the doubled "back to to" and "was a longer a stray path" are as printed.)
 
 ## SPREAD 23c — epigraph ✅
 
