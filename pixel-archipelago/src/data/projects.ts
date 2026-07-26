@@ -229,7 +229,12 @@ export const projects: Project[] = [
     galleryVariant: "boards",
     gallery: [
       im("design-manifesto", "1.jpg", "Emblem — may your flame burn forever"),
-      im("design-manifesto", "2.jpg", "Manifesto of Awakening — title spread"),
+      {
+        type: "video",
+        src: `${VID}/design-manifesto/intro-loop.mp4`,
+        poster: `${IMG}/design-manifesto/intro-loop-poster.jpg`,
+        alt: "Manifesto of Awakening — title spread",
+      },
       im("design-manifesto", "3.jpg", "Giacometti epigraph"),
       im("design-manifesto", "4.jpg", "This is my journey, perhaps our journey"),
       im("design-manifesto", "5.jpg", "Prologue"),

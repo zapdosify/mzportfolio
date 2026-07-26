@@ -74,6 +74,7 @@ export const mediaDimensions: Record<string, Dimensions> = {
   "/media/images/design-manifesto/chapter-6-poster.jpg": [1920, 1080],
   "/media/images/design-manifesto/chapter-7-poster.jpg": [1920, 1080],
   "/media/images/design-manifesto/chapter-8-poster.jpg": [1920, 1080],
+  "/media/images/design-manifesto/intro-loop-poster.jpg": [1920, 1080],
   "/media/images/documentary-social-pandemic/01_pngegg.png": [1200, 516],
   "/media/images/documentary-social-pandemic/02_53ff1d_78c63e40fd2048539f279c81e9410fdef000.jpg": [1920, 1080],
   "/media/images/documentary-social-pandemic/03_53ff1d_e99ccdaf214a46adb4e2641dd0b121aaf000.jpg": [1920, 1080],
