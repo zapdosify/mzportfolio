@@ -512,6 +512,34 @@ the console buffer **persists across navigations and even server restarts**, so 
 `ReferenceError`s from a half-finished rename kept reappearing — confirm against `tsc -b` and
 whether the component still renders, not the buffer.
 
+**Boards are edge-to-edge** (follow-up request): `gap:0` and no tile border/radius/background,
+so consecutive spreads butt together as one continuous document. Verified 0px on every seam of
+all board projects. ⚠️ Measure **after** the stagger reveal settles — mid-animation each row is
+still offset (seams read 0.5→6px, growing down the page). That is `useStaggerReveal`, not layout.
+
+**Design Manifesto is now the whole book** (`/manifesto-design/design-manifesto`), replacing the
+single box render. 27 spreads of *Manifesto of Awakening* in page order, `galleryVariant: "boards"`.
+Sources: `images/design-manifesto/` (27 spreads @3840×2160 + 8 chapter videos @4K).
+- **The 8 chapter title cards exist as both stills and motion pieces**, so each video plays in
+  place of its still spread. Card→video map (verified frame by frame, not assumed):
+  `9→ch1 Torch · 11→ch2 Bonfire · 13→ch3 Journey · 15→ch4 Oasis · 17→ch5 Stray Path ·
+  19→ch6 Weary Traveller · 21→ch7 Final Ascent · 22→ch8 Enlightenment`.
+  Spreads 9/11/13/15/17/19/21/22 are therefore **not** in the gallery — their videos are.
+  Book order is card-then-text throughout (…19 card, 20 text, 21 card, 21a text, 22 card, 23a text…).
+- ⚠️ **The masters do not loop cleanly** — measured mean abs frame delta between last and first
+  frame: ch8 was **51/255** (arms sweep in then vanish), ch2/4/6/7 also cut. Each web copy is
+  re-encoded with **its own tail crossfaded over its head** (0.8s), so the output's last frame
+  equals its first. All eight now measure **< 1.0/255**. Recipe is in the commit; if these are
+  ever re-encoded, do the crossfade again or the loops will visibly pop.
+- **`HeroLoop` was renamed `LoopVideo`** — now shared by the hero art slot and the board deck.
+  In a deck it renders with **no player chrome, no tile, no lightbox**: silent, looping,
+  IntersectionObserver-gated (8 videos on one page — off-screen ones must stay paused).
+- Media: 4K → 2560px q82 spreads + 1920px CRF23 loops. **340MB of source video → 15.3MB served.**
+  Build script kept at `scratchpad/manifesto_media.py` (logic described in the commit).
+
+⚠️ **PowerShell + `git commit -m @'…'@` breaks if the message contains a double quote** — the
+native-arg re-parse splits it and git reads the words as pathspecs. Use `git commit -F <file>`.
+
 ---
 
 ## 10 · ⏭️ Resume here (next session)
