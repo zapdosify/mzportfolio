@@ -33,8 +33,9 @@ the identity is locked (CONTEXT.md §6). Keep the measure at 65–75 characters.
    for cross-checking, **never** to paste in directly.
 2. **Nothing may be invented or paraphrased.** If a word is unreadable, crop tighter and
    look again; do not guess.
-3. **Printed typos are quietly fixed** — see the table at the end of this file for the rule
-   and its limits. Corrections are silent; no marginal note, no `[sic]`.
+3. **Copy-edit to standard, quietly** — grammar and punctuation as well as spelling. See the
+   rule and its limits at the end of this file. Corrections are silent (no `[sic]`, no note),
+   but every non-trivial one is logged there. **The voice is not up for editing.**
 4. Words shown olive/green in the book are **inline links** to the reference list (the 12
    references are at the end of the docx). Marked `[text](LINK)` below.
 4. `images/design-manifesto/*.jpg` are 3840×2160. Crop to the text area and upscale to
@@ -94,7 +95,7 @@ If the pendulum swings and signals degrade, a new message is required to replace
 
 You may see the world from an entirely new viewpoint through art, and it's this shift in perspective, coupled with the artist's conscious awareness tuned into a specific vibratory frequency that shakes apart inertia, devastates and illuminates broken institutions, and inspires new ideas. Artistic creativity is fueled by the ability to deduce, feel, and empathize with a wide range of emotional states. To be a true artist, you must live in a world that is both open and private, esoteric, and pure. In a semi-lucid state of alchemical flow, high-level conscious interfaces interpret and connect meta understandings together, consolidating a vast range of ideas into an aesthetically beautiful simplicity.
 
-It is the artist's choice of medium that sets the stage for an array of mental copulations that attract and repel each other, resulting in an array of mental copulations that set the stage for an array of mental copulations that attract and repel each other. An unblinking mosaic of thoughts and concepts is fused together until a cohesive mind construct that consists of many things but is also unique in its own right is born.
+It is the artist's choice of medium that sets the stage for an array of mental copulations that attract and repel each other. An unblinking mosaic of thoughts and concepts is fused together until a cohesive mind construct that consists of many things but is also unique in its own right is born.
 
 There has been an absence of an incubation time that would have allowed a more complete work to emerge. This is not a new problem for Western society, but the pace has sped up significantly as a result of the overcrowded smart phone era; hence, much of what we receive are fragments of hastily churned out notions or minimally altered retellings of better-told tales. There is rarely a moment of isolation if one follows the prescribed road put forth by parents, instructors, and institutions. There's never a chance to clear your head and think clearly. There will never be a time when an idea can mature, and minds will never be able to think and clear themselves of the ego's lies that cloud the field of vision.
 
@@ -126,7 +127,7 @@ There I was, staring at my unsharpened pencil and crumpled up paper, wondering i
 
 ### Middle column ✅
 
-Thank you for sticking with me at this point in the journey; perhaps we share something in common; this is the point where we gather and reflect our thoughts; the bonfire has its own special significance; it provides you with heat and comfort on the coldest of nights; it attracts and catches the attention of any likeminded wandering souls or perhaps some simply seeking refuge from the harsh environment. However, it is a haven of rest where no one is condemned and where everyone is equal in the eyes of the flame. Now, as we all sit here, I'd want to ask you: what is your [archetype](LINK) in this journey? Are you more of a doer, a dreamer, or a believer? they believe it is critical to define who you are before embarking on this voyage of self-discovery. We believe in the notion of being led and then leading others once we comprehend the gravity of leadership; we read about and understand the experiences of others; this is the concept of [phenomenology](LINK) created by Edmund Husserl. We can relate and grasp this journey via the idea of learning, rather than through real experiences, because the more you gain knowledge, the more you genuinely opens up numerous doors.
+Thank you for sticking with me at this point in the journey; perhaps we share something in common; this is the point where we gather and reflect our thoughts; the bonfire has its own special significance; it provides you with heat and comfort on the coldest of nights; it attracts and catches the attention of any likeminded wandering souls or perhaps some simply seeking refuge from the harsh environment. However, it is a haven of rest where no one is condemned and where everyone is equal in the eyes of the flame. Now, as we all sit here, I'd want to ask you: what is your [archetype](LINK) in this journey? Are you more of a doer, a dreamer, or a believer? they believe it is critical to define who you are before embarking on this voyage of self-discovery. We believe in the notion of being led and then leading others once we comprehend the gravity of leadership; we read about and understand the experiences of others; this is the concept of [phenomenology](LINK) created by Edmund Husserl. We can relate and grasp this journey via the idea of learning, rather than through real experiences, because the more you gain knowledge, the more it genuinely opens up numerous doors.
 
 > "I had to philosophize. Otherwise, I could not live in this world."
 > - Edmund Husserl
@@ -214,16 +215,27 @@ text above; apply the same rule to spreads still to be transcribed.
 | 23a | "It was a longer a stray path" | "It was a longer stray path" |
 | 24 | "this univerise" | "this universe" |
 
-**Scope of the fix.** Spelling, doubled words, stray articles, and a lowercase `i` for the
-pronoun. That is the whole licence — **do not** smooth the author's voice, split his long
-sentences, or "correct" his comma splices, which are stylistic and deliberate throughout.
+**Scope — widened by the user, 2026-07-25:** *"you can make grammatical and punctuation
+changes where appropriate according to the correct standard, I may have made mistakes."*
 
-**Flagged, NOT fixed** — these are garbled rather than mistyped, so fixing them would mean
-choosing a meaning on the author's behalf. Left as printed; raise with him:
+So: correct grammar and punctuation to standard — subject–verb agreement, tense, run-ons
+and comma splices, missing or doubled punctuation, capitalisation, spacing.
 
-- Spread 12: "the more you gain knowledge, the more you genuinely opens up numerous doors"
-  (subject–verb disagreement; the intended subject is unclear).
-- Spread 7: "an array of mental copulations that attract and repel each other, resulting in
-  an array of mental copulations that set the stage for an array of mental copulations that
-  attract and repel each other" — the phrase repeats three times. Present identically in the
-  draft docx, so it is in the source, but it reads as an editing accident.
+**But this is still a manifesto, not a report. Preserve the voice.** Specifically keep:
+his second-person address, the rhetorical questions, the deliberately long cumulative
+sentences (fix their punctuation; do not chop them into short ones), his vocabulary, and
+the em-dash asides. Edit for correctness, never for tone, register or rhythm. If a
+"correction" would make a sentence sound like someone else wrote it, leave it.
+
+**Every non-trivial change is logged below**, so Mohammed can review what was altered
+rather than having to diff his own book.
+
+### Editorial changes beyond simple typos
+
+| Spread | Printed | On the site | Why |
+|---|---|---|---|
+| 12 | "the more you gain knowledge, the more you genuinely opens up numerous doors" | "the more you gain knowledge, the more it genuinely opens up numerous doors" | subject–verb agreement; the thing opening doors is the knowledge |
+| 7 | "…an array of mental copulations that attract and repel each other, resulting in an array of mental copulations that set the stage for an array of mental copulations that attract and repel each other." | "…an array of mental copulations that attract and repel each other." | the clause is printed three times over. Identical in the draft docx, so it is in the source, but it is a duplication rather than a rhetorical repetition — the sentence already says it once |
+
+⚠️ The spread 7 deduplication removes ~30 words. It is the single largest edit in the
+book and the one most worth Mohammed's eye. Flag it to him when the text ships.
