@@ -540,6 +540,34 @@ Sources: `images/design-manifesto/` (27 spreads @3840×2160 + 8 chapter videos @
 ⚠️ **PowerShell + `git commit -m @'…'@` breaks if the message contains a double quote** — the
 native-arg re-parse splits it and git reads the words as pathspecs. Use `git commit -F <file>`.
 
+### 2026-07-25 — Manifesto text spreads → real typeset text (IN PROGRESS)
+
+User request: *"for all these text based images present, can you actually build a beautiful
+text display in our visual style and include it instead of the images that have text?"*
+Nothing has been built yet — this is the transcription phase. **Working doc:
+`MANIFESTO-TRANSCRIPT.md` at the repo root; read it before continuing.**
+
+- ⚠️ **The docx the user supplied is an EARLIER DRAFT than the printed book.**
+  (`E:\…\GRA 521\final manifesto pdf\manifesto\final document.docx`, 4,155 words, extracts
+  cleanly.) Chapter 6's opening is completely different, chapters 7–8 are reworded
+  throughout, chapter 5 has an extra closing passage, chapter 2's opening is revised.
+  The prologue and chapters 1–4 match closely. **The user chose (2026-07-25) to transcribe
+  from the spreads**, using the docx only to cross-check shared passages so they are exact.
+  **Do not paste the docx in.**
+- The 93MB `Design Manifesto.pdf` on the Desktop is fully rasterised — 27 pages, zero
+  extractable characters. Not a text source.
+- Done: spreads 3, 4, 6, 7, 8, 10, 12 (middle column + Husserl quote), 14 (McLuhan quote),
+  23c. Remaining: 12 sidebar + phenomenology column, 14 body, 16, 18, 20, 21a, 23a, 24.
+- The book styles certain phrases as **inline links** to its 12 references (olive/green:
+  "authoritarian tyranny", "Dunning-Kruger", "define you", "flame", "archetype",
+  "phenomenology"). The reference list is at the end of the docx — wire these up as real
+  links rather than dropping the colour.
+- Three printed typos found (`univerise`, "back to to", lowercase `i`) — listed at the end
+  of the transcript as questions for the user; reproduce as printed until they say otherwise.
+- Still undecided (asked, not yet answered): whether typeset text **replaces** the text
+  spreads or sits **alongside** them. My recommendation was replace for the dense prose
+  spreads, keep the artwork spreads (1, 5, 23b, and the chapter/intro videos) as they are.
+
 ---
 
 ## 10 · ⏭️ Resume here (next session)
