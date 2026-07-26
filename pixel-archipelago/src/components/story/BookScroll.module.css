@@ -1,0 +1,214 @@
+/* A printed book read as a page.
+   Typeset in the site's own voice — IBM Plex Mono for structure, Inter for the
+   prose, grayscale throughout. Deliberately NOT an imitation of the book's
+   geometric sans on dark red: the identity is fixed (see CONTEXT.md §6), and a
+   pastiche of the artefact would read as a broken copy of it rather than as a
+   reading of it. */
+
+.book {
+  /* one measure governs the whole book, so every block shares a spine */
+  --measure: 68ch;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-16);
+}
+.book > * { width: 100%; max-width: var(--measure); }
+
+/* ---------- Body ---------- */
+.prose p {
+  font-size: var(--fs-18);
+  line-height: 1.75;
+  color: var(--text-secondary);
+  margin: 0 0 var(--space-6);
+}
+.prose p:last-child { margin-bottom: 0; }
+
+/* A chapter's opening line, set larger than the body it introduces. */
+.lead {
+  margin: 0;
+  font-size: var(--fs-24);
+  line-height: 1.55;
+  color: var(--text-primary);
+  text-wrap: balance;
+}
+
+/* ---------- Artwork spreads ---------- */
+/* Full-bleed of the content column, not the measure — these are pictures. */
+.plate,
+.chapter {
+  max-width: 100%;
+  margin: 0;
+}
+.plate img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* ---------- Chapter cards ---------- */
+.chapterArt { position: relative; width: 100%; background: var(--black); }
+.chapterTitle {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-4);
+  margin: var(--space-6) 0 0;
+  font-family: var(--font-mono);
+  font-weight: 400;
+}
+.chapterNum {
+  font-size: var(--fs-12);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.chapterName {
+  font-size: var(--fs-24);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--white);
+}
+
+/* ---------- Quotations ---------- */
+/* Someone else's words: indented behind a rule, so they read as borrowed. */
+.epigraph {
+  margin: 0;
+  padding-left: var(--space-8);
+  border-left: 1px solid var(--border-active);
+}
+.epigraph blockquote {
+  margin: 0;
+  font-size: var(--fs-20);
+  line-height: 1.65;
+  font-style: italic;
+  color: var(--text-primary);
+}
+.epigraph blockquote::before { content: "\201C"; }
+.epigraph blockquote::after { content: "\201D"; }
+.epigraph figcaption {
+  margin-top: var(--space-4);
+  font-family: var(--font-mono);
+  font-size: var(--fs-12);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+/* The author's own line, lifted out of the flow. No quote marks — it is not
+   being quoted, it is being said. */
+.pull {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: var(--fs-24);
+  line-height: 1.5;
+  letter-spacing: 0.02em;
+  color: var(--white);
+  text-align: center;
+  text-wrap: balance;
+}
+
+.verse {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  margin: 0;
+  font-size: var(--fs-20);
+  line-height: 1.6;
+  color: var(--text-primary);
+  text-align: center;
+  text-wrap: balance;
+}
+
+/* ---------- The archetypes ---------- */
+.listTitle,
+.asideTitle {
+  margin: 0 0 var(--space-6);
+  font-family: var(--font-mono);
+  font-size: var(--fs-12);
+  font-weight: 400;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.list { margin: 0; }
+.listRow {
+  display: grid;
+  grid-template-columns: 14ch 1fr;
+  gap: var(--space-6);
+  padding: var(--space-4) 0;
+  border-top: 1px solid var(--border-dark);
+}
+.listRow:last-child { border-bottom: 1px solid var(--border-dark); }
+.listRow dt {
+  font-family: var(--font-mono);
+  font-size: var(--fs-12);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-primary);
+}
+.listRow dd {
+  margin: 0;
+  font-size: var(--fs-16);
+  line-height: 1.65;
+  color: var(--text-secondary);
+}
+
+/* ---------- Margin explainer ---------- */
+/* Held on a surface so it reads as supporting material, not as the argument. */
+.aside {
+  padding: var(--space-8);
+  border: 1px solid var(--border-dark);
+  border-radius: var(--radius);
+  background: var(--surface-dark);
+}
+.aside p {
+  margin: 0 0 var(--space-4);
+  font-size: var(--fs-14);
+  line-height: 1.7;
+  color: var(--text-muted);
+}
+.aside p:last-child { margin-bottom: 0; }
+
+/* ---------- Close ---------- */
+.closing { text-align: center; }
+.closing p {
+  margin: 0 0 var(--space-6);
+  font-size: var(--fs-18);
+  line-height: 1.7;
+  color: var(--text-secondary);
+}
+.signoff {
+  margin-top: var(--space-12) !important;
+  font-family: var(--font-mono);
+  font-size: var(--fs-16);
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--white) !important;
+}
+
+/* ---------- Reference links ---------- */
+/* The book coloured these; the palette is grayscale, so they are marked with a
+   rule instead — the same job done in this identity's own terms. */
+.ref {
+  color: var(--text-primary);
+  text-decoration: underline;
+  text-decoration-color: var(--border-active);
+  text-underline-offset: 0.22em;
+  transition: text-decoration-color var(--dur-fast) var(--ease-out);
+}
+.ref:hover { text-decoration-color: var(--white); }
+
+@media (max-width: 640px) {
+  .book { --measure: 100%; gap: var(--space-12); }
+  .lead { font-size: var(--fs-20); }
+  .pull { font-size: var(--fs-20); text-align: left; }
+  .epigraph { padding-left: var(--space-4); }
+  .epigraph blockquote { font-size: var(--fs-18); }
+  .listRow { grid-template-columns: 1fr; gap: var(--space-2); }
+  .aside { padding: var(--space-6); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ref { transition: none; }
+}

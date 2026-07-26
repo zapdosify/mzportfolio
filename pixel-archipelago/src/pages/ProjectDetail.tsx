@@ -6,6 +6,8 @@ import AmbientVideo from "../components/media/AmbientVideo";
 import LoopVideo from "../components/media/LoopVideo";
 import VideoEmbed from "../components/media/VideoEmbed";
 import StoryScroll from "../components/story/StoryScroll";
+import BookScroll from "../components/story/BookScroll";
+import { manifestoLinks } from "../data/manifestoBook";
 import { useHeroReveal } from "../hooks/useHeroReveal";
 import NotFound from "./NotFound";
 import s from "../styles/interior.module.css";
@@ -169,8 +171,20 @@ export default function ProjectDetail() {
         </section>
       )}
 
+      {/* A printed book, set as real text. Replaces the gallery entirely — the
+          artwork spreads and chapter loops are blocks inside it. */}
+      {project.book && project.book.length > 0 && (
+        <section className={s.section} aria-labelledby="book-h">
+          <div className={s.sectionHead}>
+            <h2 id="book-h" className={s.sectionTitle}>The Book</h2>
+            <span className={s.sectionMeta}>Read in full</span>
+          </div>
+          <BookScroll blocks={project.book} links={manifestoLinks} />
+        </section>
+      )}
+
       {/* Gallery */}
-      {project.gallery && project.gallery.length > 0 && (
+      {!project.book && project.gallery && project.gallery.length > 0 && (
         <section className={s.section} aria-labelledby="gallery-h">
           <div className={s.sectionHead}>
             <h2 id="gallery-h" className={s.sectionTitle}>Gallery</h2>

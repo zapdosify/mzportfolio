@@ -1,4 +1,10 @@
-# Manifesto of Awakening — working transcript
+# Manifesto of Awakening — transcript ✅ COMPLETE
+
+> **Status: done and shipped.** Every spread is transcribed and the book is live at
+> `/manifesto-design/design-manifesto`. The text now lives in
+> `pixel-archipelago/src/data/manifestoBook.ts`, which is the file to edit — this document
+> is the record of where the words came from and what was changed, kept for provenance.
+
 
 **Purpose.** Source text for typesetting the Manifesto's text spreads as real DOM
 text (replacing the flat text images) on `/manifesto-design/design-manifesto`.
@@ -132,14 +138,25 @@ Thank you for sticking with me at this point in the journey; perhaps we share so
 > "I had to philosophize. Otherwise, I could not live in this world."
 > - Edmund Husserl
 
-### Left sidebar — the archetypes ❌ TO VERIFY
-Read from `12.jpg`, x ≈ 0.03–0.26. A draft reading exists but **must be re-checked at
-full resolution before use** — it lists The Innocent, Hero, Rebel, Traveler, Creator,
-Ruler, Magician, Lover/Caregiver, Jester, Sage.
+### Left sidebar — the archetypes ✅
+Set as a list beside the prose. (Book prints "Imaginative, imaginative" and "strict and
+strict"; both deduplicated under the quiet-fix rule.)
 
-### Right column — phenomenology explainer ❌ TO TRANSCRIBE
-Read from `12.jpg`, x ≈ 0.53–0.78. Not present in the docx. Roughly 300 words on
-Husserl, the "rigorous science", *zu den Sachen selbst*, bracketing and the epoché.
+- **To be innocent:** is to be happy and to be innocent is to be young. In search of relationships and belonging; supportive, faithful, and down to earth.
+- **The Hero:** is a brave, daring, and inspiring person on a quest to improve the world.
+- **The Rebel:** Challenges authority and norms; desires revolt and revolution.
+- **The Traveler:** Finds inspiration in adventure, danger, and new experiences.
+- **The Creator:** Imaginative and determined to create lasting value.
+- **The Ruler:** Brings order to chaos, is strict, yet responsible and ordered.
+- **The Magician:** The Magician is a visionary and spiritual being who wishes to create something exceptional.
+- **The Lover:** Inspires love, passion, romance, and dedication. The Caregiver is sympathetic, nurturing, and kind.
+- **The Jester:** Spreads delight via comedy, irreverence, and mischief.
+- **The Sage** is a wise mentor or counselor who is dedicated to helping the world attain deeper insight and knowledge.
+
+### Right column — phenomenology explainer ✅
+Not present in the docx. Set as an aside/sidenote beside the prose.
+
+Phenomenology is an experience-based philosophy. The ultimate source of all meaning and value, according to phenomenology, is human lived experience. All philosophical systems, scientific theories, and aesthetic judgements are abstractions from the experienced world's ebb and flow. According to phenomenology, the goal of the philosopher is to characterize the structures of experience, including awareness, imagination, relationships with other people, and the situatedness of the human subject in society and history. Phenomenological theories of literature see works of art as mediators between the author's and the reader's consciousnesses, or as efforts to reveal elements of human being and their worlds. The modern originator of phenomenology is the German philosopher Edmund Husserl (1859–1938), who wanted to transform philosophy into a "rigorous science" by returning its focus "to the objects themselves" (zu den Sachen selbst). He does not want for philosophy to become empirical, as if "facts" could be discovered objectively and totally. Rather, in quest of foundations on which philosophers can base their knowledge with confidence, Husserl suggests that reflection set aside any unprovable assumptions (such as those concerning the existence of objects or ideal or metaphysical entities) and characterize what is provided in experience. He claims that the path to a presuppositionless philosophy begins with suspending the "natural attitude" of daily knowledge, which presupposes that things just exist in the external world. Philosophers should "bracket" the object-world and, in a process he calls epoché, or "reduction," focus their attention on what is immanent in consciousness itself, without making any assumptions about its origins or supports. Husserl thinks that a pure account of the events presented in consciousness would provide philosophers with a basis of necessary, certain knowledge, so justifying philosophy's claim to be more radical and all-encompassing than other disciplines.
 
 ## SPREAD 14 — Chapter Three, The Journey
 
@@ -148,21 +165,49 @@ Husserl, the "rigorous science", *zu den Sachen selbst*, bracketing and the epoc
 > "It is now perfectly plain to me that all media are environments, all media have the effects that geographers and biologists have associated with environments in the past. … The medium is the message because the environment transforms our perceptions governing the areas of attention and neglect alike."
 > - Marshall McLuhan,
 
-### Body ❌ TO TRANSCRIBE
-Opens "I've deduced that everything worthwhile requires stepping outside of your comfort
-zone." — tracks docx paragraph 17 closely; verify against the spread.
+### Body ✅
 
-## SPREAD 16 — Chapter Four, The Oasis ❌
+I've deduced that everything worthwhile requires stepping outside of your comfort zone. Establishing new relationships or ending old ones, starting a new business, or acquiring a new skill are all possibilities. That everything comes to those who work hard and spend time doing difficult tasks. Another problem is that they aren't necessary. You'll be OK if you stay in your comfort zone. All's fine, but that's about it. By becoming someone who likes pain, you can go from 'just OK' to 'well,' all on your own. A person who takes great pleasure in it. When it occurs, you get a steady stream of the reward you're seeking, which keeps you going until the end.
 
-Opens: "During all journeys you are faced with many challenges and stops, the oasis seemingly beautiful but treacherous, what you once thought was beautiful turned out to be non- existent as you got closer to it, the world in this case run by the spectacle, this was when I realized what was truly at stake, what it meant to be an artist, to view the world with a third eye,"
+One of the most significant changes in my life was realizing the importance of discomfort and putting in the effort to become someone who enjoys working in that environment. In business, the capacity to remain uncomfortable, often known as 'grit,' is a major component in achieving great success. Journeys are always the hardest bit, when you have finally set out in the unknown with nothing but a small bundle of hope on your back and the ragged scarf of motivation shielding you from the harsh winds. You feel exposed and vulnerable because of the sheer vastness of the task you have undertaken, you dared to be different, you dared to dream.
 
-Right column continues "…did not. Rather, it expanded from the workplace to the marketplace and is now appearing as a social order…". Contains the Debord and Bernays block quotes (both in the docx). Tracks docx paragraphs 18–26.
+I would like to think of this manifesto as a sequential experience. Everyone who reads this piece will follow the same predetermined sequence of a beginning, middle, and end. Over the course of the timeline, we see an individual's journey and tale end. This concept has been central to the manifesto's conception and development since its inception. Regardless of the message, all of this is [dictated by the medium](LINK).
 
-## SPREAD 18 — Chapter Five, The Stray Path ❌
+## SPREAD 16 — Chapter Four, The Oasis ✅
 
-Opens: "The perfect example of the stray path can be tied back to the many interpretations of the poem by Robert Frost's "The road not taken" / The stray path throws our journey into a bind. There are two roads presented, probably because of the one road splitting, and there is nothing to do except select one of the roads and continue life's journey."
+During all journeys you are faced with many challenges and stops, the oasis seemingly beautiful but treacherous, what you once thought was beautiful turned out to be non-existent as you got closer to it, the world in this case run by the spectacle, this was when I realized what was truly at stake, what it meant to be an artist, to view the world with a third eye, how overwhelming was this realization that it made you want to go back to being oblivious?
 
-Right column ends with a passage **not in the docx**: "…This was the path I had taken, the route which led me to who i am today, it was indeed the decisive…" — transcribe the remainder. (The lowercase `i` there is corrected to `I` under the quiet-fix rule.)
+> "The reigning economic system is a vicious circle of isolation. Its technologies are based on isolation, and they contribute to that same isolation. From automobiles to television, the goods that the spectacular system chooses to produce also serve it as weapons for constantly reinforcing the conditions that engender "lonely crowds.""
+> - Guy Debord, The Society of the Spectacle
+
+> "The conscious and intelligent manipulation of the organized habits and opinions of the masses is an important element in democratic society. Those who manipulate this unseen mechanism of society constitute an invisible government which is the true ruling power of our country. We are governed, our minds are molded, our tastes formed, our ideas suggested, largely by men we have never heard of. This is a logical result of the way in which our democratic society is organized. Vast numbers of human beings must cooperate in this manner if they are to live together as a smoothly functioning society."
+> - Edward Bernays, Propaganda
+
+Guy Debord's "Society of the Spectacle" contends that alienation is a result of modern society's economic, political, and cultural conditions. While many people's working conditions improved after WWII, alienation did not. Rather, it expanded from the workplace to the marketplace and is now appearing as a social order in which everyone is compelled to live in accordance with production cycles rather than living for themselves. Images of imperialism and capital bombard us on a daily basis. It is tenacious. Our thoughts have grown into a marketplace as well as a commodity that can be traded. And it's a profitable industry, as evidenced by Facebook and Google. Their data collection and surveillance represent the union of the state and the capitalist economy, and they have carved out devious new places in the human brain to coerce self-censorship and cooperation with the prevailing consumerist global order. We are constantly bombarded with images of those who have achieved fame and fortune in the modern world. We're taught that if we want to look like them, we have to buy their clothes. This social training is a process that must be widely accepted. Edward Bernays, the well-known business publicist and "father of public relations," recognized this. Manipulation of the many strata of the human psyche takes time, particularly when working with large populations. However, history is riddled with tragic examples of powerful interests successfully carrying it out. Today, those interests are squarely with capital and empire, but the consequences are the same: distraction, censorship, alienation, coercion, compliance with status quo practices, and numbing of our mental process.
+
+This may persuade us to assume that our social standing is meaningless, because the goal is not to be a worker or anything else—it is to become famous and wealthy. As a result, in order to avoid social alienation, we must all recognize what is genuinely important in life: our own social positions within society.
+
+Unplugging from any of this is not always easy or virtuous, but there are ways to escape from its social effect, both personally and collectively. There are also ways to use it that put its current algorithms to the test. [détournement](LINK), which translates as rerouting or hijacking in French, is one of these approaches. This entails reversing capital and empire's imagery or messages in order to illustrate and even exacerbate their deception. It has a lengthy track record of successfully changing the prevalent narrative to reflect reality.
+
+✅ Checked: the chapter ends there. The draft's final paragraph ("All of this is not to
+suggest that technology or social media are intrinsically bad…") was **cut from the book**.
+Do not restore it from the docx.
+
+## SPREAD 18 — Chapter Five, The Stray Path ✅
+
+The perfect example of the stray path can be tied back to the many interpretations of the poem by Robert Frost's "The road not taken". The stray path throws our journey into a bind. There are two roads presented, probably because of the one road splitting, and there is nothing to do except select one of the roads and continue life's journey.
+
+The core theme is that we are frequently confronted with options in life. When choosing a choice, one must make a decision. When we consider an option as a fork in the road, it becomes evident that we must select one or the other, but not both. Frost did not say if the path he picked was the right one in "The Road Not Taken." Regardless, that is where he is now, and where he ends up, for better or worse, is the product of his decision.
+
+This poem is not about traveling the route less traveled, about originality, or about being one-of-a-kind. To be clear, this poem is about the path taken as well as the road not taken, not always the road less traveled. Anyone who has made a significant decision would agree that it is human nature to wonder, "What if…" had you taken the option you did not make. The fundamental theme of the stray path is considering the alternative life one may have had if they had done something differently.
+
+The speaker chooses the other route at random and proclaims himself glad once there since it has more grass and not many people have gone down it. In any case, he could always go back and attempt the 'original' path again. Is it a possibility? Perhaps not since life has a way of making one thing lead to another until going backwards is no longer an option.
+
+But who knows what the future will bring? The speaker indicates that when he gets older, he will reflect on this pivotal moment in his life, the morning he chose the path less traveled, because adopting that route profoundly transformed his way of being. This was the path I had taken, the route which led me to who I am today, it was indeed the decisive moment for the kid with the immature intellect pursuing his decision to become a visionary. The stray path would have only led you back to where you began, there is still time for me to continue down this path and reflect on it but wanting to embrace creativity wholeheartedly, this fork in the road does not make me wonder "what if", without a speck of a doubt, I did not want to look back.
+
+(Book prints "relfect", "whole heartedly", and lowercase `i` twice — corrected above under the
+quiet-fix rule. The closing passage from "This was the path I had taken" onward is **not in
+the draft docx**.)
 
 ## SPREAD 20 — Chapter Six, The Weary Traveler ✅ (diverges from docx — this is the book)
 
@@ -172,9 +217,13 @@ Knowledge may be daunting, and at this time in life, many variables can wear you
 
 You choose to flee something, its claws may extend far and wide and still have an impact over you, the dark figure looming over you while you held the torch is still watching you from the distance, this time further away but waiting for you to make the same mistake. The error of wanting you to pursue your aspirations. You will get stronger if you persevere. You will be able to resist everything life throws at you. You will develop the type of soft skills that will make others marvel how you do it. The longer you continue, the more determined you are to finish the endeavor. On an intellectual level, we all realize that it is about the trip rather than the goal; nevertheless, the biggest reality is that it is about both. The trip is for fun, but the goal is for learning. After all, isn't this what makes us human beings resilient ?
 
-## SPREAD 21a — Chapter Seven, The Final Ascent ❌ DIVERGES FROM DOCX
+## SPREAD 21a — Chapter Seven, The Final Ascent ✅ (diverges from docx — this is the book)
 
-Opens: "After almost giving up, when all looked lost, there it was. The finish was in sight, a dazzling shining beacon on the summit of the mountain, was it a haven to finally lay all of this to rest? Or was it someone else opening the way for me, another human who had already walked the route I dreaded, who offered me hope? It was too late to turn back; the decisions that set"
+After almost giving up, when all looked lost, there it was. The finish was in sight, a dazzling shining beacon on the summit of the mountain, was it a haven to finally lay all of this to rest? Or was it someone else opening the way for me, another human who had already walked the route I dreaded, who offered me hope? It was too late to turn back; the decisions that set this entire journey in motion rested on your will not to give up. You set out to be that creative person against all odds, choosing sense of satisfaction over money, passion over expectations. Will you eventually learn to live with the world's terrible ways, or will you submit to its rules? There is too much within you that has to be expressed, and the flame is now brighter than ever.
+
+The flame has been your constant companion; you set out with it and nurtured it with experiences. Rise above all odds. Prove to yourself that you are finally going to be the visionary you set out to be. Be Yourself— your finest advantage in this world is being who you are, true and free of any outside limitations. You may be that person in your head, and it will spread to the rest of the world. It doesn't matter how lengthy or difficult your path to self-discovery is — what counts is that you get there.
+
+Before you start with discipline and discovery, I hope you can start by conquering yourself. Because a positive perspective, rather than a negative one, is more conducive to self-control and willpower. This my dear reader, is the [symbolism of the universe](LINK), the signifier and the signified, every thought, action, feeling sets forth events in motion far beyond any of us can comprehend, this is the power we hold.
 
 ## SPREAD 23a — Chapter Eight, Enlightenment ✅ (diverges from docx — this is the book)
 

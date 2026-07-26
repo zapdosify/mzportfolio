@@ -28,6 +28,29 @@ export interface StoryBeat {
   aside?: string;
 }
 
+/**
+ * One block of a printed book read as a page. The Manifesto's spreads were flat
+ * images of text; these are the same words as real, selectable, searchable DOM.
+ * Artwork spreads and the animated chapter cards stay as media (`plate`,
+ * `chapter`) and sit in the same sequence.
+ */
+export type BookBlock =
+  | { kind: "plate"; src: string; alt: string }
+  | { kind: "chapter"; number: number; title: string; src: string; poster: string }
+  | { kind: "prose"; paragraphs: string[] }
+  /** the book's opening line for a chapter, set larger than the body */
+  | { kind: "lead"; text: string }
+  /** a quotation from someone else, with attribution */
+  | { kind: "epigraph"; text: string; source: string }
+  /** the author's own line, pulled out of the flow and set large */
+  | { kind: "pull"; text: string }
+  /** short centred lines, as on the "this journey has a beginning" spread */
+  | { kind: "verse"; lines: string[] }
+  | { kind: "list"; title?: string; items: [string, string][] }
+  /** supporting explainer that sat in a margin column of the spread */
+  | { kind: "aside"; title?: string; paragraphs: string[] }
+  | { kind: "closing"; paragraphs: string[]; signoff?: string };
+
 /** A looping, muted ambient video used as a project's opening motion piece. */
 export interface AmbientVideo {
   src: string;
@@ -98,6 +121,8 @@ export interface Project {
   story?: StoryBeat[];
   /** the printed spreads the story is read from, in page order */
   storySpreads?: ProjectMedia[];
+  /** a printed book set as real text — replaces the gallery when present */
+  book?: BookBlock[];
   externalLinks?: ExternalLink[];
   /** sub-cases inside one project (e.g. Exhibition Design's three prompts) */
   subProjects?: SubProject[];

@@ -1,5 +1,6 @@
 import type { Project, ProjectMedia } from "./types";
 import { solarpunkStory } from "./solarpunkStory";
+import { manifestoBook } from "./manifestoBook";
 
 // ---------------------------------------------------------------------------
 // Media helpers. Content migrated verbatim from the previous portfolio.
@@ -223,9 +224,10 @@ export const projects: Project[] = [
       "By exploring the concept of archetypes and phenomenology, I celebrate the universal threads that connect us all, transcending cultural and historical boundaries. As I navigate this rich tapestry of ideas and experiences, I am continually reminded of Marshall McLuhan's poignant maxim, \"the medium is the message,\" underscoring the profound impact of artistic expression on the world around us.",
     ],
     coverImage: `${IMG}/design-manifesto/01_1.jpg`,
-    // "Manifesto of Awakening" read as the book it is: every spread at full
-    // width, in page order. The eight chapter title cards were also animated,
-    // so each one plays as a silent loop in place of its still spread.
+    // "Manifesto of Awakening" is read as a book, not viewed as a gallery: the
+    // text spreads are set as real DOM text, while the artwork spreads and the
+    // animated chapter cards stay as media inside the same sequence.
+    book: manifestoBook,
     galleryVariant: "boards",
     gallery: [
       im("design-manifesto", "1.jpg", "Emblem — may your flame burn forever"),
