@@ -45,6 +45,13 @@
   border-radius: 0;
   background: transparent;
 }
+/* An animated spread occupies a row exactly like a still one — same width, its
+   poster's aspect reserved up front, no frame — so the deck reads unbroken. */
+.boards .boardVideo {
+  display: block;
+  width: 100%;
+  list-style: none;
+}
 
 /* ---------- Clickable image tile ---------- */
 .tile {

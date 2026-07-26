@@ -1,0 +1,25 @@
+/* Fills whatever frame it is given exactly — a hero's art slot (so the bracketed
+   corner ticks still sit on the artwork's edge) or a full-width board row.
+   `contain` keeps the sequence whole: these are designed cards, never backdrops. */
+.frame {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: var(--black);
+}
+.video,
+.poster {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+/* Sits over the video while it is not running. Scoped under .frame so it
+   outranks `.heroArt img`, which would otherwise crop the poster to `cover`
+   while the video beneath it stays `contain`. */
+.frame .poster {
+  position: absolute;
+  inset: 0;
+  object-fit: contain;
+  pointer-events: none;
+}

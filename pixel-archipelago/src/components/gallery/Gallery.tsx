@@ -2,6 +2,7 @@ import { useState } from "react";
 import type { ProjectMedia } from "../../data/types";
 import { dimensionsFor } from "../../data/mediaDimensions";
 import MediaFigure from "../media/MediaFigure";
+import LoopVideo from "../media/LoopVideo";
 import Lightbox from "./Lightbox";
 import { useStaggerReveal } from "../../hooks/useStaggerReveal";
 import styles from "./Gallery.module.css";
@@ -45,6 +46,21 @@ export default function Gallery({
       <ul className={`${styles.gallery} ${styles[variant]}`} ref={gridRef}>
         {items.map((m, i) => {
           if (m.type === "video") {
+            // Inside a deck a video is an animated spread, not something to
+            // operate: it plays silently on loop and sits in the run of boards
+            // with no player chrome, so the sequence reads unbroken.
+            if (variant === "boards") {
+              const vd = dimensionsFor(m.poster);
+              return (
+                <li
+                  key={m.src + i}
+                  className={styles.boardVideo}
+                  style={vd ? { aspectRatio: `${vd[0]} / ${vd[1]}` } : undefined}
+                >
+                  <LoopVideo video={{ src: m.src, poster: m.poster, caption: m.alt }} />
+                </li>
+              );
+            }
             return (
               <li key={m.src + i} className={styles.videoCell}>
                 <MediaFigure media={m} />

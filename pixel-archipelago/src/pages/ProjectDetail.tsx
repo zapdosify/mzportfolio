@@ -3,7 +3,7 @@ import { categoryById } from "../data/categories";
 import { projectBySlug, projectById } from "../data/projects";
 import Gallery from "../components/gallery/Gallery";
 import AmbientVideo from "../components/media/AmbientVideo";
-import HeroLoop from "../components/media/HeroLoop";
+import LoopVideo from "../components/media/LoopVideo";
 import VideoEmbed from "../components/media/VideoEmbed";
 import StoryScroll from "../components/story/StoryScroll";
 import { useHeroReveal } from "../hooks/useHeroReveal";
@@ -56,7 +56,7 @@ export default function ProjectDetail() {
             otherwise the still cover image does. */}
         {project.heroVideo ? (
           <div className={`${s.heroArt} ${s.heroArtVideo}`}>
-            <HeroLoop video={project.heroVideo} />
+            <LoopVideo video={project.heroVideo} />
           </div>
         ) : (
           project.coverImage && (

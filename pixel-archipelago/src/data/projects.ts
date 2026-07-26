@@ -33,6 +33,18 @@ const vid = (
   caption,
 });
 
+/**
+ * An animated Manifesto chapter card. Each was authored as a moving version of
+ * the printed chapter spread, so it replaces that spread in the deck; the loops
+ * are crossfaded at the seam, so playback has no visible cut.
+ */
+const chapterLoop = (n: number, title: string): ProjectMedia => ({
+  type: "video",
+  src: `${VID}/design-manifesto/chapter-${n}.mp4`,
+  poster: `${IMG}/design-manifesto/chapter-${n}-poster.jpg`,
+  alt: `Chapter ${title}`,
+});
+
 export const projects: Project[] = [
   // ========================= APP DESIGN =========================
   {
@@ -211,7 +223,39 @@ export const projects: Project[] = [
       "By exploring the concept of archetypes and phenomenology, I celebrate the universal threads that connect us all, transcending cultural and historical boundaries. As I navigate this rich tapestry of ideas and experiences, I am continually reminded of Marshall McLuhan's poignant maxim, \"the medium is the message,\" underscoring the profound impact of artistic expression on the world around us.",
     ],
     coverImage: `${IMG}/design-manifesto/01_1.jpg`,
-    gallery: [im("design-manifesto", "01_1.jpg", "Manifesto box design and book artwork")],
+    // "Manifesto of Awakening" read as the book it is: every spread at full
+    // width, in page order. The eight chapter title cards were also animated,
+    // so each one plays as a silent loop in place of its still spread.
+    galleryVariant: "boards",
+    gallery: [
+      im("design-manifesto", "1.jpg", "Emblem — may your flame burn forever"),
+      im("design-manifesto", "2.jpg", "Manifesto of Awakening — title spread"),
+      im("design-manifesto", "3.jpg", "Giacometti epigraph"),
+      im("design-manifesto", "4.jpg", "This is my journey, perhaps our journey"),
+      im("design-manifesto", "5.jpg", "Prologue"),
+      im("design-manifesto", "6.jpg", "Prologue, continued"),
+      im("design-manifesto", "7.jpg", "Prologue, continued"),
+      im("design-manifesto", "8.jpg", "Prologue, continued"),
+      chapterLoop(1, "One — The Torch"),
+      im("design-manifesto", "10.jpg", "Chapter One — The Torch, text"),
+      chapterLoop(2, "Two — The Bonfire"),
+      im("design-manifesto", "12.jpg", "Chapter Two — The Bonfire, text"),
+      chapterLoop(3, "Three — The Journey"),
+      im("design-manifesto", "14.jpg", "Chapter Three — The Journey, text"),
+      chapterLoop(4, "Four — The Oasis"),
+      im("design-manifesto", "16.jpg", "Chapter Four — The Oasis, text"),
+      chapterLoop(5, "Five — The Stray Path"),
+      im("design-manifesto", "18.jpg", "Chapter Five — The Stray Path, text"),
+      chapterLoop(6, "Six — The Weary Traveller"),
+      im("design-manifesto", "20.jpg", "Chapter Six — The Weary Traveller, text"),
+      chapterLoop(7, "Seven — The Final Ascent"),
+      im("design-manifesto", "21a.jpg", "Chapter Seven — The Final Ascent, text"),
+      chapterLoop(8, "Eight — Enlightenment"),
+      im("design-manifesto", "23a.jpg", "Chapter Eight — Enlightenment, text"),
+      im("design-manifesto", "23b.jpg", "Epilogue"),
+      im("design-manifesto", "23c.jpg", "The Five People You Meet in Heaven epigraph"),
+      im("design-manifesto", "24.jpg", "May you be the best version of yourself"),
+    ],
     externalLinks: [
       { label: "Manifesto website", note: "Referenced on the original site; URL not recoverable." },
       { label: "Flipbook", note: "Referenced on the original site; URL not recoverable." },
