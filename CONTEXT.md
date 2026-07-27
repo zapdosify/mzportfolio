@@ -1,7 +1,13 @@
 # CONTEXT — Pixel Archipelago Portfolio (session handoff)
 
-**Read this first in a new session.** Last updated: **2026-07-25** (all 6 phases done +
-pre-deploy content pass + contact composer). Working tree clean, build green, **ready to deploy**.
+**Read this first in a new session.** Last updated: **2026-07-27** (all 6 phases done, plus a
+media-presentation pass: full-width board decks, real Lightbox zoom, ten looping videos, and
+the Manifesto typeset as a book). Working tree clean, build green, **ready to deploy**.
+
+**What changed most recently** — jump to §9's last four entries for the detail:
+board decks read edge-to-edge (BookBabies · HODL · Frontline · Magenta Moves), the Lightbox
+zooms to native pixels, HODL's hero and the Manifesto's nine chapter cards are crossfade-looped
+video, and the Manifesto's text spreads are now 4,705 words of real DOM text.
 
 **⚡ GIT IS LIVE.** `main`, local only — **no remote** (nothing is backed up off this machine).
 Commit at every milestone. Media (~780M of masters) is in history; `.gitignore` excludes
@@ -540,33 +546,37 @@ Sources: `images/design-manifesto/` (27 spreads @3840×2160 + 8 chapter videos @
 ⚠️ **PowerShell + `git commit -m @'…'@` breaks if the message contains a double quote** — the
 native-arg re-parse splits it and git reads the words as pathspecs. Use `git commit -F <file>`.
 
-### 2026-07-25 — Manifesto text spreads → real typeset text (IN PROGRESS)
+### 2026-07-25 — Manifesto text spreads → real typeset text — COMPLETE
 
-User request: *"for all these text based images present, can you actually build a beautiful
-text display in our visual style and include it instead of the images that have text?"*
-Nothing has been built yet — this is the transcription phase. **Working doc:
-`MANIFESTO-TRANSCRIPT.md` at the repo root; read it before continuing.**
+The Manifesto's 15 text spreads were flat 4K images of type (unsearchable, unselectable,
+invisible to screen readers, illegible on a phone). They are now **real DOM text — 4,705
+words**. The emblem, PROLOGUE, EPILOGUE and the nine loop videos remain as media in the
+same reading order, so it still reads as a book.
 
-- ⚠️ **The docx the user supplied is an EARLIER DRAFT than the printed book.**
-  (`E:\…\GRA 521\final manifesto pdf\manifesto\final document.docx`, 4,155 words, extracts
-  cleanly.) Chapter 6's opening is completely different, chapters 7–8 are reworded
-  throughout, chapter 5 has an extra closing passage, chapter 2's opening is revised.
-  The prologue and chapters 1–4 match closely. **The user chose (2026-07-25) to transcribe
-  from the spreads**, using the docx only to cross-check shared passages so they are exact.
-  **Do not paste the docx in.**
-- The 93MB `Design Manifesto.pdf` on the Desktop is fully rasterised — 27 pages, zero
-  extractable characters. Not a text source.
-- Done: spreads 3, 4, 6, 7, 8, 10, 12 (middle column + Husserl quote), 14 (McLuhan quote),
-  23c. Remaining: 12 sidebar + phenomenology column, 14 body, 16, 18, 20, 21a, 23a, 24.
-- The book styles certain phrases as **inline links** to its 12 references (olive/green:
-  "authoritarian tyranny", "Dunning-Kruger", "define you", "flame", "archetype",
-  "phenomenology"). The reference list is at the end of the docx — wire these up as real
-  links rather than dropping the colour.
-- Three printed typos found (`univerise`, "back to to", lowercase `i`) — listed at the end
-  of the transcript as questions for the user; reproduce as printed until they say otherwise.
-- Still undecided (asked, not yet answered): whether typeset text **replaces** the text
-  spreads or sits **alongside** them. My recommendation was replace for the dense prose
-  spreads, keep the artwork spreads (1, 5, 23b, and the chapter/intro videos) as they are.
+- **`src/data/manifestoBook.ts` is the text.** Edit that. `MANIFESTO-TRANSCRIPT.md` at the
+  repo root is the provenance record — where each passage came from, and every edit made.
+- ⚠️ **The docx supplied as "the source" is an EARLIER DRAFT than the printed book**
+  (`E:\…\GRA 521\final manifesto pdf\manifesto\final document.docx`). Chapter 6 opens
+  completely differently, chapters 7–8 are reworded throughout, chapter 5's closing passage
+  is absent, and chapter 4's final paragraph was **cut from the book** (do not restore it).
+  Trusting it would have published the wrong draft for roughly a fifth of the manifesto.
+  Kept at `tools/manifesto-docx-extract.txt` **only** to verify shared passages word for
+  word. The 93MB `Design Manifesto.pdf` on the Desktop is fully rasterised — not a source.
+- **Editorial rule (user-approved, in that order):** typos → then grammar and punctuation
+  to standard, all silent, no `[sic]`. **Voice is not up for editing** — the second-person
+  address, rhetorical questions and long cumulative sentences stay. Two changes are worth
+  knowing: the "mental copulations" clause was printed three times and is deduplicated
+  (~30 words, the largest single edit), and the archetype list had "Imaginative, imaginative"
+  and "strict and strict". Full log in the transcript.
+- **`BookScroll`** (`components/story/`) renders `BookBlock[]` — plate · chapter · prose ·
+  lead · epigraph · pull · verse · list · aside · closing. Present `book` on a Project and
+  it **replaces the gallery** (ProjectDetail guards the gallery with `!project.book`).
+- Typeset in the **site's** voice, not the artefact's: Plex Mono for structure, Inter for
+  prose, grayscale, measure 71ch. A pastiche of the book's geometric sans on dark red would
+  read as a broken copy of it. The six phrases the book coloured as reference links are real
+  links (`manifestoLinks`), marked with a rule since the palette has no colour to spend.
+- Verified: 35 blocks, 9 videos, 3 plates, gallery gone, no horizontal overflow at 375 or
+  desktop, all 12 routes render, build green.
 
 ---
 
@@ -584,13 +594,22 @@ The site is **finished and deploy-ready**. Nothing is half-done. Suggested order
 **Open items — all judgement calls for the user, none blocking:**
 1. ⚠️ **Things only a human eye can confirm** (the Browser pane can't): reduced-motion orb
    burst; warp / crossfade / stagger feel at real frame rate; the 720p re-encode of the
-   Solarpunk talk on a big screen.
+   Solarpunk talk on a big screen; **and now — the ten looping videos actually playing.**
+   The pane suspends media (`document.hidden`), so every loop was verified by DOM assertion
+   and by measuring the encoded files, never watched. Worth one pass by eye, especially the
+   crossfaded loop seams on Manifesto chapter 8 and the HODL hero.
 2. **Ripple** (`/website-design/ripple`) — the case study is written and the looping motion
    piece plays, but there are still no website screenshots. Leave, or source visuals.
-3. **Solarpunk category placement was my call**, not the user's: it sits in Manifesto Design,
+3. **Two Manifesto passages were flagged, not silently rewritten** — chapter 2's
+   "the more you gain knowledge, the more it genuinely opens up numerous doors" (agreement
+   fixed, but the intended subject is a guess) and the deduplicated "mental copulations"
+   clause. Both are the author's call; see `MANIFESTO-TRANSCRIPT.md`.
+4. **Solarpunk category placement was my call**, not the user's: it sits in Manifesto Design,
    cross-linked with Ripple. One-line move if they disagree (`categoryId` + two `projectIds`).
-4. Résumé download **stays .docx** (decided 2026-07-24 — don't re-raise).
-5. Cosmetic cleanup: `pagePreviewImage` in `categories.ts` is dead data.
+5. Résumé download **stays .docx** (decided 2026-07-24 — don't re-raise).
+6. Cosmetic cleanup: `pagePreviewImage` in `categories.ts` is dead data, and
+   `design-manifesto`'s `gallery`/`galleryVariant` are now unreachable (`book` wins) —
+   kept deliberately as the fallback if the book is ever pulled.
 
 **Dev-server note:** the root `.claude/launch.json` config `dev` binds 5173; a second config
 `dev-alt` (port 5183, `autoPort`) exists so a session can start its own server when 5173 is
