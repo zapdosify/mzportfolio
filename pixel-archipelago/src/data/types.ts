@@ -71,8 +71,8 @@ export interface ExhibitImage {
 export type ExhibitScene =
   /** chapter divider: mono number + title, optionally a standfirst */
   | { kind: "marker"; number: string; title: string; text?: string }
-  /** one image edge-to-edge, the cinematic beats */
-  | { kind: "full"; image: ExhibitImage; label?: string; parallax?: boolean }
+  /** one image edge-to-edge, the cinematic beats (always drifts on scroll) */
+  | { kind: "full"; image: ExhibitImage; label?: string }
   /** image and prose side by side; `side` is the side the image takes */
   | {
       kind: "split";

@@ -20,7 +20,6 @@ export const avengersExhibition: ExhibitScene[] = [
   // ---------------------------------------------------------------- opening
   {
     kind: "full",
-    parallax: true,
     label: "Project book — front and back cover",
     image: {
       src: `${A}/book-01-cover.jpg`,
@@ -154,7 +153,6 @@ export const avengersExhibition: ExhibitScene[] = [
   },
   {
     kind: "full",
-    parallax: true,
     label: "Top overview and wireframe",
     image: {
       src: `${A}/book-10-exhibition-plan.jpg`,

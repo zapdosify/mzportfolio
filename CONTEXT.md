@@ -623,10 +623,26 @@ exhibition-design/Avengers Exhibition/` — a 22-page project book, Unreal rende
 - Verified: 28 scenes all reveal, 36 images 0 broken, lightbox counter reads `NN / 35` across
   the whole walk, Esc closes + restores focus, all 20 sampled routes render with 0px overflow,
   `tsc -b` and `npm run build` green (entry unchanged; ProjectDetail chunk +0.24kB).
-- ⚠️ Not seen by eye: the parallax drift and the scene reveals at real frame rate. Both were
-  verified by DOM assertion in the one pane tab that reports `document.hidden === false` — a
-  freshly opened tab reports `true` and neither IntersectionObserver nor `scroll` fires there,
-  so all 28 scenes read as still-hidden. That is the pane, not the page.
+- ⚠️ **The first cut of the motion was invisible, and the user said so.** Two separate causes,
+  both since fixed — do not reintroduce either:
+  - **Parallax was opt-in and moved the image inside a crop.** Only 2 of the 10 full-bleed
+    plates set the flag, and on those the drift was ~63px on a 766px image *inside* a
+    `scale(1.08)` frame, so nothing held still to read it against. It could not simply be
+    turned up: travel inside the frame is paid for with more scale, and these are book
+    spreads — more scale cuts type off the page. Now **every** full-bleed plate drifts, and
+    the transform moves the **whole figure** against the page (`[data-parallax] .fullFigure`),
+    so the image is `transform: none` and completely uncropped while its edge travels against
+    the static label. Factor 0.10 of plate height, hard-capped at ±40px. Measured 80px of
+    travel. The cap matters: the scene gap is 96px, so worst-case visual gap is 56px —
+    verified, never overlaps. Consecutive scenes can only separate, never converge.
+  - **Reveals finished below the fold.** `threshold: 0.08` + `rootMargin -10%` fired the
+    700ms fade while a viewport-tall plate was still at the bottom edge. Now `threshold: 0`
+    with `rootMargin -22%`, which fires when a scene's top crosses ~74% of the viewport
+    (measured across all 28: 71–77%) — tall and short alike.
+- ⚠️ Still not seen by eye at real frame rate; verified by measuring transforms and reveal
+  trigger points in the one pane tab that reports `document.hidden === false`. A freshly
+  opened tab reports `true` and neither IntersectionObserver nor `scroll` fires there, so all
+  28 scenes read as still-hidden. That is the pane, not the page.
 
 ---
 

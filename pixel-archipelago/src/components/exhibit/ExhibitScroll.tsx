@@ -6,8 +6,16 @@ import { useWorldStore } from "../../hooks/useWorldStore";
 import Lightbox from "../gallery/Lightbox";
 import styles from "./ExhibitScroll.module.css";
 
-/** How much slower than the page a full-bleed plate travels. Deliberately subtle. */
-const PARALLAX = 0.06;
+/**
+ * How much slower than the page a full-bleed plate travels, as a fraction of
+ * its own height, and the hard cap on that travel.
+ *
+ * Both matter. Scaled to the plate's height the drift reads the same on a wide
+ * spread and a tall one; the cap stops a very tall plate from drifting far
+ * enough to crowd the scene above or below it (the gap between scenes is 96px).
+ */
+const PARALLAX = 0.1;
+const PARALLAX_MAX = 40;
 
 /** Inline aspect from the measured file, so lazy images reserve their space. */
 const aspectOf = (src: string) => {
@@ -193,7 +201,13 @@ export default function ExhibitScroll({ scenes }: { scenes: ExhibitScene[] }) {
           }
         });
       },
-      { rootMargin: "0px 0px -10% 0px", threshold: 0.08 },
+      // Fire once the scene is properly into the viewport, not the instant its
+      // top edge appears. A full-bleed plate is taller than most of the screen,
+      // so a small threshold at the bottom edge meant the 700ms fade finished
+      // while the plate was still below the fold — the reveal was over before
+      // it was ever looked at. Threshold 0 with a deep bottom margin fires when
+      // the top edge crosses ~78% of the viewport, for tall and short alike.
+      { rootMargin: "0px 0px -22% 0px", threshold: 0 },
     );
     scenesEls.forEach((el) => reveal.observe(el));
 
@@ -209,10 +223,11 @@ export default function ExhibitScroll({ scenes }: { scenes: ExhibitScene[] }) {
         if (r.bottom < -vh || r.top > vh * 2) continue;
         // 0 when the plate's centre is at the viewport centre; ±1 at the edges.
         const centred = (r.top + r.height / 2 - vh / 2) / vh;
-        el.style.setProperty(
-          "--plate-y",
-          `${(centred * PARALLAX * r.height).toFixed(1)}px`,
+        const y = Math.max(
+          -PARALLAX_MAX,
+          Math.min(PARALLAX_MAX, centred * PARALLAX * r.height),
         );
+        el.style.setProperty("--plate-y", `${y.toFixed(1)}px`);
       }
     };
     const onScroll = () => {
@@ -270,10 +285,9 @@ export default function ExhibitScroll({ scenes }: { scenes: ExhibitScene[] }) {
           case "full":
             return (
               <section key={key} data-scene className={`${styles.scene} ${styles.fullScene}`}>
-                <div
-                  className={styles.fullPlate}
-                  {...(sc.parallax ? { "data-parallax": "" } : {})}
-                >
+                {/* Every full-bleed plate drifts. It was opt-in at first, which
+                    left eight of the ten cinematic beats completely static. */}
+                <div className={styles.fullPlate} data-parallax>
                   {plate(sc.image, styles.fullFigure, "100vw")}
                 </div>
                 {sc.label && <p className={styles.label}>{sc.label}</p>}

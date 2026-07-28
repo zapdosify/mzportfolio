@@ -148,10 +148,14 @@
   border-inline: 0;
   border-radius: 0;
 }
-/* Slow drift, driven by --plate-y from JS. The 1.08 scale is the headroom the
-   drift moves inside, so the frame never reveals an edge. */
-[data-parallax] .plate img {
-  transform: scale(1.08) translate3d(0, var(--plate-y, 0px), 0);
+/* The drift moves the WHOLE plate against the page, not the image inside a
+   crop. These are book spreads: travel inside the frame would have to be paid
+   for by scaling the image up and cutting type off the edge of the page, and
+   the drift stayed invisible anyway because nothing held still to read it
+   against. Moving the block leaves the image whole and lets its edge travel
+   against the static label and the scenes above and below. */
+[data-parallax] .fullFigure {
+  transform: translate3d(0, var(--plate-y, 0px), 0);
   will-change: transform;
 }
 .label {
@@ -312,7 +316,7 @@
   }
   .plate,
   .expand { transition: none; }
-  [data-parallax] .plate img {
+  [data-parallax] .fullFigure {
     transform: none;
     will-change: auto;
   }
