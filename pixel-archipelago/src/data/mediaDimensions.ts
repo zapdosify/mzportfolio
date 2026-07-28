@@ -138,6 +138,7 @@ export const mediaDimensions: Record<string, Dimensions> = {
   "/media/images/hodl-crypto-app/05_User_storyboards.jpg": [1920, 1080],
   "/media/images/hodl-crypto-app/06_Group_188-min.png": [1280, 9962],
   "/media/images/hodl-crypto-app/07_Group_189-min.png": [1280, 5757],
+  "/media/images/hodl-crypto-app/hodl-card.jpg": [2048, 1536],
   "/media/images/hodl-crypto-app/hodl-loop-poster.jpg": [1920, 1080],
   "/media/images/internship-t-mobile/01_photo_2023-03-16_14-50-52.jpg": [1280, 960],
   "/media/images/internship-t-mobile/02_photo_2023-05-03_11-03-47_(2).jpg": [960, 1280],

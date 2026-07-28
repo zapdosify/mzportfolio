@@ -91,6 +91,14 @@ export const projects: Project[] = [
     role: "Product / UX & UI Designer",
     tools: ["Figma", "Illustrator"],
     featured: true,
+    // The card used to fall through to the first gallery asset, which is the
+    // white sitemap diagram — a blank rectangle beside its neighbours. This is
+    // the project's own title card. Detail-page hero is unaffected.
+    // The web copy is pre-cropped to the tile's 4:3 (left-anchored, see
+    // scratchpad/hodl_card2.py), so `cover` here is a no-op and it fills the
+    // tile edge-to-edge like its neighbours. Cropping to 4:3 in the browser
+    // instead would centre the crop and slice "Welcome" mid-word.
+    cardImage: `${IMG}/hodl-crypto-app/hodl-card.jpg`,
     summary:
       "An innovative crypto-asset management solution unifying technology and community — manage NFTs and cryptocurrencies in a single interface, with education and a supportive community.",
     body: [
