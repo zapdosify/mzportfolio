@@ -20,7 +20,7 @@ export default function About() {
       {category && <CategoryBanner src={category.landmarkImage} />}
 
       <div className={`container ${s.page} ${s.hasBanner}`}>
-      {/* Hero: portrait + intro — the portrait stays; it is the person, not the island */}
+      {/* Hero: avatar + intro — the avatar stays; it is the person, not the island */}
       <header className={s.hero} style={{ marginBottom: "var(--space-16)" }}>
         <div className={s.heroText} ref={heroRef}>
           <p className={s.breadcrumb}>WORLD / About</p>
@@ -48,7 +48,7 @@ export default function About() {
         <div className={s.portrait}>
           <img
             src={about.portraitImage}
-            alt="Portrait of Mohammed Zaabi Noor"
+            alt="Pixel-art avatar of Mohammed Zaabi Noor: a figure in a suit wearing an astronaut helmet, against a starfield"
             className={s.portraitImg}
           />
         </div>

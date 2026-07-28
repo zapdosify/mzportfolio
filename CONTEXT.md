@@ -257,8 +257,8 @@ below, staggered 0.15s (`duration 0.6, ease power2.out`, `start: "top 85%"`, `on
 page's **`landmark.png`** (the cinematic island scene) as a full-bleed background banner with a
 subtle scroll parallax.
 
-About keeps its circular **portrait** in the hero: that is the person, not the island, so it is not
-a duplicate of the banner. Contact's old `heroArt` *was* the landmark, so it was removed when the
+About keeps its **avatar** in the hero: that is the person, not the island, so it is not
+a duplicate of the banner. (It was a circular photographic portrait until 2026-07-28 — see §9.) Contact's old `heroArt` *was* the landmark, so it was removed when the
 banner took over.
 
 - Height is the shared token `--banner-h` (tokens.css) — the banner and `.hasBanner` both read it,
@@ -643,6 +643,27 @@ exhibition-design/Avengers Exhibition/` — a 22-page project book, Unreal rende
   trigger points in the one pane tab that reports `document.hidden === false`. A freshly
   opened tab reports `true` and neither IntersectionObserver nor `scroll` fires there, so all
   28 scenes read as still-hidden. That is the pane, not the page.
+
+### 2026-07-28 — About avatar, and HODL's card
+
+- **HODL's card** had no `cardImage`, so it fell through to the first gallery asset — the white
+  sitemap diagram, a blank rectangle beside its neighbours. Now the project's title card.
+  ⚠️ The **web copy is pre-cropped to the tile's 4:3**, left-anchored
+  (`scratchpad/hodl_card2.py`): the source is 16:9, and letting `object-fit: cover` do it
+  centres the crop and slices the tagline mid-word ("Welcome" → "me to"). Left-anchored keeps
+  the tagline whole and lets the wordmark bleed off the right, which reads as deliberate.
+  `contain` (the Ripple wordmark treatment) was tried and rejected — it floats small between
+  two full-bleed neighbours and reads like a placeholder.
+- **About's portrait is now the pixel-art avatar**, `public/images/about/about-avatar.png`
+  (1254², from `Website Redesign Assets/…/categories/about/About.png`).
+  ⚠️ **The circular mask had to go with it.** The avatar is a square composition — corner HUD
+  marks in all four corners and a "Pixel Archipelago" caption along the bottom edge — and
+  `border-radius: 50%` cut every one of them. `.portraitImg` is now `100%`, square, radius
+  `--radius`. The circle belonged to the photographic headshot.
+  Shipped as an **8-bit grayscale PNG** (1659K → 571K): the CSS applies `grayscale(1)` anyway,
+  so baking it in is visually identical. **Not resampled** — pixel art goes soft under a
+  non-integer downscale. Alt text now describes an avatar, not a photograph.
+  `New_Headshot.jpg` joins `portrait.png` as unreferenced-but-kept in `public/images/about/`.
 
 ---
 

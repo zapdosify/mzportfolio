@@ -121,7 +121,10 @@ export const about = {
     { group: "Learning & Content", items: "Adobe Captivate · Articulate Rise · Camtasia · Vyond" },
     { group: "Business & Analytics", items: "Word · Excel · Data visualization" },
   ],
-  portraitImage: "/images/about/New_Headshot.jpg" as string | undefined,
+  // The pixel-art avatar, not the photographic headshot. It is a square
+  // composition — corner marks and a "Pixel Archipelago" caption along the
+  // bottom edge — so it is framed square, not in the old circular mask.
+  portraitImage: "/images/about/about-avatar.png" as string | undefined,
   resumeFile: "/Mohammed-Zaabi-Noor-Resume-2026.docx" as string | undefined,
 };
 

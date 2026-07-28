@@ -318,11 +318,14 @@
     linear-gradient(var(--c), var(--c)) right bottom / var(--s) 1px no-repeat,
     linear-gradient(var(--c), var(--c)) right bottom / 1px var(--s) no-repeat;
 }
+/* The avatar is a square artwork whose corners and bottom caption carry
+   content, so it fills the frame square. The old circular mask belonged to the
+   photographic headshot and would cut all four corner marks and the caption. */
 .portraitImg {
-  width: 84%;
-  height: 84%;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
-  border-radius: 50%;
+  border-radius: var(--radius);
   filter: grayscale(1) contrast(1.03);
 }
 
