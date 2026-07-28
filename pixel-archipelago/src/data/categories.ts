@@ -76,7 +76,7 @@ export const categories: Category[] = [
     pagePreviewImage: img("exhibition-design", "page-preview.png"),
     worldPosition: { x: 18.7, y: 45.3 },
     activationRadius: 9,
-    projectIds: ["exhibit-design"],
+    projectIds: ["exhibit-design", "avengers-exhibition"],
     relatedCategoryIds: ["renders"],
     kind: "projects",
   },

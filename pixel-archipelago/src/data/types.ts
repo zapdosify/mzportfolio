@@ -51,6 +51,45 @@ export type BookBlock =
   | { kind: "aside"; title?: string; paragraphs: string[] }
   | { kind: "closing"; paragraphs: string[]; signoff?: string };
 
+/** One image inside an exhibit scene. Aspect comes from mediaDimensions. */
+export interface ExhibitImage {
+  src: string;
+  alt: string;
+  /** short mono line set under the image */
+  caption?: string;
+}
+
+/**
+ * A scripted walk through a spatial project, read as a scroll.
+ *
+ * A gallery answers "what did you make"; an exhibition has to answer "what was
+ * it like to walk through it". These blocks are the beats of that walk — a
+ * sequence, not a grid — so the page paces the work instead of tiling it.
+ * Every image keeps its true aspect and its own colour; the interface around
+ * them stays monochrome.
+ */
+export type ExhibitScene =
+  /** chapter divider: mono number + title, optionally a standfirst */
+  | { kind: "marker"; number: string; title: string; text?: string }
+  /** one image edge-to-edge, the cinematic beats */
+  | { kind: "full"; image: ExhibitImage; label?: string; parallax?: boolean }
+  /** image and prose side by side; `side` is the side the image takes */
+  | {
+      kind: "split";
+      side: "left" | "right";
+      image: ExhibitImage;
+      title: string;
+      text: string[];
+    }
+  /** prose alone, at reading measure */
+  | { kind: "note"; title?: string; text: string[] }
+  /** close-ups shown together, each at its own true aspect */
+  | { kind: "details"; title?: string; items: ExhibitImage[] }
+  /** a spec strip of label/value pairs (palette, type, materials) */
+  | { kind: "facts"; title: string; items: [string, string][] }
+  /** the closing gallery */
+  | { kind: "plates"; title?: string; items: ExhibitImage[] };
+
 /** A looping, muted ambient video used as a project's opening motion piece. */
 export interface AmbientVideo {
   src: string;
@@ -123,6 +162,8 @@ export interface Project {
   storySpreads?: ProjectMedia[];
   /** a printed book set as real text — replaces the gallery when present */
   book?: BookBlock[];
+  /** a scripted scroll through a spatial project — replaces the gallery */
+  exhibit?: ExhibitScene[];
   externalLinks?: ExternalLink[];
   /** sub-cases inside one project (e.g. Exhibition Design's three prompts) */
   subProjects?: SubProject[];

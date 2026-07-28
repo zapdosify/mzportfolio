@@ -7,6 +7,7 @@ import LoopVideo from "../components/media/LoopVideo";
 import VideoEmbed from "../components/media/VideoEmbed";
 import StoryScroll from "../components/story/StoryScroll";
 import BookScroll from "../components/story/BookScroll";
+import ExhibitScroll from "../components/exhibit/ExhibitScroll";
 import { manifestoLinks } from "../data/manifestoBook";
 import { useHeroReveal } from "../hooks/useHeroReveal";
 import NotFound from "./NotFound";
@@ -183,8 +184,20 @@ export default function ProjectDetail() {
         </section>
       )}
 
+      {/* A spatial project walked through as a scroll. Like the book, it
+          replaces the gallery — every asset is already a scene inside it. */}
+      {project.exhibit && project.exhibit.length > 0 && (
+        <section className={s.section} aria-labelledby="exhibit-h">
+          <div className={s.sectionHead}>
+            <h2 id="exhibit-h" className={s.sectionTitle}>The Exhibition</h2>
+            <span className={s.sectionMeta}>Walk through</span>
+          </div>
+          <ExhibitScroll scenes={project.exhibit} />
+        </section>
+      )}
+
       {/* Gallery */}
-      {!project.book && project.gallery && project.gallery.length > 0 && (
+      {!project.book && !project.exhibit && project.gallery && project.gallery.length > 0 && (
         <section className={s.section} aria-labelledby="gallery-h">
           <div className={s.sectionHead}>
             <h2 id="gallery-h" className={s.sectionTitle}>Gallery</h2>

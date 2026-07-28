@@ -1,6 +1,7 @@
 import type { Project, ProjectMedia } from "./types";
 import { solarpunkStory } from "./solarpunkStory";
 import { manifestoBook } from "./manifestoBook";
+import { avengersExhibition } from "./avengersExhibition";
 
 // ---------------------------------------------------------------------------
 // Media helpers. Content migrated verbatim from the previous portfolio.
@@ -368,6 +369,31 @@ export const projects: Project[] = [
     ],
     relatedProjectIds: ["renders"],
     sourceUrl: "https://mznoor8.wixsite.com/portfolio/exhibitiondesign",
+  },
+  {
+    id: "avengers-exhibition",
+    slug: "avengers-exhibition",
+    title: "Avengers Exhibition Design",
+    subtitle: "Avengers S.T.A.T.I.O.N. at Arizona Science Center",
+    categoryId: "exhibition-design",
+    context: "Academic brief — exhibition design",
+    role: "Exhibition / Spatial & Graphic Designer",
+    tools: ["Unreal Engine", "Illustrator", "Photoshop", "InDesign"],
+    featured: true,
+    summary:
+      "An immersive Marvel museum exhibit for a real Phoenix venue — an L-shaped floor plate divided into character segments, modelled and lit in Unreal Engine, and documented as a full project book with its own type, palette, material schedule and printed programme.",
+    body: [
+      "Avengers S.T.A.T.I.O.N. — the Scientific Training And Tactical Intelligence Operative Network — is the fictional division that trains and equips the Avengers. The brief was to site that fiction inside a real building, Arizona Science Center in downtown Phoenix, and design the whole visit: the route through the rooms, what the walls are made of, and everything the visitor is handed on the way in and out.",
+      "The framing decision was to treat admission as induction. A visitor is not a ticket holder but a recruit, which is why the entry document is a clearance pass, the wall panels are laid out as case files, and the wayfinding reads as signage inside a facility rather than labels inside a museum.",
+      "The room itself is an L. That shape means the whole show can never be seen at once, so the plan uses the corner as the turn in the story instead of designing around it. Each run is divided into character segments carrying one Avenger's history, weapons, equipment, background and props, each with its own souvenir point. Building it in a game engine rather than a CAD viewport was the point: dynamic lighting, specified materials and a walkable camera let the sequence be judged the way a visitor meets it — in order, at eye height.",
+    ],
+    coverImage: `${IMG}/avengers-exhibition/book-01-cover.jpg`,
+    cardImage: `${IMG}/avengers-exhibition/book-12-entrance-walkthrough.jpg`,
+    exhibit: avengersExhibition,
+    credits: [
+      "An unaffiliated academic concept. Marvel, the Avengers and S.H.I.E.L.D. are trademarks of Marvel Characters, Inc.; Arizona Science Center is named as the brief's venue. Neither commissioned or endorsed this work.",
+    ],
+    relatedProjectIds: ["exhibit-design", "renders"],
   },
 
   // ========================= POSTER DESIGN =========================

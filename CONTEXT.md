@@ -167,7 +167,7 @@ One box, at the bottom, never obscuring the art.
 
 ## 5 · Content (already migrated — do not invent facts)
 
-**15 projects** + About/Contact. 14 were scraped from the old Wix site and stored as markdown in
+**16 projects** + About/Contact. 14 were scraped from the old Wix site and stored as markdown in
 `projects/` and `pages/`, then typed into `src/data/projects.ts`; Solarpunk was added
 2026-07-24 from the user's own capstone files.
 
@@ -177,7 +177,7 @@ One box, at the bottom, never obscuring the art.
 | Website Design | Ripple Symposium *(written case + looping motion piece; no site screenshots)* |
 | Visual Artwork | Digital Painting (10 pieces) |
 | Manifesto Design | Design Manifesto · **Worldbuilding Through Solarpunk** (masters, 2023) |
-| Exhibition Design | Exhibit Design (3 sub-cases) |
+| Exhibition Design | Exhibit Design (3 sub-cases) · **Avengers Exhibition Design** (2026-07-27) |
 | Poster Design | Poster series (9) |
 | Animation | Animated Shorts (3 videos) |
 | Documentary | The Social Pandemic, 2021 (4 videos) |
@@ -578,6 +578,56 @@ same reading order, so it still reads as a book.
 - Verified: 35 blocks, 9 videos, 3 plates, gallery gone, no horizontal overflow at 375 or
   desktop, all 12 routes render, build green.
 
+### 2026-07-27 — NEW PROJECT: Avengers Exhibition Design — COMPLETE
+
+`/exhibition-design/avengers-exhibition`, a second project on the Exhibition Design page.
+**The existing `exhibit-design` project was not touched** (verified live: same H1, same three
+sub-cases, same 10-tile gallery). Source: 35 images in `Website Redesign Assets/…/categories/
+exhibition-design/Avengers Exhibition/` — a 22-page project book, Unreal renders, 10 posters,
+6 bookmarks, tickets and the exhibit pass.
+
+- **`components/exhibit/ExhibitScroll`** renders a new `ExhibitScene[]` block union — `marker ·
+  full · split · note · details · facts · plates`. Present `exhibit` on a Project and it
+  **replaces the gallery** (ProjectDetail guards the gallery with `!project.exhibit`, same
+  pattern as `book`). The script lives in **`src/data/avengersExhibition.ts`** — edit that.
+- **Everything is a scene, not a tile.** Full-bleed plates, alternating image/text spreads
+  (R/L/R/L/R/L/R at desktop, image-first when stacked), close-up rows, a spec strip, and the
+  poster wall last. Order follows the book's own five parts — Venue, Introduction, Research,
+  Marketing, Exhibition — resequenced so the spatial renders build to a climax.
+- ⚠️ **`100vw` was the wrong full-bleed unit.** It counts the scrollbar, which made this the
+  only page on the site wider than its own viewport (712 vs 704). Fixed with `--vw`, written
+  from `document.documentElement.clientWidth` in a **layout** effect (unconditional — it is
+  layout, not motion) and updated on resize. Verified 0px overflow at 375/660/768/1280.
+- ⚠️ **`Plate` must stay at module level.** It was first written inside `ExhibitScroll`'s body,
+  which makes it a new component type on every render — opening the lightbox remounted all 35
+  plates, so the Lightbox's focus-restore had no button left to return to (caught by asserting
+  `document.activeElement === btn` after Esc; it was false, now true).
+- ⚠️ **A wrapped flex row stretches its orphan.** Close-up rows size each item by its own
+  aspect (`--ar`, from `mediaDimensions`) against a zero basis, so mixed shapes share one
+  height — verified 481/481px for the ticket+pass pair. But the 6-up bookmark strip landed
+  5 + 1 at 704px with the last one full width. `--min` for a 4+ strip is now **84px**, low
+  enough that six always fit on one line down to the 640px breakpoint. A pair goes **full
+  width, one per row** below 640 — the min-width clamp would break the proportional widths
+  anyway, and a half-of-375px ticket mockup is unreadable.
+- **All copy is sourced, nothing invented.** Venue history, the six palette names + hexes
+  (read off the spread at native res, not guessed: Crayola's Blue `#266EF6`, Electric Purple
+  `#BF00FF`, American Orange `#FF8B00`, Boston University Red `#C60404`, Cyber Yellow
+  `#FFD300`, American Green `#35B535`), the material schedule and the render labels all come
+  from the book's own pages; the L-shaped-plan reasoning is Mohammed's existing write-up of
+  the prompt. **Year, client and collaborators were not recorded and are omitted.** A
+  `credits` line states it is an unaffiliated academic concept.
+- The **palette strip is deliberately monochrome** — the swatches' real colours are visible in
+  the research spread directly above it, and the interface never spends colour (§6).
+- Media: 35 files, 197MB → **12.5MB** (≤2560px, q82 progressive, the Phase 6 recipe). Build
+  script kept at `scratchpad/avengers_media.py`. `measure_media.py` re-run → **184 assets**.
+- Verified: 28 scenes all reveal, 36 images 0 broken, lightbox counter reads `NN / 35` across
+  the whole walk, Esc closes + restores focus, all 20 sampled routes render with 0px overflow,
+  `tsc -b` and `npm run build` green (entry unchanged; ProjectDetail chunk +0.24kB).
+- ⚠️ Not seen by eye: the parallax drift and the scene reveals at real frame rate. Both were
+  verified by DOM assertion in the one pane tab that reports `document.hidden === false` — a
+  freshly opened tab reports `true` and neither IntersectionObserver nor `scroll` fires there,
+  so all 28 scenes read as still-hidden. That is the pane, not the page.
+
 ---
 
 ## 10 · ⏭️ Resume here (next session)
@@ -594,7 +644,8 @@ The site is **finished and deploy-ready**. Nothing is half-done. Suggested order
 **Open items — all judgement calls for the user, none blocking:**
 1. ⚠️ **Things only a human eye can confirm** (the Browser pane can't): reduced-motion orb
    burst; warp / crossfade / stagger feel at real frame rate; the 720p re-encode of the
-   Solarpunk talk on a big screen; **and now — the ten looping videos actually playing.**
+   Solarpunk talk on a big screen; the ten looping videos actually playing; **and now — the
+   Avengers walk's scene reveals and the parallax drift on its two flagged plates.**
    The pane suspends media (`document.hidden`), so every loop was verified by DOM assertion
    and by measuring the encoded files, never watched. Worth one pass by eye, especially the
    crossfaded loop seams on Manifesto chapter 8 and the HODL hero.

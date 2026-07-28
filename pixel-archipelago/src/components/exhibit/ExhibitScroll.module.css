@@ -1,0 +1,319 @@
+/* A spatial project read as a walk: full-bleed plates, alternating spreads,
+   close-up rows and a closing gallery. The chrome is the site's monochrome
+   interface — thin borders, mono labels, a soft glow — and the work inside the
+   frames keeps its own colour and its own true aspect. Nothing is ever cropped:
+   every frame is set to its image's measured ratio. */
+
+.wrap {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-24);
+}
+
+/* ---------- scene reveal (one-shot, JS adds .shown) ---------- */
+.scene {
+  opacity: 0;
+  transform: translate3d(0, 28px, 0);
+  transition:
+    opacity 700ms var(--ease-out),
+    transform 700ms var(--ease-out);
+}
+.shown {
+  opacity: 1;
+  transform: none;
+}
+
+/* ---------- shared figure / plate ---------- */
+.figure {
+  margin: 0;
+  display: grid;
+  gap: var(--space-2);
+}
+
+.plate {
+  position: relative;
+  display: block;
+  width: 100%;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid var(--border-dark);
+  border-radius: var(--radius);
+  background: var(--surface-dark);
+  cursor: pointer;
+  transition:
+    border-color var(--dur) var(--ease-out),
+    box-shadow var(--dur) var(--ease-out);
+}
+/* The frame is always the image's own measured aspect, so `cover` fills it
+   exactly — it is a clip for the parallax drift, never a crop of the work. */
+.plate img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.plate:hover,
+.plate:focus-visible {
+  border-color: var(--border-active);
+  box-shadow: var(--glow-soft);
+  outline: none;
+}
+.plate:focus-visible {
+  outline: 2px solid var(--white);
+  outline-offset: 2px;
+}
+.plate:active { transform: translateY(1px); }
+
+/* expand affordance */
+.expand {
+  position: absolute;
+  top: var(--space-2);
+  right: var(--space-2);
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  color: var(--text-primary);
+  background: rgba(5, 5, 5, 0.7);
+  border: 1px solid var(--border-active);
+  border-radius: var(--radius);
+  opacity: 0;
+  transform: translateY(-2px);
+  transition:
+    opacity var(--dur-fast) var(--ease-out),
+    transform var(--dur-fast) var(--ease-out);
+  pointer-events: none;
+}
+.plate:hover .expand,
+.plate:focus-visible .expand {
+  opacity: 1;
+  transform: none;
+}
+
+.caption {
+  font-family: var(--font-mono);
+  font-size: var(--fs-12);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+/* ---------- marker: the chapter divider ---------- */
+.marker {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: var(--space-6);
+  align-items: start;
+  border-top: 1px solid var(--border-dark);
+  padding-top: var(--space-6);
+  max-width: 80ch;
+}
+.markerNum {
+  font-family: var(--font-mono);
+  font-size: var(--fs-32);
+  line-height: 1;
+  color: var(--border-active);
+  letter-spacing: 0.04em;
+}
+.markerTitle {
+  font-family: var(--font-mono);
+  font-size: var(--fs-24);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--white);
+  text-shadow: var(--glow-soft);
+}
+.markerText {
+  margin-top: var(--space-3);
+  color: var(--text-secondary);
+  font-size: var(--fs-16);
+  line-height: 1.6;
+  max-width: 62ch;
+}
+
+/* ---------- full-bleed plate ---------- */
+/* Break the container: the cinematic beats run edge to edge.
+   --vw is the viewport width WITHOUT the scrollbar, written by JS. Plain 100vw
+   includes the scrollbar, which pushed this page 8px wider than its own
+   viewport — the only page on the site that overflowed. The 100vw fallback
+   only applies for the instant before the layout effect runs. */
+.fullScene {
+  width: var(--vw, 100vw);
+  margin-inline: calc(50% - var(--vw, 100vw) / 2);
+  display: grid;
+  gap: var(--space-3);
+}
+.fullPlate { width: 100%; }
+.fullFigure .plate {
+  border-inline: 0;
+  border-radius: 0;
+}
+/* Slow drift, driven by --plate-y from JS. The 1.08 scale is the headroom the
+   drift moves inside, so the frame never reveals an edge. */
+[data-parallax] .plate img {
+  transform: scale(1.08) translate3d(0, var(--plate-y, 0px), 0);
+  will-change: transform;
+}
+.label {
+  font-family: var(--font-mono);
+  font-size: var(--fs-12);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  padding-inline: var(--space-6);
+  max-width: var(--maxw);
+  margin-inline: auto;
+  width: 100%;
+}
+/* A full-bleed plate's own caption needs the same gutter as its label. */
+.fullFigure .caption { padding-inline: var(--space-6); }
+
+/* ---------- split: image beside prose ---------- */
+.split {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-12);
+  align-items: center;
+}
+.imageLeft .splitMedia { order: 0; }
+.imageLeft .splitText { order: 1; }
+.imageRight .splitMedia { order: 1; }
+.imageRight .splitText { order: 0; }
+
+.splitText {
+  display: grid;
+  gap: var(--space-4);
+  align-content: center;
+  max-width: 54ch;
+}
+.splitText p {
+  color: var(--text-secondary);
+  font-size: var(--fs-16);
+  line-height: 1.65;
+}
+.splitTitle {
+  font-family: var(--font-mono);
+  font-size: var(--fs-18);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-primary);
+}
+
+/* ---------- note: prose alone ---------- */
+.note {
+  display: grid;
+  gap: var(--space-4);
+  max-width: 68ch;
+  border-left: 1px solid var(--border-dark);
+  padding-left: var(--space-8);
+}
+.note p {
+  color: var(--text-secondary);
+  font-size: var(--fs-16);
+  line-height: 1.65;
+}
+
+/* ---------- rows ---------- */
+.rowTitle {
+  font-family: var(--font-mono);
+  font-size: var(--fs-14);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  margin-bottom: var(--space-6);
+}
+
+/* Close-ups sharing one row. Each item grows in proportion to its own aspect
+   (--ar, set inline from the measured file) against a zero basis, so a row of
+   mixed shapes lands on one common height with nothing cropped. */
+.details {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  align-items: flex-start;
+}
+.details > li {
+  flex: var(--ar, 1) 1 0;
+  min-width: var(--min, 120px);
+}
+
+/* The closing gallery — a pinned wall, tops aligned, true aspects kept. */
+.plates {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: var(--space-6);
+  align-items: start;
+}
+
+/* ---------- facts: a specification strip ---------- */
+.facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1px;
+  background: var(--border-dark);
+  border: 1px solid var(--border-dark);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.fact {
+  background: var(--surface-dark);
+  padding: var(--space-4) var(--space-4) var(--space-3);
+  display: grid;
+  gap: var(--space-1);
+}
+.fact dt {
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.fact dd {
+  font-family: var(--font-mono);
+  font-size: var(--fs-14);
+  letter-spacing: 0.06em;
+  color: var(--text-primary);
+}
+
+/* ---------- responsive ---------- */
+@media (max-width: 900px) {
+  .wrap { gap: var(--space-16); }
+  .split {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-6);
+  }
+  /* stacked, the image always leads — the alternation has no meaning in one column */
+  .imageLeft .splitMedia,
+  .imageRight .splitMedia { order: 0; }
+  .imageLeft .splitText,
+  .imageRight .splitText { order: 1; }
+  .marker { gap: var(--space-4); }
+  .markerNum { font-size: var(--fs-24); }
+  .markerTitle { font-size: var(--fs-18); }
+  .note { padding-left: var(--space-6); }
+  .plates { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: var(--space-4); }
+}
+
+@media (max-width: 640px) {
+  .details { gap: var(--space-3); }
+  /* let a six-up strip fall to three-up rather than shrink to slivers */
+  .details > li { min-width: var(--min-sm, 100px); }
+  .label,
+  .fullFigure .caption { padding-inline: var(--space-4); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scene {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .plate,
+  .expand { transition: none; }
+  [data-parallax] .plate img {
+    transform: none;
+    will-change: auto;
+  }
+}
