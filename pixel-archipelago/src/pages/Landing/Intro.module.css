@@ -67,7 +67,8 @@
   font-weight: 600;
   line-height: 1.6;
   letter-spacing: 0.06em;
-  color: var(--text-primary);
+  /* white, matching the canvas pixels — --text-primary is the body-text grey */
+  color: var(--white);
   text-shadow: var(--glow-soft);
   animation: lineIn 320ms ease-out both;
 }

@@ -715,10 +715,25 @@ settles in as void → islands → nameplates → HUD.
     *position* still comes from `[data-orb-target]`, so the handoff still lands on it exactly.
     The radial bloom covers the size change back down.
 
-⚠️ Beats 1–2 (assembly, hold) were confirmed by eye via a canvas contact sheet. Beats 3–4
-(stream, power-up) were retuned after that and verified **numerically**, not seen: the preview
-pane went `document.hidden` partway through and never came back, so rAF stopped. Worth one
-look by eye.
+**Text beat, revised on the user's note (2026-07-28) — keep it this way:**
+"smoothly appear, stay for a bit, then proceed… minimal and neat… pixelated white, not
+off-colour grey." Four changes, none of which should be reverted as "polish":
+- **No overshoot.** The assembly eased with `easeOutBack`, which made each word *punch* into
+  place. Now plain `easeOutCubic`.
+- **No per-word glitch and no settled flicker.** Both removed outright, not softened.
+- **Uniform pure white.** Two separate causes of the grey: the fill was `#f2f2f2` (the
+  body-text token, not white), and every pixel carried a random base alpha of 0.55–1.0, which
+  read as mottled grey. Alpha is now uniform and reaches exactly 1.
+- **Short scatter.** Origins were up to ~380px out, which read as a swoosh; now 14–60px, so
+  the pixels settle rather than fly.
+- Timing retuned with it: stagger 152→120ms, converge 620→560ms, so the sentence completes at
+  ~2.34s and simply sits there for ~1.26s before the dissolve. Total still ~6.5s.
+
+⚠️ Beats 1–2 (assembly, hold) were confirmed by eye via a canvas contact sheet **before** that
+revision. Everything after — the retuned stream, the power-up, and the whole minimal/white
+text pass — is verified by code and numbers only, **not seen**: the preview pane went
+`document.hidden` and rAF throttled to ~4fps, so the canvas freezes and contact sheets come
+back blank. This needs one look by eye in a real browser.
 
 ---
 

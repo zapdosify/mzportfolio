@@ -16,10 +16,12 @@ export const INTRO_SEEN_KEY = "pa:intro-seen";
 const T = {
   starsIn: 320,
   wordStart: 340,
-  wordStagger: 152,
-  wordConverge: 620,
-  holdEnd: 3480,
-  dissolve: 3480,
+  /** Tightened from 152/620 so the sentence lands sooner and simply sits
+      there — the hold is the point, not the entrance. */
+  wordStagger: 120,
+  wordConverge: 560,
+  holdEnd: 3600,
+  dissolve: 3600,
   /** Long enough to read as travel. At 760ms the pixels were gone before they
       had visibly gone anywhere. */
   dissolveSpan: 1100,
@@ -41,9 +43,6 @@ const CLOSE_MS_SKIP = 300;
 
 const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3);
 const easeInCubic = (t: number) => t * t * t;
-/** Slight overshoot, so pixels snap into place rather than easing to a stop. */
-const easeOutBack = (t: number) =>
-  1 + 2.2 * Math.pow(t - 1, 3) + 1.2 * Math.pow(t - 1, 2);
 const clamp01 = (t: number) => (t < 0 ? 0 : t > 1 ? 1 : t);
 
 interface Particle {
@@ -52,7 +51,6 @@ interface Particle {
   sx: number; // scattered origin
   sy: number;
   w: number; // word index — drives the progressive reveal
-  a: number; // base alpha
   j: number; // timing jitter, so nothing moves in lockstep
   cx: number; // dissolve path control-point offset
   cy: number;
@@ -152,7 +150,6 @@ export default function Intro({
     let cancelled = false;
     let particles: Particle[] = [];
     let stars: Star[] = [];
-    let wordCount = 1;
     let dpr = 1;
     let vw = 0;
     let vh = 0;
@@ -215,7 +212,6 @@ export default function Intro({
         ctx.measureText(s).width + tracking * Math.max(0, s.length - 1);
 
       const words = INTRO_SENTENCE.split(" ");
-      wordCount = words.length;
 
       // greedy wrap
       const lines: { words: string[]; idx: number[] }[] = [];
@@ -301,17 +297,17 @@ export default function Intro({
               break;
             }
           }
-          // Scatter origin: a loose cloud around each pixel's own target, so a
-          // word gathers inward instead of sliding in from one direction.
+          // Scatter origin: a tight cloud around each pixel's own target, so a
+          // word gathers inward instead of flying in. Kept short (was up to
+          // 380px) — a long travel reads as a swoosh, not as pixels settling.
           const ang = Math.random() * Math.PI * 2;
-          const dist = 60 + Math.random() * Math.min(320, vw * 0.28);
+          const dist = 14 + Math.random() * 46;
           next.push({
             tx: x,
             ty: y,
             sx: x + Math.cos(ang) * dist,
-            sy: y + Math.sin(ang) * dist * 0.55,
+            sy: y + Math.sin(ang) * dist * 0.7,
             w,
-            a: 0.55 + Math.random() * 0.45,
             j: Math.random(),
             cx: (Math.random() - 0.5) * 260,
             cy: (Math.random() - 0.5) * 160,
@@ -342,33 +338,22 @@ export default function Intro({
       // ---------------- the sentence ----------------
       const textFade = 1 - clamp01((t - T.reveal) / 420);
       if (textFade > 0.01 && particles.length) {
-        // Controlled glitch: during the hold one word at a time is nudged a
-        // single pixel and dimmed for a few frames. Deliberately small — the
-        // brief rules out harsh glitching.
-        const holding = t > T.holdEnd - 780 && t < T.holdEnd;
-        const glitchWord = holding ? Math.floor(t / 190) % wordCount : -1;
-        const glitchOn = holding && Math.floor(t / 190) % 2 === 0;
-        const glitchDx = glitchOn ? (Math.floor(t / 95) % 2 === 0 ? px : -px) : 0;
-
-        ctx.fillStyle = "#f2f2f2";
+        // Pure white and uniformly opaque. Both matter: a per-pixel alpha
+        // jitter made the sentence read as mottled grey rather than as clean
+        // white pixels, and #f2f2f2 is the body-text token, not white.
+        ctx.fillStyle = "#ffffff";
         for (const p of particles) {
-          const wStart = T.wordStart + p.w * T.wordStagger + p.j * 90;
+          const wStart = T.wordStart + p.w * T.wordStagger + p.j * 50;
           const asm = clamp01((t - wStart) / T.wordConverge);
           if (asm <= 0) continue;
-          const e = easeOutBack(asm);
+          // Plain deceleration — no overshoot. The previous easeOutBack made
+          // each word punch into place, which is the emphasis being removed.
+          const e = easeOutCubic(asm);
 
           let x = p.sx + (p.tx - p.sx) * e;
           let y = p.sy + (p.ty - p.sy) * e;
-          let a = p.a * Math.min(1, asm * 2.2);
-
-          if (asm >= 1) {
-            // settled: a faint unstable-signal flicker
-            a *= 0.82 + 0.18 * Math.sin(t / 140 + p.j * 40);
-            if (p.w === glitchWord && glitchOn) {
-              x += glitchDx;
-              a *= 0.55;
-            }
-          }
+          // Once settled it simply stays: no flicker, no per-word glitch.
+          let a = Math.min(1, asm * 2.2);
 
           // dissolve toward the orb along a curved path, accelerating in
           const d = clamp01((t - T.dissolve - p.j * T.dissolveStagger) / T.dissolveSpan);
