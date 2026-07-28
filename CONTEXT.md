@@ -665,6 +665,61 @@ exhibition-design/Avengers Exhibition/` — a 22-page project book, Unreal rende
   non-integer downscale. Alt text now describes an avatar, not a photograph.
   `New_Headshot.jpg` joins `portrait.png` as unreferenced-but-kept in `public/images/about/`.
 
+### 2026-07-28 — First-load intro on the landing page
+
+`pages/Landing/Intro.tsx` + `Intro.module.css`. A ~6.5s cinematic cold open:
+starfield → the sentence *"The idea you tossed away was probably the best one you've ever
+had."* assembles word by word out of scattered pixels → holds with a restrained flicker/glitch
+→ dissolves into particles that stream into the centre orb → the orb powers up (core, then
+three rings one at a time, then one pulse) → a radial light opens into the landing, which
+settles in as void → islands → nameplates → HUD.
+
+- **Once per tab session** (`sessionStorage` `pa:intro-seen`), read in the `useState`
+  initialiser — not an effect — so the landing is never painted un-hidden for a frame first.
+- **Zero layout shift by construction:** the landing is mounted and fully laid out from the
+  first paint; the intro is a `position: fixed` overlay on top of it. Only opacity/transform
+  ever change.
+- **The sentence is sampled from a real text render**, not hand-placed: it is drawn to an
+  offscreen canvas in IBM Plex Mono, then `getImageData` is sampled on a ~3px grid. Each word
+  is drawn at a known box so pixel → word is exact, which is what makes the progressive
+  word-by-word reveal possible. ⚠️ **Must await `document.fonts.load` first** or the pixels are
+  a fallback monospace — but the await is raced against 400ms and runs *during* the starfield
+  beat. Awaiting before starting the clock pushed the finish ~500ms past the 7s budget.
+- ⚠️ **The settle cascade uses `animation-fill-mode: backwards`, never `forwards`.**
+  `.plateItem` and `.centerOrb` are `translate(-50%,-50%)` centred and `.layer`/`.worldLayer`
+  carry the parallax transform — a lingering forwards fill would freeze them and kill the
+  pointer parallax for the rest of the session. Verified after the intro: `--mx` live, world
+  layer translating, `animationName: none` on the plates.
+- **Escape hatches:** a visible Skip button (delayed 900ms — offering an exit before anything
+  has appeared reads as an apology for the content), plus any click or keypress dismisses it.
+  Skip crossfades in 300ms rather than cutting; a hard cut reads as the glitch the brief rules
+  out. Measured 332ms.
+- ⚠️ **rAF is suspended on a hidden tab**, so opening the site in a background tab would strand
+  the overlay over the page forever. A safety timer force-finishes at ~8s. **Verified in that
+  exact state** — with 0 rAF ticks the overlay still cleared at 8005ms with the landing fully
+  visible.
+- **Reduced motion** (store flag OR `prefers-reduced-motion`) takes a separate branch: no
+  canvas, no particles, no travel, no settle cascade — the sentence fades up as DOM text, holds,
+  fades out. ~1.8s, opacity only. Verified.
+- The canvas is `aria-hidden`; the sentence is also emitted as `sr-only` text.
+- Bundle: entry 422 → 430kB (gzip 139 → 142). It has to be eager — it *is* the first paint.
+
+⚠️ **Two tuning bugs found by looking at it, both fixed** — the first cut was measurably wrong:
+  - Particles faded across the *whole* dissolve path (`1 - ee²`), so they were extinguished
+    before they had visibly gone anywhere — the travel beat rendered nearly empty. Alpha now
+    holds until 72% of the path then snuffs on arrival, and the span went 760→1100ms with a
+    520ms per-particle stagger so it reads as a stream. Measured: 5/5 particles lit at 27% of
+    the path, 2/5 still lit at 87%, absorbed by 5.3s — landing exactly while the rings build.
+  - The orb's rings were scaled off the **real** 44px DOM orb, giving 15/25/37px radii —
+    invisible. Ring scale is now viewport-derived (64/106/159px at 1280×860); only the orb's
+    *position* still comes from `[data-orb-target]`, so the handoff still lands on it exactly.
+    The radial bloom covers the size change back down.
+
+⚠️ Beats 1–2 (assembly, hold) were confirmed by eye via a canvas contact sheet. Beats 3–4
+(stream, power-up) were retuned after that and verified **numerically**, not seen: the preview
+pane went `document.hidden` partway through and never came back, so rAF stopped. Worth one
+look by eye.
+
 ---
 
 ## 10 · ⏭️ Resume here (next session)

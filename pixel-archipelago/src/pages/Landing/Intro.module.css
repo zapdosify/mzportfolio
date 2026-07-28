@@ -1,0 +1,129 @@
+/* First-load intro. A fixed overlay above the landing, which is already laid
+   out underneath at its final geometry — so nothing here can shift layout.
+   The overlay only ever animates opacity and transform. */
+
+.root {
+  position: fixed;
+  inset: 0;
+  z-index: 60; /* above the HUD (7) and the warp overlay (50) */
+  background: var(--black);
+  display: grid;
+  place-items: center;
+  /* the landing hides the system cursor; the intro needs it back for Skip */
+  cursor: pointer;
+  opacity: 1;
+  transition: opacity var(--close, 760ms) cubic-bezier(0.4, 0, 0.2, 1);
+}
+.closing {
+  opacity: 0;
+  /* stop swallowing input the moment the handoff starts */
+  pointer-events: none;
+}
+
+.canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+}
+
+/* ---------- radial light, opening from the orb ---------- */
+/* A scaled circle rather than an animated gradient radius: transform stays on
+   the compositor, an animated background-size does not. */
+.reveal {
+  position: absolute;
+  left: var(--ox, 50%);
+  top: var(--oy, 50%);
+  width: 260px;
+  height: 260px;
+  margin: -130px 0 0 -130px;
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.95) 0%,
+    rgba(255, 232, 170, 0.6) 22%,
+    rgba(255, 205, 90, 0.22) 42%,
+    transparent 68%
+  );
+  transform: scale(0.04);
+  animation: revealOut 760ms cubic-bezier(0.22, 0.7, 0.3, 1) forwards;
+}
+@keyframes revealOut {
+  0% { transform: scale(0.04); opacity: 0; }
+  18% { opacity: 1; }
+  100% { transform: scale(14); opacity: 0; }
+}
+
+/* ---------- reduced motion: fade only ---------- */
+.reduced {
+  /* no canvas, no particles, no travel — just the line, then the page */
+  background: var(--black);
+}
+.staticLine {
+  max-width: min(82vw, 62ch);
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: clamp(0.95rem, 2.2vw, 1.4rem);
+  font-weight: 600;
+  line-height: 1.6;
+  letter-spacing: 0.06em;
+  color: var(--text-primary);
+  text-shadow: var(--glow-soft);
+  animation: lineIn 320ms ease-out both;
+}
+@keyframes lineIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* ---------- Skip ---------- */
+.skip {
+  position: absolute;
+  right: var(--space-6);
+  bottom: var(--space-6);
+  /* ≥44px target regardless of the label's own box */
+  min-height: 44px;
+  padding: var(--space-2) var(--space-6);
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-mono);
+  font-size: var(--fs-12);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  background: rgba(9, 9, 9, 0.6);
+  border: 1px solid var(--border-dark);
+  border-radius: var(--radius);
+  cursor: pointer;
+  /* held back briefly: offering an exit before anything has appeared reads as
+     an apology for the content */
+  animation: skipIn 400ms ease-out 900ms both;
+  transition:
+    color var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out);
+}
+.skip:hover,
+.skip:focus-visible {
+  color: var(--white);
+  border-color: var(--border-active);
+}
+.skip:active { transform: translateY(1px); }
+@keyframes skipIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
+}
+
+@media (max-width: 640px) {
+  .skip {
+    right: var(--space-4);
+    bottom: var(--space-4);
+  }
+}
+
+/* The overlay's own motion is opacity-only under reduced motion; the radial
+   light never mounts in that branch, but belt and braces. */
+@media (prefers-reduced-motion: reduce) {
+  .reveal { display: none; }
+  .skip { animation: none; opacity: 1; }
+  .staticLine { animation-duration: 200ms; }
+}

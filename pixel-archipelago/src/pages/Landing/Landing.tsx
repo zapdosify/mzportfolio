@@ -4,6 +4,7 @@ import { categories, categoryById } from "../../data/categories";
 import { identity } from "../../data/siteContent";
 import { useWorldStore } from "../../hooks/useWorldStore";
 import OrbLayer from "../../world/OrbLayer";
+import Intro, { INTRO_SEEN_KEY } from "./Intro";
 import styles from "./Landing.module.css";
 
 // Plate positions (% of the world layer). X = measured centre of each island;
@@ -55,6 +56,40 @@ export default function Landing() {
         window.matchMedia("(prefers-reduced-motion: reduce)").matches),
     [storeRM],
   );
+
+  /**
+   * First-load intro. `intro` = the overlay is playing and the landing is held
+   * back; `settle` = the overlay is lifting and the scene assembles; `done` =
+   * ordinary landing, no classes, no lingering animation.
+   *
+   * Gated on sessionStorage so it plays once per tab, not on every return to
+   * `/`. Read lazily in the initialiser (not an effect) so the landing is never
+   * painted un-hidden for a frame before the overlay covers it.
+   */
+  const introFirstRun = () => {
+    if (typeof window === "undefined") return false;
+    try {
+      return !sessionStorage.getItem(INTRO_SEEN_KEY);
+    } catch {
+      return false; // private mode / storage disabled — just show the page
+    }
+  };
+  const [introPhase, setIntroPhase] = useState<"intro" | "settle" | "done">(() =>
+    introFirstRun() ? "intro" : "done",
+  );
+  // Tracked separately from the phase: the overlay has to stay mounted through
+  // its own crossfade after the landing has already been released.
+  const [introMounted, setIntroMounted] = useState(introFirstRun);
+
+  // Marked as soon as it starts, so navigating away mid-intro doesn't replay it.
+  useEffect(() => {
+    if (introPhase !== "intro") return;
+    try {
+      sessionStorage.setItem(INTRO_SEEN_KEY, "1");
+    } catch {
+      /* nothing to do — worst case it plays again next mount */
+    }
+  }, [introPhase]);
 
   const activeId = hoverId ?? orbId;
   const activeCat = activeId ? categoryById(activeId) : null;
@@ -132,7 +167,16 @@ export default function Landing() {
   }, [reducedMotion]);
 
   return (
-    <section className={styles.world} aria-label="Pixel Archipelago — explore the portfolio">
+    <section
+      className={`${styles.world} ${
+        introPhase === "intro"
+          ? styles.introHidden
+          : introPhase === "settle"
+            ? styles.introSettle
+            : ""
+      }`}
+      aria-label="Pixel Archipelago — explore the portfolio"
+    >
       <div
         className={`${styles.stage} ${leaving ? styles.stageLeaving : ""}`}
         ref={stageRef}
@@ -192,6 +236,9 @@ export default function Landing() {
             style={{ left: "49.5%", top: "50.4%" }}
             onClick={triggerBurst}
             aria-label="Illuminate the archipelago in colour"
+            /* the intro measures this to land its particles and its radial
+               light on the real orb, rather than on an assumed centre */
+            data-orb-target=""
           >
             <span className={styles.orbEmit} aria-hidden="true" />
             <span className={styles.orbEmit2} aria-hidden="true" />
@@ -200,7 +247,7 @@ export default function Landing() {
           </button>
 
           <ul className={styles.plates}>
-            {categories.map((c) => {
+            {categories.map((c, i) => {
               const y = PLATE_Y[c.id];
               if (y == null) return null;
               const on = activeId === c.id;
@@ -208,7 +255,14 @@ export default function Landing() {
                 <li
                   key={c.id}
                   className={styles.plateItem}
-                  style={{ left: `${PLATE_X[c.id] ?? c.worldPosition.x}%`, top: `${y}%` }}
+                  style={
+                    {
+                      left: `${PLATE_X[c.id] ?? c.worldPosition.x}%`,
+                      top: `${y}%`,
+                      // stagger index for the intro's settle cascade
+                      "--i": i,
+                    } as React.CSSProperties
+                  }
                 >
                   <Link
                     to={c.route}
@@ -352,6 +406,21 @@ export default function Landing() {
 
       {/* Warp transition into the selected category (skipped for reduced motion) */}
       {leaving && <div className={styles.warp} aria-hidden="true" />}
+
+      {/* First-load intro. Mounted last so it sits above the HUD, and removed
+          entirely once it has handed off — nothing of it survives the reveal.
+          Under reduced motion there is no staged settle to run, so the reveal
+          goes straight to `done`. */}
+      {introMounted && (
+        <Intro
+          reducedMotion={reducedMotion}
+          onReveal={() => setIntroPhase(reducedMotion ? "done" : "settle")}
+          onDone={() => {
+            setIntroPhase("done");
+            setIntroMounted(false);
+          }}
+        />
+      )}
     </section>
   );
 }
