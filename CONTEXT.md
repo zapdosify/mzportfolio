@@ -1,17 +1,17 @@
 # CONTEXT — Pixel Archipelago Portfolio (session handoff)
 
-**Read this first in a new session.** Last updated: **2026-07-28** (all 6 phases done, plus a
+**Read this first in a new session.** Last updated: **2026-09-06** (all 6 phases done, plus a
 16th project, a first-load intro on the landing, and two artwork swaps). Working tree clean at
-`ee1f3f6`, build green, **ready to deploy**.
+`d33e771`, build green, **ready to deploy**.
 
 **What changed most recently** — jump to §9's last three entries for the detail:
 a new **Avengers Exhibition Design** project (35 images as a scripted walk, not a gallery), a
 **~6.5s first-load intro** on the landing (pixels assemble the opening line, then stream into
 the orb), HODL's card art, and the About portrait swapped to the pixel-art avatar.
 
-⚠️ **The intro has never been watched end to end** — the preview pane went `document.hidden`
-and throttled rAF, which freezes the canvas. It is verified by code and numbers only. This is
-the single most important thing for the next session to confirm by eye (§10 item 1).
+✅ **The intro HAS now been watched end to end** (2026-09-06) — it plays as designed, the
+text is pure white, and the post-intro parallax is not frozen. See §9's last entry. What is
+still unseen is the rest of the motion work (§10 item 1).
 
 **⚡ GIT IS LIVE.** `main`, local only — **no remote** (nothing is backed up off this machine).
 Commit at every milestone. Media (~780M of masters) is in history; `.gitignore` excludes
@@ -751,6 +751,43 @@ text pass — is verified by code and numbers only, **not seen**: the preview pa
 `document.hidden` and rAF throttled to ~4fps, so the canvas freezes and contact sheets come
 back blank. This needs one look by eye in a real browser.
 
+### 2026-09-06 — The intro, finally seen
+
+The one thing the last handoff flagged as unverified. **It plays as designed.** No code
+changed — this entry is the observation record.
+
+**How, since the pane normally freezes the canvas:** the trick is that a tab which reports
+`document.hidden === false` runs rAF normally, and the seed tab from `preview_start` does.
+Then, because a single screenshot can only catch one instant of a 6.5s timeline, the intro
+canvas was sampled into a **12-cell contact sheet** (a second canvas, `drawImage`-d from the
+intro canvas on `setTimeout`s, appended over the page at the end and screenshotted once).
+Re-runs are triggered by clearing `sessionStorage['pa:intro-seen']` and re-navigating.
+⚠️ **Do not probe with a full-canvas `getImageData` loop** — 781×914 costs ~1s of blocking
+JS per call, which starves rAF, skews every `setTimeout` by ~1s and returns identical stale
+frames. `drawImage` crops are effectively free; use those.
+
+Beats confirmed, at measured times: 609ms scattered pixels → 1103/1610/2102 the sentence
+assembling word by word → **2610 and 3103 complete and simply held** → 3704 breaking up →
+4304 a drifting cloud mid-travel → **4904 particles arriving into a lit orb core** → 5357 and
+5810 the rings, at a properly visible size → 6358 cleared into the landing.
+
+- **The text pass holds up.** A 1:1 screenshot at ~2.2s shows clean, crisp IBM Plex Mono
+  pixels, uniform, with the last two words still assembling — no punch, no mottling. A pixel
+  probe at the hold reads exactly `rgb(255,255,255)`, max luminance 255. The 2026-07-28
+  "minimal and neat, pixelated white not off-colour grey" note is satisfied.
+- **The stream reads as a stream** — 4304 vs 4904 show real travel with particles still lit
+  most of the way, which was the specific thing the 2026-07-28 retune was fixing.
+- **The rings are visible now** at the viewport-derived scale, not the 15/25/37px of the
+  first cut.
+- **The settle does not freeze anything.** After the overlay unmounts: `animationName: none`
+  on both `.plateItem` and `.worldLayer`, world transform back to identity, all 13 plates
+  present, and pointer parallax responds live (`--mx: -12.61px`, `--my: 14.10px`, world layer
+  `matrix(1,0,0,1,-6.305,7.05)`). The `animation-fill-mode: backwards` decision is correct
+  and verified by observation, not just by reading.
+
+Still unseen by eye: everything in §10 item 1's remaining sub-points (the Avengers walk, the
+reduced-motion burst, the looping videos at real frame rate).
+
 ---
 
 ## 10 · ⏭️ Resume here (next session)
@@ -765,12 +802,9 @@ The site is **finished and deploy-ready**. Nothing is half-done. Suggested order
    and the history carries ~780M of media).
 
 **Open items — all judgement calls for the user, none blocking:**
-1. ⚠️ **Things only a human eye can confirm** (the Browser pane can't). In priority order:
-   **(a) the landing intro, end to end** — never once watched; the text pass that made it
-   minimal/white was verified by reading the render loop, not by looking. Open a *fresh tab*
-   (it is gated per tab session) to `/`. Check: the words gather smoothly with no punch, the
-   pixels are clean white and not mottled grey, the ~1.26s hold, the stream into the orb, the
-   rings, and the settle. Constants to tune are at the top of `Intro.tsx`.
+1. ⚠️ **Things only a human eye can confirm.** ✅ **(a) the landing intro is DONE** —
+   watched end to end on 2026-09-06 and correct; see §9's last entry for the method, which
+   works for the rest of this list too. Remaining, in priority order:
    **(b)** the Avengers walk's scene reveals and the parallax drift on its ten plates.
    **(c)** reduced-motion orb burst; warp / crossfade / stagger feel at real frame rate; the
    720p re-encode of the Solarpunk talk on a big screen; the ten looping videos playing.
@@ -796,9 +830,11 @@ held by another chat. **A dead dev server is the #1 cause of "the site won't loa
 lives as long as the session that started it. Restart it, don't debug the app.
 
 **Verifying in the Browser pane — known limits (don't chase these as bugs):**
-- It reports `document.hidden === true`, so `requestAnimationFrame` and real `scroll` events
-  never fire. Exercise handlers with `window.scrollTo(...)` +
-  `window.dispatchEvent(new Event('scroll'))`.
+- It *often* reports `document.hidden === true`, so `requestAnimationFrame` and real `scroll`
+  events never fire. Exercise handlers with `window.scrollTo(...)` +
+  `window.dispatchEvent(new Event('scroll'))`. **But check first** — the seed tab opened by
+  `preview_start` reported `hidden === false` on 2026-09-06 and ran rAF normally, which is
+  what finally made the intro observable (§9).
 - Screenshots sometimes ignore scroll position or time out. Fall back to DOM /
   `getComputedStyle` assertions — that is how most of this work was verified.
 - `prefers-reduced-motion` cannot be emulated there.
