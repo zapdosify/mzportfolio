@@ -299,7 +299,13 @@ export default function Landing() {
           categories={categories}
           initial={orbPos}
           reducedMotion={reducedMotion}
-          paused={indexOpen}
+          // Also paused behind the intro: the overlay is opaque, so tracking
+          // the cursor, firing proximity callbacks and repainting the
+          // mask-composited colour reveal underneath is invisible work — and
+          // the proximity/move-end callbacks re-render Landing on every mouse
+          // move, which is exactly what the intro does not need competing
+          // with while it animates.
+          paused={indexOpen || introPhase === "intro"}
           onProximity={setOrbId}
           onEnter={enter}
           onMoveEnd={(p) => setOrb(p.x, p.y)}

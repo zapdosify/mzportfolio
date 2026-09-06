@@ -62,8 +62,10 @@ const C = {
   /** pointer swing, radians */
   pitchRange: 0.3,
   yawRange: 0.42,
-  /** eased toward the target each frame — low is heavy and calm */
-  ease: 0.045,
+  /** Smoothing per 60Hz frame, framerate-normalised at use. 0.045 was a ~0.36s
+      lag, which read as the galaxy dragging behind the cursor rather than
+      answering it. */
+  ease: 0.09,
   /** screen radius, px, inside which particles warm to the orb's gold */
   glowRadius: 200,
 } as const;
@@ -131,8 +133,24 @@ export default function Intro({
   const finishedRef = useRef(false);
   /** Live orb centre, shared with the CSS radial reveal and the core button. */
   const orbRef = useRef({ x: 0, y: 0 });
-  /** Set by the render loop when the absorption starts; read by nothing else. */
-  const absorbRef = useRef<((now?: number) => void) | null>(null);
+  /**
+   * The absorption clock, and the eased rotation.
+   *
+   * ⚠️ These are component refs, NOT effect-local state, and that is load
+   * bearing. `Landing` re-renders whenever the cursor moves (OrbLayer's
+   * proximity callback sets state, and its move-end writes the orb position
+   * into a store Landing subscribes to) and it passes `onReveal`/`onDone` as
+   * inline arrows — so Intro receives new prop identities constantly. Anything
+   * kept in the render effect's closure is therefore destroyed and rebuilt
+   * mid-interaction: the galaxy snapped back to its start rotation on every
+   * mouse move, and a press that had just set the absorb clock had it wiped
+   * before the fall could run. Held here, both survive any re-init.
+   */
+  const absorbAtRef = useRef<number | null>(null);
+  const rotRef = useRef({ yaw: 0, pitch: G.tilt, spun: 0 });
+  /** Always-current callbacks, so no effect depends on a prop's identity. */
+  const finishRef = useRef<(skipped: boolean) => void>(() => {});
+  const onDoneRef = useRef(onDone);
   /** Drives the prompt/skip affordances away once the fall has begun. */
   const [absorbing, setAbsorbing] = useState(false);
 
@@ -153,13 +171,22 @@ export default function Intro({
     [onReveal],
   );
 
-  const skip = useCallback(() => finish(true), [finish]);
+  useEffect(() => {
+    finishRef.current = finish;
+    onDoneRef.current = onDone;
+  });
 
-  /** Press the core: start the fall. Idempotent — the render loop latches it. */
+  const skip = useCallback(() => finishRef.current(true), []);
+
+  /**
+   * Press the core: start the fall. Idempotent, and it sets the clock DIRECTLY
+   * rather than calling into the render effect — so it cannot be dropped just
+   * because the effect happens to be re-initialising at that moment.
+   */
   const enter = useCallback(() => {
-    if (finishedRef.current) return;
+    if (finishedRef.current || absorbAtRef.current !== null) return;
+    absorbAtRef.current = performance.now();
     setAbsorbing(true);
-    absorbRef.current?.();
   }, []);
 
   /* ------------------------------------------------------------------ *
@@ -169,18 +196,27 @@ export default function Intro({
   useEffect(() => {
     if (!reducedMotion) return;
     orbRef.current = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
-    const id = window.setTimeout(() => finish(false), 600);
+    const id = window.setTimeout(() => finishRef.current(false), 600);
     return () => window.clearTimeout(id);
-  }, [reducedMotion, finish]);
+  }, [reducedMotion]);
 
   /* ------------------------------------------------------------------ *
    * Unmount once the closing crossfade has played.
    * ------------------------------------------------------------------ */
+  /**
+   * ⚠️ `onDone` is read from a ref and is NOT a dependency. It arrives from
+   * Landing as an inline arrow, so its identity changes on every Landing
+   * render — and Landing re-renders on pointer movement. With it in the deps
+   * this timeout was cleared and restarted on every mouse move, so a visitor
+   * who kept moving the cursor through the crossfade never got the overlay
+   * unmounted: it sat at opacity 0 forever, with its capture-phase key handler
+   * still swallowing every keystroke on the site underneath.
+   */
   useEffect(() => {
     if (phase !== "closing") return;
-    const id = window.setTimeout(onDone, closeMs);
+    const id = window.setTimeout(() => onDoneRef.current(), closeMs);
     return () => window.clearTimeout(id);
-  }, [phase, closeMs, onDone]);
+  }, [phase, closeMs]);
 
   /* ------------------------------------------------------------------ *
    * Keyboard, and keeping it inside the overlay.
@@ -205,6 +241,8 @@ export default function Intro({
   useEffect(() => {
     if (reducedMotion) return;
     const onKey = (e: KeyboardEvent) => {
+      // Once the handoff has begun the landing owns the keyboard again.
+      if (finishedRef.current) return;
       if (e.key === "Escape") {
         e.preventDefault();
         skip();
@@ -255,18 +293,13 @@ export default function Intro({
     let fov = 700;
     let orbUnit = 56;
 
-    /** eased rotation state */
-    let yaw = 0;
-    let pitch = G.tilt;
+    /** rotation targets are per-frame; the eased values live in rotRef */
     let yawTarget = 0;
     let pitchTarget = G.tilt;
-    let spun = 0;
 
     /** pointer, in screen px; null until the visitor actually moves */
     let ptr: { x: number; y: number } | null = null;
 
-    /** absorption clock — null while the galaxy is still waiting */
-    let absorbAt: number | null = null;
     let last = 0;
 
     // ---- sprites -----------------------------------------------------
@@ -412,13 +445,15 @@ export default function Intro({
       last = now;
 
       const { x: orbX, y: orbY } = orbRef.current;
+      const absorbAt = absorbAtRef.current;
       const tA = absorbAt === null ? -1 : now - absorbAt;
       /** 0 while waiting, ramping to 1 as the galaxy falls in */
       const fall = tA < 0 ? 0 : clamp01(tA / (T.absorbSpan + T.absorbStagger));
 
       // ---------------- rotation ----------------
       // Idle spin, plus a spin-up as everything falls inward.
-      spun += dt * (G.spinRate + G.absorbSpin * fall);
+      const rot = rotRef.current;
+      rot.spun += dt * (G.spinRate + G.absorbSpin * fall);
       if (ptr) {
         const nx = (ptr.x / vw) * 2 - 1;
         const ny = (ptr.y / vh) * 2 - 1;
@@ -430,14 +465,18 @@ export default function Intro({
         yawTarget = Math.sin(now / 5200) * 0.16;
         pitchTarget = G.tilt + Math.cos(now / 6100) * 0.08;
       }
-      yaw += (yawTarget - yaw) * C.ease;
-      pitch += (pitchTarget - pitch) * C.ease;
+      // Framerate-independent smoothing. A flat per-frame lerp eases at a
+      // different speed on a 60Hz and a 144Hz display; this converges over the
+      // same wall-clock time on both.
+      const k = 1 - Math.pow(1 - C.ease, dt * 60);
+      rot.yaw += (yawTarget - rot.yaw) * k;
+      rot.pitch += (pitchTarget - rot.pitch) * k;
 
-      const ry = yaw + spun;
+      const ry = rot.yaw + rot.spun;
       const cosY = Math.cos(ry);
       const sinY = Math.sin(ry);
-      const cosP = Math.cos(pitch);
-      const sinP = Math.sin(pitch);
+      const cosP = Math.cos(rot.pitch);
+      const sinP = Math.sin(rot.pitch);
 
       ctx.clearRect(0, 0, vw, vh);
 
@@ -615,17 +654,16 @@ export default function Intro({
       ctx.globalAlpha = 1;
       ctx.globalCompositeOperation = "source-over";
 
-      if (tA >= T.reveal) finish(false);
+      if (tA >= T.reveal) finishRef.current(false);
       if (absorbAt === null || tA < T.end + 600) raf = requestAnimationFrame(frame);
     };
 
-    // Start the fall. Latched, so a click, a keypress and the idle timer can
-    // all call it and only the first one counts.
+    // Latched, so a click, a keypress and the idle timer can all call it and
+    // only the first one counts.
     const startAbsorb = () => {
-      if (absorbAt !== null) return;
-      absorbAt = performance.now();
+      if (absorbAtRef.current !== null) return;
+      absorbAtRef.current = performance.now();
     };
-    absorbRef.current = startAbsorb;
 
     // ---- idle escape hatch ------------------------------------------
     // Reset by real input, so this only ever fires on an abandoned tab.
@@ -662,13 +700,12 @@ export default function Intro({
     // rAF is suspended on a hidden tab. Without this, opening the site in a
     // background tab would leave the intro frozen over the page forever.
     const safety = window.setTimeout(
-      () => finish(true),
+      () => finishRef.current(true),
       IDLE_ADVANCE_MS + T.end + 2000,
     );
 
     return () => {
       cancelled = true;
-      absorbRef.current = null;
       cancelAnimationFrame(raf);
       window.clearTimeout(rz);
       window.clearTimeout(idle);
@@ -676,7 +713,10 @@ export default function Intro({
       window.removeEventListener("pointermove", onMove);
       window.removeEventListener("resize", onResize);
     };
-  }, [reducedMotion, finish]);
+    // ⚠️ deps are [reducedMotion] ONLY — see absorbAtRef above. Adding `finish`
+    // (or any other identity that changes per render) rebuilds the galaxy on
+    // every mouse move.
+  }, [reducedMotion]);
 
   return (
     <div

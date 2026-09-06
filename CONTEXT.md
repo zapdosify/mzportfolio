@@ -920,6 +920,53 @@ key handler already blocks the page below, and the first Tab pulls focus in.
   Lissajous instead, and a tap anywhere starts the fall.
 - Skip button 327ms, Escape 344ms, both straight to the landing.
 
+### 2026-09-06 (fourth pass) — the galaxy was jerky; one root cause, two bugs
+
+The user reported the galaxy stuttering under the mouse and the core press "sometimes
+responsive and janky". Both were the same defect, and it is worth understanding before
+touching anything in `Landing/`.
+
+**Root cause: prop identity.** `Landing` re-renders on *every mouse move* — `OrbLayer`'s
+`onProximity` sets `orbId` state, and its `onMoveEnd` writes the orb position into a store
+`Landing` subscribes to. `Landing` then passes `onReveal`/`onDone` to `Intro` as **inline
+arrows**, so Intro gets fresh prop identities constantly. Every effect that listed one of
+those in its deps therefore re-ran on every mouse move:
+
+- **The galaxy render effect** (`[reducedMotion, finish]`) tore down and rebuilt the whole
+  thing mid-motion — ~1500 particles regenerated, both sprite canvases recreated, rotation
+  snapped back to its start, and `absorbAt` reset to `null`. That is the stutter, and it is
+  also why a press "sometimes" did nothing: the click set the absorb clock and a re-render
+  wiped it a frame later.
+- **The unmount effect** (`[phase, closeMs, onDone]`) had its 760ms timer cleared and
+  restarted on every mouse move. Found while verifying the first fix — a visitor who kept
+  moving the cursor through the crossfade **never got the overlay unmounted**: it sat at
+  opacity 0 forever with its capture-phase key handler still swallowing every keystroke,
+  which would have left the whole site keyboard-dead.
+
+**The fix, and the rule.** Anything that must survive a re-render lives in a component ref,
+not in an effect closure: `absorbAtRef` (the press sets the clock **directly**, so it can
+never be dropped by an effect re-initialising), `rotRef` (yaw/pitch/spin), and `finishRef` /
+`onDoneRef` for the callbacks. The render effect's deps are now **`[reducedMotion]` only** —
+there is a comment on it saying so. Adding any per-render identity back to that array
+reintroduces the whole failure.
+
+**Also fixed while in here:**
+- Easing is now framerate-independent (`1 - (1-ease)^(dt*60)`), so it converges over the same
+  wall-clock time at 60Hz and 144Hz. The constant went 0.045 → 0.09; the old value was a
+  ~0.36s lag that read as the galaxy dragging behind the cursor rather than answering it.
+- `OrbLayer` is now `paused` behind the intro as well as behind the Index overlay. The intro
+  is opaque, so cursor tracking, proximity callbacks and repainting the mask-composited colour
+  reveal underneath were all invisible work — and the callbacks were the very thing
+  re-rendering Landing.
+
+**Measured, with the pointer moving continuously the whole time** (the condition that broke
+it): **0 galaxy rebuilds across 60 pointer moves** (counted by patching `document.createElement`
+and watching sprite-canvas creations — a good trick for this class of bug), **74.7 fps**,
+median frame 13.3ms, p95 14.6ms, worst 22.6ms, and **zero frames over 33ms** (before the
+OrbLayer pause: worst 38ms). The core press now starts the fall on the **first press 4/4**,
+each unmounting at ~2900ms, landing settling with 13 plates, and the keyboard verified
+released back to the page afterwards.
+
 ---
 
 ## 10 · ⏭️ Resume here (next session)
