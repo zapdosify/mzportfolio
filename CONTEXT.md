@@ -9,9 +9,10 @@ a new **Avengers Exhibition Design** project (35 images as a scripted walk, not 
 **~6.5s first-load intro** on the landing (pixels assemble the opening line, then stream into
 the orb), HODL's card art, and the About portrait swapped to the pixel-art avatar.
 
-✅ **The intro HAS now been watched end to end** (2026-09-06) — it plays as designed, the
-text is pure white, and the post-intro parallax is not frozen. See §9's last entry. What is
-still unseen is the rest of the motion work (§10 item 1).
+✅ **The whole by-eye verification list is CLOSED** (2026-09-06) — the intro, the Avengers
+walk, the reduced-motion burst, warp / crossfade / stagger at real frame rate, the Solarpunk
+talk and all ten looping videos were each observed, and every one behaves as designed.
+**Nothing needed changing.** See §9's last two entries; §10 item 1 is now closed.
 
 **⚡ GIT IS LIVE.** `main`, local only — **no remote** (nothing is backed up off this machine).
 Commit at every milestone. Media (~780M of masters) is in history; `.gitignore` excludes
@@ -788,6 +789,68 @@ assembling word by word → **2610 and 3103 complete and simply held** → 3704 
 Still unseen by eye: everything in §10 item 1's remaining sub-points (the Avengers walk, the
 reduced-motion burst, the looping videos at real frame rate).
 
+### 2026-09-06 (second pass) — the rest of the by-eye list
+
+Same method as the entry above (a tab reporting `document.hidden === false`, plus
+`drawImage` contact sheets). No code changed. **Every remaining item on §10's list 1 now
+checks out**, so that list is closed.
+
+**The Avengers walk (was item 1b).** All **28/28 scenes reveal**, in order, none skipped or
+stuck. Measured trigger: the scene top crossing **~78% of the viewport** — sampled values run
+0.618–0.779, and the spread is purely the 150px scroll step, with 0.779 being the true edge.
+That is the `threshold: 0` + `rootMargin: -22%` pair behaving as documented. **9 of the 10
+plates reach the full ±40px cap (80px of travel)**; the 10th gets 68.9px because the page
+ends before it can finish centring — expected, not a bug. Caught mid-drift at ±23.8px, so the
+travel is real and not just clamped at the extremes. The `<figure>` carries the transform and
+the `<img>` is `transform: none`, i.e. genuinely uncropped, as intended.
+⚠️ **The caption travels WITH the figure** (it is inside it). The drift reads against the
+*page* — the headings and whitespace around it — not against its own label. Don't "fix" this.
+
+**Reduced-motion orb burst (was the flagged unknown).** The pane can't emulate
+`prefers-reduced-motion`, but `reducedMotion` is `storeRM || matchMedia(...)` inside a
+`useMemo([storeRM])`, so **patching `window.matchMedia` and then SPA-navigating to `/`** makes
+Landing remount and read the patched query — an exact emulation, since `reducedMotion` is not
+persisted and can't be set through localStorage. Result, exactly to spec: class
+`colorBurstReduced`, `--burst-rx` at **135% instantly** (no expand), **no `.pulse` ring at any
+point**, opacity 1 through the 5s hold, fading by 5.5s, gone by 6.8s. **And it was seen:** the
+whole archipelago floods with colour and the colour stays *inside the islands* — the void
+behind stays pure black, so the mask intersection works.
+Note the CSS half of the gate can't be tested this way — a real `@media` block reads the OS
+setting, not the patch — so `.colorReveal` still computes `display:block` under the patch.
+That is the emulation's limit, not a defect.
+
+**The other motion, now at real frame rate.** Animated burst (for contrast): `colorBurstAnim`,
+`--burst-rx` interpolating 13.9 → 65.5 → 117.7 → 135% with the pulse scaling 2× → 18×, so the
+registered `@property` really is animating. **Warp:** bloom ramps 0→1 in ~290ms, holds, and
+navigation fires at **~650ms** — the reworked timing, confirmed. **Route crossfade:** 480ms
+`cubic-bezier(0.16,1,0.3,1)`, opacity 0.62→0.88→0.97→1. **Hero stagger:** four lines from
+`opacity 0 / y 40px` cascading at a clean **0.15s** interval, settled by ~1.05s — and it
+**replays on category→category SPA nav**, so the `deps`-array fix is verified live.
+
+**The ten looping videos — actually playing, at last.** They are the HODL hero plus the
+Manifesto's intro-loop and chapters 1–8 (9 on that one page). HODL: `paused:false`,
+readyState 4, and `currentTime` **wrapped 2.8 → 0.6 across the 4.2s loop**. Chapter 8 advanced
+**2.01s in 2s of wall clock** — real-time, no stutter — **paused when scrolled off-screen**
+(the battery guard works) and the **poster came back over it when idle**, which is the
+"indistinguishable from a still spread" behaviour working as designed.
+
+**Both flagged loop seams are clean**, measured by mean luminance either side of the wrap:
+- **HODL** opens *and* closes on pure black (lum 0 at t=0/0.08 and at 4.12/4.19), so the wrap
+  is invisible by construction.
+- **Manifesto ch8** ends at 22.6 and starts at 22.8 — a 0.2 difference, and the frames are
+  visually identical (same glow, same orb positions), with the animation swinging out and
+  back to its own first frame.
+
+**Solarpunk talk:** 1280×720, 474.3s, readyState 4, real controls, correctly not autoplaying.
+A frame sampled at 150s holds up full-width — the watercolour linework and even the fine
+cross-hatch texture survive the encode, so 720p was the right call for this content.
+
+⚠️ **A non-bug, so nobody "fixes" it later:** the fixed header is a *fading* scrim
+(`linear-gradient` rgba(5,5,5,.92) → 0, plus `backdrop-filter: blur(6px)`), so page text
+passing under its lower edge stays partly legible. At a 0.62-scale screenshot this reads as
+the header colliding with body text; at full scale it is correct and the backdrop blur is
+working. No ancestor breaks the filter. Judge this one at full scale only.
+
 ---
 
 ## 10 · ⏭️ Resume here (next session)
@@ -802,15 +865,11 @@ The site is **finished and deploy-ready**. Nothing is half-done. Suggested order
    and the history carries ~780M of media).
 
 **Open items — all judgement calls for the user, none blocking:**
-1. ⚠️ **Things only a human eye can confirm.** ✅ **(a) the landing intro is DONE** —
-   watched end to end on 2026-09-06 and correct; see §9's last entry for the method, which
-   works for the rest of this list too. Remaining, in priority order:
-   **(b)** the Avengers walk's scene reveals and the parallax drift on its ten plates.
-   **(c)** reduced-motion orb burst; warp / crossfade / stagger feel at real frame rate; the
-   720p re-encode of the Solarpunk talk on a big screen; the ten looping videos playing.
-   The pane suspends media (`document.hidden`), so every loop was verified by DOM assertion
-   and by measuring the encoded files, never watched. Worth one pass by eye, especially the
-   crossfaded loop seams on Manifesto chapter 8 and the HODL hero.
+1. ✅ **CLOSED (2026-09-06) — the whole by-eye list passed.** The intro, the Avengers walk's
+   reveals and plate drift, the reduced-motion orb burst, warp / crossfade / stagger at real
+   frame rate, the 720p Solarpunk talk, and all ten looping videos including both flagged
+   crossfade seams. Nothing needed changing. See §9's last two entries for the numbers and
+   for the method, which is reusable for any future motion work.
 2. **Ripple** (`/website-design/ripple`) — the case study is written and the looping motion
    piece plays, but there are still no website screenshots. Leave, or source visuals.
 3. **Two Manifesto passages were flagged, not silently rewritten** — chapter 2's
