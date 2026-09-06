@@ -91,6 +91,18 @@ export default function Landing() {
     }
   }, [introPhase]);
 
+  // The intro is a curtain: nothing else on the page belongs in front of it,
+  // including the (fixed, global) portfolio-mode switch. Flagged on <html>
+  // because that switch lives outside this tree entirely.
+  useEffect(() => {
+    const html = document.documentElement;
+    if (introPhase === "intro") html.dataset.intro = "1";
+    else delete html.dataset.intro;
+    return () => {
+      delete document.documentElement.dataset.intro;
+    };
+  }, [introPhase]);
+
   const activeId = hoverId ?? orbId;
   const activeCat = activeId ? categoryById(activeId) : null;
 

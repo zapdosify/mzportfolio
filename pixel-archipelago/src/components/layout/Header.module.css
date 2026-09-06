@@ -4,7 +4,8 @@
   left: 0;
   right: 0;
   z-index: var(--z-header);
-  height: var(--header-h);
+  height: calc(var(--header-h) + var(--switch-clear, 0px));
+  padding-top: var(--switch-clear, 0px);
   display: flex;
   align-items: center;
   /* strong enough that header text never collides with scrolled content,

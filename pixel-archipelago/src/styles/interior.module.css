@@ -1,7 +1,7 @@
 /* Shared interior-page layout (category / project / about / contact). */
 
 .page {
-  padding-top: calc(var(--header-h) + var(--space-12));
+  padding-top: calc(var(--header-h) + var(--switch-clear, 0px) + var(--space-12));
   padding-bottom: var(--space-16);
 }
 

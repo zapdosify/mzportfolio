@@ -337,7 +337,7 @@
 .hud { position: absolute; inset: 0; z-index: 7; pointer-events: none; }
 .hud button, .hud a { pointer-events: auto; }
 
-.titleBlock { position: absolute; top: var(--space-6); left: var(--space-6); }
+.titleBlock { position: absolute; top: calc(var(--space-6) + var(--switch-clear, 0px)); left: var(--space-6); }
 .name { font-family: var(--font-mono); font-size: clamp(1.1rem, 2vw, 1.6rem); font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-primary); }
 .role { font-family: var(--font-mono); font-size: clamp(0.7rem, 1vw, 0.85rem); letter-spacing: 0.22em; text-transform: uppercase; color: var(--text-muted); margin-top: 2px; }
 .rule { display: block; width: 190px; max-width: 40vw; height: 1px; background: var(--border-active); margin: var(--space-4) 0; }
@@ -347,7 +347,7 @@
 
 .indexBtn {
   position: absolute;
-  top: var(--space-6);
+  top: calc(var(--space-6) + var(--switch-clear, 0px));
   right: var(--space-6);
   display: inline-flex;
   align-items: center;

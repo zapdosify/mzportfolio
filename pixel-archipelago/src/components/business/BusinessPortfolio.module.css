@@ -1,0 +1,680 @@
+/* ------------------------------------------------------------------ *
+ * Business Analytics portfolio — a light, editorial counterweight to the
+ * dark archipelago. Every rule here is scoped inside `.page`, so nothing
+ * in this file can reach the design portfolio.
+ *
+ * Art direction: soft white paper, near-black ink, hairlines instead of
+ * boxes, generous margins, and asymmetry that is measured rather than
+ * accidental. No shadows, no glass, no rounded cards, no chart furniture.
+ * ------------------------------------------------------------------ */
+
+.page {
+  /* Palette */
+  --biz-bg: #f7f7f3;
+  --biz-panel: #fdfdfb;
+  --biz-ink: #0f0f0e;
+  --biz-ink-soft: #2c2c28;
+  --biz-muted: #5e5e57;
+  --biz-faint: #93938c;
+  --biz-line: #e2e2da;
+  --biz-line-strong: #c8c8bf;
+
+  --biz-font: "Montserrat", "Segoe UI", -apple-system, BlinkMacSystemFont, sans-serif;
+  --biz-gutter: clamp(22px, 5.5vw, 92px);
+  --biz-maxw: 1300px;
+
+  position: relative;
+  min-height: 100dvh;
+  background: var(--biz-bg);
+  color: var(--biz-ink);
+  font-family: var(--biz-font);
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+}
+
+.shell {
+  width: 100%;
+  max-width: var(--biz-maxw);
+  margin-inline: auto;
+  padding-inline: var(--biz-gutter);
+}
+
+.main {
+  position: relative;
+}
+.main:focus {
+  outline: none;
+}
+
+/* ---------- Mode transition ----------
+   Transform only. The opacity half of the crossfade is applied by the
+   layer wrapper in RootLayout, and the fixed header + mode switch sit
+   outside this element so that neither of them moves. */
+.enterUp {
+  animation: bizRiseIn 420ms var(--ease-out) both;
+}
+.leaveUp {
+  animation: bizRiseOut 260ms ease-in both;
+}
+@keyframes bizRiseIn {
+  from { transform: translate3d(0, 16px, 0); }
+  to { transform: none; }
+}
+@keyframes bizRiseOut {
+  from { transform: none; }
+  to { transform: translate3d(0, -10px, 0); }
+}
+
+/* ---------- Scroll entrance ---------- */
+.page [data-reveal] {
+  opacity: 0;
+  transform: translateY(18px);
+  transition:
+    opacity 720ms var(--ease-out),
+    transform 720ms var(--ease-out);
+}
+.page [data-reveal].revealed {
+  opacity: 1;
+  transform: none;
+}
+
+/* ---------- Header ----------
+   Deliberately pinned to the same 24px inset and the same optical size as
+   the design world's nameplate, so switching modes reads as one identity
+   changing typeface rather than two headers trading places. */
+.bizHeader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+  padding: calc(var(--space-6) + var(--switch-clear, 0px)) var(--space-6) 18px;
+  pointer-events: none;
+  background: linear-gradient(
+    to bottom,
+    rgba(247, 247, 243, 0.96) 0%,
+    rgba(247, 247, 243, 0.78) 62%,
+    rgba(247, 247, 243, 0) 100%
+  );
+  backdrop-filter: blur(6px);
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 62%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 0%, #000 62%, transparent 100%);
+}
+
+.bizName {
+  font-size: clamp(1.1rem, 2vw, 1.6rem);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--biz-ink);
+}
+.bizRole {
+  margin-top: 3px;
+  font-size: clamp(0.7rem, 1vw, 0.85rem);
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--biz-faint);
+}
+
+/* ---------- Shared type ---------- */
+.eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--biz-faint);
+}
+.eyebrowRule {
+  display: block;
+  flex: none;
+  width: 34px;
+  height: 1px;
+  background: var(--biz-line-strong);
+}
+
+.ctaArrow {
+  width: 24px;
+  height: 12px;
+  flex: none;
+  transition: transform 340ms var(--ease-out);
+}
+
+/* ---------- Hero ---------- */
+.hero {
+  position: relative;
+  min-height: 100svh;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  padding-top: clamp(120px, 16vh, 176px);
+  padding-bottom: clamp(84px, 12vh, 140px);
+}
+
+.heroShell {
+  position: relative;
+  z-index: 1;
+}
+
+.heroText {
+  max-width: 660px;
+}
+
+.headline {
+  margin-top: clamp(20px, 2.6vw, 34px);
+  font-size: clamp(2.3rem, 5.1vw, 4.5rem);
+  font-weight: 300;
+  line-height: 1.04;
+  letter-spacing: -0.032em;
+  color: var(--biz-ink);
+  max-width: 17ch;
+  text-wrap: balance;
+}
+
+.lede {
+  display: grid;
+  gap: 1.05em;
+  margin-top: clamp(26px, 3vw, 40px);
+  max-width: 54ch;
+  font-size: clamp(0.94rem, 1.02vw, 1.06rem);
+  line-height: 1.76;
+  color: var(--biz-muted);
+}
+
+.cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: clamp(34px, 4vw, 54px);
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--biz-line-strong);
+  font-size: 0.66rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--biz-ink);
+  transition: border-color 300ms var(--ease-out);
+}
+.cta:hover {
+  border-color: var(--biz-ink);
+}
+.cta:hover .ctaArrow {
+  transform: translateX(6px);
+}
+
+/* Discreet motion control for the word field. */
+.pause {
+  position: absolute;
+  right: var(--biz-gutter);
+  bottom: clamp(26px, 4.5vh, 48px);
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 36px;
+  padding: 8px 14px;
+  border: 1px solid var(--biz-line);
+  border-radius: 999px;
+  background: rgba(247, 247, 243, 0.72);
+  backdrop-filter: blur(4px);
+  font-family: var(--biz-font);
+  font-size: 0.53rem;
+  font-weight: 600;
+  letter-spacing: 0.17em;
+  text-transform: uppercase;
+  color: var(--biz-faint);
+  transition:
+    color 240ms var(--ease-out),
+    border-color 240ms var(--ease-out);
+}
+.pause:hover {
+  color: var(--biz-ink);
+  border-color: var(--biz-line-strong);
+}
+.pauseIcon {
+  width: 10px;
+  height: 10px;
+  flex: none;
+}
+
+/* ---------- Sections ---------- */
+.section {
+  position: relative;
+  border-top: 1px solid var(--biz-line);
+  padding-block: clamp(72px, 11vh, 152px);
+}
+
+.sectionHead {
+  max-width: 800px;
+  margin-bottom: clamp(48px, 7vw, 96px);
+}
+.sectionTitle {
+  margin-top: 18px;
+  font-size: clamp(1.6rem, 3vw, 2.6rem);
+  font-weight: 300;
+  line-height: 1.14;
+  letter-spacing: -0.022em;
+  text-wrap: balance;
+}
+.sectionNote {
+  margin-top: 18px;
+  max-width: 48ch;
+  font-size: 0.86rem;
+  line-height: 1.7;
+  color: var(--biz-faint);
+}
+
+/* ---------- Projects ---------- */
+.feature {
+  display: grid;
+  grid-template-columns: minmax(0, 1.12fr) minmax(0, 1fr);
+  gap: clamp(28px, 4.4vw, 76px);
+  align-items: start;
+  padding-bottom: clamp(60px, 8vw, 118px);
+}
+
+.cover {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: var(--biz-panel);
+  border: 1px solid var(--biz-line);
+  color: var(--biz-ink);
+}
+.coverFeature {
+  aspect-ratio: 16 / 11;
+}
+.coverSvg,
+.coverImg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.coverImg {
+  object-fit: cover;
+}
+.coverIndex {
+  position: absolute;
+  left: 18px;
+  top: 15px;
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  color: var(--biz-faint);
+}
+
+.featureBody {
+  padding-top: clamp(4px, 1vw, 16px);
+}
+
+.status {
+  display: inline-block;
+  padding: 5px 11px;
+  border: 1px dashed var(--biz-line-strong);
+  font-size: 0.53rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--biz-faint);
+}
+
+.featureTitle {
+  margin-top: 20px;
+  font-size: clamp(1.5rem, 2.5vw, 2.1rem);
+  font-weight: 400;
+  letter-spacing: -0.018em;
+}
+.cardTitle {
+  margin-top: 18px;
+  font-size: clamp(1.25rem, 1.9vw, 1.6rem);
+  font-weight: 400;
+  letter-spacing: -0.015em;
+}
+
+.standfirst {
+  margin-top: 12px;
+  max-width: 46ch;
+  font-size: 0.93rem;
+  line-height: 1.7;
+  color: var(--biz-muted);
+}
+
+.fields {
+  margin-top: clamp(24px, 3vw, 38px);
+  border-top: 1px solid var(--biz-line);
+}
+.field {
+  display: grid;
+  grid-template-columns: 148px minmax(0, 1fr);
+  gap: 20px;
+  align-items: start;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--biz-line);
+}
+.field dt {
+  padding-top: 3px;
+  font-size: 0.55rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--biz-faint);
+}
+.field dd {
+  font-size: 0.89rem;
+  line-height: 1.65;
+  color: var(--biz-ink-soft);
+}
+/* Every placeholder value is set a shade lighter than real copy, so the
+   difference is visible at a glance once real content lands beside it. */
+.ph {
+  color: var(--biz-faint);
+}
+
+.slots {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.slot {
+  display: block;
+  height: 22px;
+  border: 1px dashed var(--biz-line-strong);
+  border-radius: 2px;
+}
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.chip {
+  display: inline-block;
+  padding: 5px 10px;
+  border: 1px solid var(--biz-line-strong);
+  font-size: 0.62rem;
+  letter-spacing: 0.06em;
+  color: var(--biz-ink-soft);
+}
+
+.caseLink,
+.caseLinkOff {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 28px;
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+.caseLink {
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--biz-ink);
+  color: var(--biz-ink);
+}
+.caseLink:hover .ctaArrow {
+  transform: translateX(6px);
+}
+.caseLinkOff {
+  color: var(--biz-faint);
+  cursor: default;
+}
+.caseLinkOff::before {
+  content: "";
+  display: block;
+  width: 20px;
+  height: 1px;
+  background: var(--biz-line-strong);
+}
+
+.pair {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(28px, 4.4vw, 76px);
+  align-items: start;
+}
+/* The offset is the composition: two equal cards on one baseline would be
+   a grid, not an arrangement. */
+.pair > :nth-child(2) {
+  margin-top: clamp(0px, 7vw, 104px);
+}
+.card .field {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 6px;
+}
+.card .field dt {
+  padding-top: 0;
+}
+
+/* ---------- Continuous learning ---------- */
+.learnHead {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+  gap: clamp(24px, 4vw, 72px);
+  align-items: end;
+  max-width: none;
+}
+.learnIntro {
+  max-width: 54ch;
+  font-size: 0.94rem;
+  line-height: 1.76;
+  color: var(--biz-muted);
+}
+
+/* Hairline rows only — no cell grid. The list can hold six placeholders or
+   twenty real badges and the rules always land correctly. */
+.badges {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(196px, 1fr));
+  gap: 0;
+  border-bottom: 1px solid var(--biz-line);
+}
+.badge {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: clamp(24px, 2.4vw, 34px) clamp(20px, 2vw, 30px) clamp(28px, 3vw, 40px) 0;
+  border-top: 1px solid var(--biz-line);
+}
+/* The badge is drawn whole — never cropped, never masked, never forced to
+   a square. Its own artwork and proportions survive intact. */
+.badgeArt {
+  width: clamp(66px, 6vw, 92px);
+  height: clamp(66px, 6vw, 92px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 22px;
+  color: var(--biz-ink);
+}
+.badgeImg {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}
+.badgeMark {
+  width: 100%;
+  height: 100%;
+}
+.badgeTitle {
+  font-size: 0.9rem;
+  font-weight: 500;
+  line-height: 1.45;
+}
+.badgeMeta {
+  margin-top: 4px;
+  font-size: 0.72rem;
+  line-height: 1.5;
+  color: var(--biz-faint);
+}
+.verify,
+.verifyOff {
+  margin-top: 16px;
+  font-size: 0.55rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.verify {
+  padding-bottom: 3px;
+  border-bottom: 1px solid var(--biz-ink);
+  color: var(--biz-ink);
+}
+.verifyOff {
+  color: #a9a9a2;
+  cursor: default;
+}
+
+/* ---------- Closing ---------- */
+.statement {
+  margin-top: 22px;
+  max-width: 21ch;
+  font-size: clamp(1.7rem, 4vw, 3.4rem);
+  font-weight: 300;
+  line-height: 1.14;
+  letter-spacing: -0.028em;
+  text-wrap: balance;
+}
+.closingBody {
+  margin-top: 30px;
+  max-width: 58ch;
+  font-size: 1rem;
+  line-height: 1.76;
+  color: var(--biz-muted);
+}
+
+.contact {
+  margin-top: clamp(56px, 7vw, 108px);
+  padding-top: clamp(32px, 4vw, 54px);
+  border-top: 1px solid var(--biz-line);
+}
+.contactLead {
+  max-width: 50ch;
+  font-size: 0.94rem;
+  line-height: 1.72;
+  color: var(--biz-muted);
+}
+.contactList {
+  margin-top: 34px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 28px 40px;
+}
+.contactList dt {
+  font-size: 0.55rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--biz-faint);
+}
+.contactList dd {
+  margin-top: 9px;
+  font-size: 0.95rem;
+  color: var(--biz-ink);
+}
+.contactLink {
+  padding-bottom: 2px;
+  border-bottom: 1px solid var(--biz-line-strong);
+  transition: border-color 240ms var(--ease-out);
+}
+.contactLink:hover {
+  border-color: var(--biz-ink);
+}
+
+.bizFooter {
+  border-top: 1px solid var(--biz-line);
+  padding-block: 28px 40px;
+}
+.bizFooter .shell {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 14px;
+  font-size: 0.56rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--biz-faint);
+}
+
+/* ---------- Focus ---------- */
+.page a:focus-visible,
+.page button:focus-visible {
+  outline: 2px solid var(--biz-ink);
+  outline-offset: 3px;
+  border-radius: 1px;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1000px) {
+  .feature {
+    grid-template-columns: minmax(0, 1fr);
+    gap: clamp(24px, 4vw, 40px);
+  }
+  .field {
+    grid-template-columns: 132px minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 860px) {
+  .learnHead {
+    grid-template-columns: minmax(0, 1fr);
+    align-items: start;
+  }
+  .pair {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 60px;
+  }
+  .pair > :nth-child(2) {
+    margin-top: 0;
+  }
+}
+
+@media (max-width: 620px) {
+  .hero {
+    min-height: 92svh;
+    padding-top: clamp(132px, 22vh, 180px);
+  }
+  .field {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 6px;
+  }
+  .field dt {
+    padding-top: 0;
+  }
+  .badge {
+    padding-right: 0;
+  }
+  .pause {
+    right: auto;
+    left: var(--biz-gutter);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page [data-reveal] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .enterUp,
+  .leaveUp {
+    animation: none;
+  }
+  .ctaArrow,
+  .cta,
+  .contactLink,
+  .pause {
+    transition: none;
+  }
+}

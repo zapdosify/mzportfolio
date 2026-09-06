@@ -1,8 +1,17 @@
 # CONTEXT — Pixel Archipelago Portfolio (session handoff)
 
-**Read this first in a new session.** Last updated: **2026-09-06** (all 6 phases done, plus a
-16th project, an interactive-galaxy intro on the landing, and two artwork swaps). Working tree
-clean at `3579073`, `tsc` and `npm run build` both green, **ready to deploy**.
+**Read this first in a new session.** Last updated: **2026-09-06 (evening)** — the site now
+holds **TWO portfolios**: the existing Pixel Archipelago (design) and a new **Business
+Analytics** landing page, joined by a mode switch in the header. `tsc` and `npm run build`
+are both green.
+
+**Jump to SECTION 11 for the business mode — that is the live piece of work.** It is built,
+wired and seen working at 1440x900, but it is **PAUSED MID-POLISH**: the mobile pass, the
+reduced-motion pass, and everything below the business hero are still unobserved. Section 11
+ends with the resume list.
+
+(Everything before section 11 describes the design portfolio, which is finished, deploy-ready
+and was not redesigned by the business work.)
 
 **What changed most recently** — the landing's first-load intro is now an **interactive
 spiral galaxy**: it turns with your cursor, particles light up gold where you touch them, and
@@ -1050,3 +1059,143 @@ lives as long as the session that started it. Restart it, don't debug the app.
   `getComputedStyle` assertions — that is how most of this work was verified.
 - `prefers-reduced-motion` cannot be emulated there.
 - Lazy routes need >150ms before asserting, or a sweep sees "NO H1" on a page that is fine.
+
+---
+
+## 11 · Business Analytics mode (added 2026-09-06 evening)
+
+A **second, fully designed portfolio** living inside the same app: light, editorial,
+Montserrat, one continuous scrolling page. Reached by a two-position switch fixed at the top
+centre of the header. The design portfolio is untouched — see "What was touched" below for the
+complete list of edits to existing files.
+
+### It is a MODE, not a route — and that was deliberate
+`useModeStore` (`src/hooks/useModeStore.ts`) holds `design | business`. **The URL never
+changes.** That is what makes "switching back must restore the existing design experience
+reliably" actually true: whichever design page you were on, however far you had scrolled, the
+orb's position, which islands you had explored — all of it survives a trip to business mode and
+back, because nothing about the router or the world store is disturbed. A shareable
+`/business` URL was not asked for and would have cost that.
+
+- **First-time visitors always start in Design.** The chosen mode is persisted to
+  `localStorage["mzn-portfolio-mode"]`, so a returning visitor resumes where they left —
+  **but only at `/`**. A deep link into a design page always shows that design page.
+  (One-line change in `initialMode()` if the user would rather it always open in Design.)
+- Per-mode **scroll positions** are remembered in a module-scoped `scrollMemory` and restored
+  a frame after the swap.
+
+### The transition (620ms total)
+`target` moves the instant the switch is thrown; `mode` (the mounted content) follows 260ms
+later; `switching` clears at 620ms.
+
+- `data-mode` on `<html>` tracks **`target`**, so the page background, the switch's colours,
+  `document.title` and the `theme-color` meta all start interpolating immediately and have
+  settled by the time the content finishes swapping. That continuous colour wash is what makes
+  a sequential swap read as one crossfade.
+- ⚠️ **The wrappers animate OPACITY ONLY** (`.mode-in` / `.mode-out` in `global.css`). The same
+  trap the route crossfade documents in §4/§9: a transform on those wrappers would re-anchor
+  every `position:fixed` descendant (header, warp overlay, modals). The "slight positional"
+  half of the transition is applied **inside** the business page, to `.main` only
+  (`.enterUp`/`.leaveUp`), so the fixed header and the switch never move.
+- Each branch has a stable React `key` so the subtree is genuinely replaced, not diffed.
+- Under reduced motion the swap is instant — no timers, no animation.
+- **The inactive mode is unmounted**, which is the strongest form of "pause the other mode's
+  animations": no orb rAF, no parallax loop, no canvas, no word field.
+
+### The switch (`components/mode/ModeSwitch.tsx`)
+A real `role="radiogroup"` with roving tabindex — click a label, drag the pill, tap, or use
+arrow/Home/End keys. Fixed at `top:14px`, centred, `z-index:45` (above the header's 40, below
+the landing warp's 50 and the modals' 1000).
+
+- The pill's **position and width are both interpolated from measured button geometry**
+  (`--k0x/--k0w/--k1x/--k1w`, written by a `ResizeObserver` + `document.fonts.ready`). That is
+  what lets the two halves be sized by their own labels instead of forced into equal columns,
+  which is the only way "BUSINESS ANALYTICS" stays compact down to a 320px screen.
+- Drag: `pointerdown` + capture, 4px of slop so a click stays a click, commit on
+  `pointerup` to whichever half the pointer is over. `touch-action: pan-y` so a vertical
+  swipe still scrolls the page. Button `onClick` remains for keyboard; `setMode` is idempotent
+  so the two paths cannot double-fire.
+- **Typography is deliberately constant** (IBM Plex Mono, in both modes). It is the one
+  instrument that belongs to neither world; swapping its typeface mid-transition read as jank.
+- It **hides behind the landing's first-load galaxy intro** — `Landing.tsx` sets
+  `document.documentElement.dataset.intro` while `introPhase === "intro"`, and
+  `html[data-intro] .mode-dock` fades it out. The intro is a curtain; nothing goes in front of it.
+- Hovering/focusing the switch **prefetches the business chunk**, so the first switch is as
+  instant as every one after it.
+
+### `--switch-clear` — how the switch makes room on narrow screens
+On wide screens the switch sits in the empty top-centre between the identity and the Index
+button, and costs nothing. Below **760px** there is no horizontal room, so `tokens.css` sets
+`--switch-clear: 42px` and four places add it to their top offset: `Header.module.css`
+(height + padding-top), `interior.module.css` (page padding-top), `StoryScroll.module.css`
+(sticky top), and `Landing.module.css` (`.titleBlock` and `.indexBtn`). **That is the entire
+mechanism** — if the switch ever collides with something on mobile, add
+`var(--switch-clear, 0px)` there rather than inventing a second offset.
+
+### The word field (`components/business/WordField.tsx`) — the signature background
+Business vocabulary arranged as a slow turning **column**, not a word cloud.
+
+- Terms are distributed up a vertical axis **by the golden angle** so they never line up into
+  rows; the radius follows a **spindle** (`0.72 + 0.28*sin(v*pi)`, widest at mid-height) and the
+  axis **leans** (`curve*sin(v*pi*1.15 - 0.5)`) — that lean is what stops it reading as a
+  cylinder. One revolution per **96 seconds**.
+- Depth is `(cos(theta+spin)+1)/2`, driving scale (0.70 to 1.12) and opacity (`depth^1.6`, so the
+  back of the turn falls away fast). Three size tiers live in CSS (`.t0/.t1/.t2`); only the
+  depth-driven part is computed per frame. 30 words desktop, 14 mobile.
+- Composition is **deterministic** (seeded `mulberry32`) — it is tuned, not re-rolled per visit.
+- Concentrated right: `axisX = 0.8W`, `R = 0.26W`, and a **two-mask intersect** (a horizontal
+  one that empties the left third where the headline lives, a vertical one that dissolves the
+  column into the section edges). Mobile: centred, `opacity 0.72`, vertical fade only, no bob.
+- `aria-hidden`, `pointer-events:none`, `contain:strict`. Decorative thematic vocabulary — it
+  is **not** a claim about the user's skills, and the file says so.
+- **Reduced motion** draws one static pose and never starts the loop. The discreet
+  **"Pause motion"** control at the bottom-right of the hero stops time without rebuilding the
+  field (`paused` is read through a ref — same rule as §10's Landing warning).
+
+### Content is data, not markup — `src/data/businessContent.ts`
+Everything the user will replace lives in one commented file: `businessCopy` (all page copy),
+`fieldTerms` (the 12 background words), `businessProjects` (3 placeholders) and `credentials`
+(6 badge slots). Each block carries a "TO ADD A REAL ..." comment.
+
+- **Projects:** set `href` and the link activates itself; fill `methods[]` and the dashed
+  placeholder slots become real chips; set `image` and it overrides the abstract SVG cover.
+  Nothing invents a client, a metric or a result — placeholder values are set a shade lighter
+  than real copy so the difference is obvious once real content lands beside them.
+- **Credentials:** the grid is `auto-fill` with hairline rows only (no cell borders), so six
+  placeholders or twenty real badges both lay out correctly with no redesign. Badge art is
+  `object-fit: contain` in a square frame — **uncropped, original proportions**, per the brief.
+- **Covers** (`components/business/Covers.tsx`) are three deterministic abstract line drawings
+  (contour / orbit / strata). Deliberately not charts — no axes, no legend, no dashboard furniture.
+
+### What was touched in the existing app (the complete list)
+`RootLayout.tsx` (branch on mode, mount `ModeSwitch`, `data-mode`/title/theme-color effect),
+`index.html` (Montserrat 300/400/500/600 added to the existing Google Fonts link),
+`global.css` (append-only: mode wash + `.mode-in/.mode-out` + `.mode-dock`),
+`tokens.css` (`--switch-clear`), `Header.module.css` / `interior.module.css` /
+`StoryScroll.module.css` / `Landing.module.css` (add `--switch-clear` to a top offset),
+`Landing.tsx` (one effect that flags `data-intro` on `<html>`). **Nothing else.** All business
+styling is in CSS modules scoped inside `.page`, so it cannot reach the design portfolio.
+
+### ⏭️ Resume here (business mode)
+Verified so far: the switch works in both directions at 1440x900, the business hero renders,
+the word column turns (two screenshots seconds apart show it rotated), `tsc` + `npm run build`
+green, and business ships as its own lazy chunk (**15.2 kB JS / 12.3 kB CSS, gzip 5.0 / 3.3**)
+so the design bundle is unchanged.
+
+**Not yet done — pick up here:**
+1. **Scroll the business page past the hero and look at it.** Projects, Continuous learning and
+   Closing have been written and built but have **not been seen rendered**. The scroll-reveal
+   (`[data-reveal]` + one IntersectionObserver) in particular is unobserved.
+2. **Mobile + tablet pass.** 375 / 768. Especially: does the switch clear the landing HUD and
+   the interior header at `--switch-clear: 42px`, and does the hero's `padding-top` clear both?
+3. **Reduced motion.** The store-toggle path is handled in JS (reveals are force-shown rather
+   than left at opacity 0 — that was a real bug, fixed); the media-query path is CSS. Neither
+   has been observed. The pane cannot emulate `prefers-reduced-motion` (§10).
+4. **Switch from an interior design page** (e.g. `/poster-design`, scrolled down) to business
+   and back. The scroll-memory restore is written but unobserved on that path.
+5. **Drag the pill by hand**, and keyboard-arrow it. Both are implemented, neither observed.
+6. A thin dark vertical strip appears at ~x1290 in Browser-pane screenshots. Almost certainly
+   the pane drawing the scrollbar at a scaled position (`document.documentElement.clientWidth`
+   is 1425 of 1440, i.e. a normal 15px scrollbar) — **not chased, worth a glance on real hardware.**
+7. Judgement calls the user may want to overturn: mode persistence (above), the switch keeping
+   IBM Plex Mono in both worlds, and hiding the switch during the galaxy intro.

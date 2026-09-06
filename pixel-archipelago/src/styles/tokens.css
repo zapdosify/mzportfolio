@@ -49,6 +49,10 @@
   --radius: 2px;
   --maxw: 1280px;
   --header-h: 60px;
+  /* Vertical room the fixed mode switch needs at the top of the viewport.
+     0 on wide screens (it sits between the identity and the Index button);
+     a real offset on narrow ones, where there is no horizontal room. */
+  --switch-clear: 0px;
   /* height of the full-bleed landmark banner on interior pages */
   --banner-h: clamp(360px, 58vh, 680px);
 
@@ -72,4 +76,8 @@
 
 @media (max-width: 900px) {
   :root { --banner-h: clamp(240px, 40vh, 400px); }
+}
+
+@media (max-width: 760px) {
+  :root { --switch-clear: 42px; }
 }

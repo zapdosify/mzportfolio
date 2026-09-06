@@ -115,7 +115,7 @@
 /* reading rail */
 .rail {
   position: sticky;
-  top: calc(var(--header-h) + var(--space-8));
+  top: calc(var(--header-h) + var(--switch-clear, 0px) + var(--space-8));
   float: left;
   width: 132px;
   margin-left: -164px;
