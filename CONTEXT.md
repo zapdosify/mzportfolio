@@ -2,7 +2,7 @@
 
 **Read this first in a new session.** Last updated: **2026-09-06** (all 6 phases done, plus a
 16th project, an interactive-galaxy intro on the landing, and two artwork swaps). Working tree
-clean at `799b418`, `tsc` and `npm run build` both green, **ready to deploy**.
+clean at `3579073`, `tsc` and `npm run build` both green, **ready to deploy**.
 
 **What changed most recently** — the landing's first-load intro is now an **interactive
 spiral galaxy**: it turns with your cursor, particles light up gold where you touch them, and
@@ -19,9 +19,12 @@ on real hardware — see §10 item 1.
 Commit at every milestone. Media (~780M of masters) is in history; `.gitignore` excludes
 `node_modules/` and `dist/`.
 
-**Dev server + caches:** this session left a `dev` server on 5173 and a current `dist/`, but a
-server only lives as long as the session that started it — **assume it is gone and restart
-it** (§10). Caches are warm, so the first start should be quick.
+**Dev server + caches — both were deliberately cleared at the end of the last session.**
+There is **no running dev server**, **no `dist/`**, and **no Vite pre-bundle cache**
+(`node_modules/.vite`). `node_modules` itself is intact, so nothing needs reinstalling and
+there is no network dependency. Just expect the **first `npm run dev` to be slow** while Vite
+re-optimises deps, and `dist/` to be absent until you `npm run build`. Start the server from
+`.claude/launch.json` (config `dev`, port 5173) — see §10.
 
 Project root: `C:\Users\zab\Desktop\Portfolio 2026\`
 App root: `pixel-archipelago/` · Dev: `npm run dev` (port 5173) · Build: `npm run build`
