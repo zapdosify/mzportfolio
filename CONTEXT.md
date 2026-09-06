@@ -4,10 +4,10 @@
 16th project, a first-load intro on the landing, and two artwork swaps). Working tree clean at
 `d33e771`, build green, **ready to deploy**.
 
-**What changed most recently** — jump to §9's last three entries for the detail:
-a new **Avengers Exhibition Design** project (35 images as a scripted walk, not a gallery), a
-**~6.5s first-load intro** on the landing (pixels assemble the opening line, then stream into
-the orb), HODL's card art, and the About portrait swapped to the pixel-art avatar.
+**What changed most recently** — the landing's first-load intro is now an **interactive
+spiral galaxy**: it turns with your cursor, particles light up gold where you touch them, and
+pressing the glowing core sucks the whole thing into the orb and opens the site. It replaces
+the text intro. See §9's last entry — it also records a keyboard bug that fix surfaced.
 
 ✅ **The whole by-eye verification list is CLOSED** (2026-09-06) — the intro, the Avengers
 walk, the reduced-motion burst, warp / crossfade / stagger at real frame rate, the Solarpunk
@@ -100,10 +100,12 @@ Layer order inside a fixed-aspect stage (`1672 × 941`):
 4. **DOM nameplates** — 13 clickable/hover plates, positioned by `PLATE_X` / `PLATE_Y` in `Landing.tsx`
 5. `OrbLayer` canvas — white orb that **follows the cursor** (system cursor hidden: `cursor:none`)
 6. **HUD** (fixed, no parallax): title, "Move to Explore", Index button, world map, status legend
-7. **First-load intro** (`Intro.tsx`, added 2026-07-28) — a fixed overlay *above* all of the
-   above, once per tab session. It deliberately changes nothing here: the landing is mounted
-   and fully laid out underneath it from the first paint, so there is no layout shift. It reads
-   the live orb's position via `[data-orb-target]` on the centre orb — keep that attribute.
+7. **First-load intro** (`Intro.tsx` — an interactive galaxy since 2026-09-06) — a fixed
+   overlay *above* all of the above, once per tab session. It deliberately changes nothing
+   here: the landing is mounted and fully laid out underneath it from the first paint, so
+   there is no layout shift. It reads the live orb's position via `[data-orb-target]` on the
+   centre orb — keep that attribute. ⚠️ Because the landing underneath stays focusable, the
+   intro traps the keyboard; see §9's 2026-09-06 galaxy entry before changing that.
 
 ### Hard-won decisions — do not regress
 - **Use the layered approach**, not a single flattened image, and **not** per-island sprites (that lost the bridges/centre platform and drifted from the concept).
@@ -850,6 +852,73 @@ cross-hatch texture survive the encode, so 720p was the right call for this cont
 passing under its lower edge stays partly legible. At a 0.62-scale screenshot this reads as
 the header colliding with body text; at full scale it is correct and the backdrop blur is
 working. No ancestor breaks the filter. Judge this one at full scale only.
+
+### 2026-09-06 (third pass) — the intro is now an interactive galaxy
+
+**The text intro is gone.** On the user's request, phase 1 is now a spiral galaxy you can
+push around with the cursor, with a glowing core you press to start the site. Phase 2 — the
+absorption into the orb, the power-up and the radial reveal — is the one that already
+existed, kept deliberately intact. `Intro.tsx` was largely rewritten; `Landing.tsx` was NOT
+touched, because the `reducedMotion` / `onReveal` / `onDone` contract is unchanged.
+
+**Reference:** the hero on `higgsfield.ai/gpt-astra` (a single full-viewport WebGL canvas,
+`gpt-astra-stars`). ⚠️ It only renders at wide viewports — at 781px the pane showed nothing
+and it looked like the wrong URL. Two of its behaviours were the brief: the disc answers the
+cursor, and particles near the pointer light up in the brand accent.
+
+**Deliberate translation, not a copy.** The reference tints its stars blue/orange and flares
+them neon green. The site's identity is grayscale plus the single yellow orb, so the galaxy is
+**pure white**, and gold appears in exactly two places: the core, and whatever the cursor is
+touching. That keeps the locked palette and makes the core read as the same object the landing
+hands off to.
+
+**How it is built.** Canvas 2D, no WebGL, no new dependency — entry bundle went 431.1 →
+431.6 kB (gzip 142.2 → 142.3), i.e. free, because the galaxy replaced the text-sampling code.
+Particles are real 3D points re-projected each frame, so the cursor tilts an actual disc and
+near/far arms part with genuine parallax. Each dot is a cached radial-gradient sprite drawn
+additively (`lighter`); building a gradient per particle per frame is what makes naive canvas
+particle fields crawl. **Measured 75 fps** at ~1500 particles.
+
+⚠️ **The tilt convention is measured from EDGE-on, not face-on** — screen-y is scaled by
+`sin(tilt)`, so `PI/2` is face-on and small values flatten the disc into a line. Setting it to
+`0.34` "for a shallow angle" squashed the spiral 3:1 into a closed ellipse ring, which cost a
+cycle. It is `1.15` (~66 deg). Also: `spin` past ~5 wraps the arms into each other and closes
+the ring; 2 arms at `spin: 4.0` is what reads as a spiral. Constants are all at the top.
+
+**Phase 1 has no clock.** It turns and waits, which is the point of making the core a button.
+⚠️ But a portfolio must never trap a visitor, so `IDLE_ADVANCE_MS` (15s) runs the absorption on
+its own. It **resets on any pointer or key input**, so someone actually playing with the galaxy
+is never interrupted — it only fires on an abandoned tab. Verified firing.
+
+⚠️ **A real bug this surfaced, worth understanding before touching the overlay.** The landing
+is mounted and fully interactive UNDERNEATH the intro — 13 nameplate links, the centre orb and
+Index are all focusable. The overlay is opaque so nothing can be *clicked* through it, but a
+keypress goes to whatever holds focus: pressing Enter followed a landing link and navigated to
+`/renders` mid-intro. The old text intro barely exposed this because any key dismissed it
+within a beat; **this one waits, so the window was the whole visit.** Fixed with a
+capture-phase key handler that `preventDefault`s everything before it reaches the page, Escape
+as the only hard exit, and Tab confined to the overlay's two controls. Verified: Tab cycles
+core → Skip only, and Enter now runs the full 2879ms absorption and stays on `/`.
+
+⚠️ **The core is deliberately NOT focused on mount.** Calling `.focus()` on it trips
+`:focus-visible`, which drew a gold ring round the core on first paint for every visitor,
+mouse included — it reads as a UI artifact sitting on the artwork. It also buys nothing: the
+key handler already blocks the page below, and the first Tab pulls focus in.
+
+**Verified by observation:**
+- The galaxy renders as a two-armed spiral with a gold core, and tilts visibly with the cursor.
+- **Cursor warming, measured:** under the pointer the canvas reads `R−B = 109.4` across ~18k
+  lit pixels; at a point mirrored through the core — same radius, same arm density, no cursor —
+  it reads `R−B = 0.0`. Gold exactly where the cursor is, pure white everywhere else.
+- **The absorption**, as a 9-frame contact sheet: spiral at rest → arms winding in and visibly
+  spinning up → collapsed into a dense glowing ball by ~1150ms → rings built by ~2050ms.
+- Landing settles normally afterwards: 13 plates, parallax live, `animationName: none`.
+- **Reduced motion** takes its own branch — no canvas, no core button, no prompt are ever
+  built, just a held black frame that fades through (~600ms).
+- **Mobile** (375×812): the spiral scales and stays readable; the prompt moves to `16vh` under
+  640px so the Skip button can't crowd it. No cursor there, so the disc drifts on a slow
+  Lissajous instead, and a tap anywhere starts the fall.
+- Skip button 327ms, Escape 344ms, both straight to the landing.
 
 ---
 

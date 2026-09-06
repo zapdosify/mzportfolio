@@ -54,27 +54,68 @@
   100% { transform: scale(14); opacity: 0; }
 }
 
+/* ---------- the core: the thing you press ---------- */
+/* The canvas draws the glow; this carries the label, the focus ring and a
+   ≥44px hit target, the same split the landing's own centre orb uses.
+   It sits on --ox/--oy so it lands exactly on the real orb underneath. */
+.core {
+  position: absolute;
+  left: var(--ox, 50%);
+  top: var(--oy, 50%);
+  width: 72px;
+  height: 72px;
+  transform: translate(-50%, -50%);
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+  /* the glow is painted on the canvas below — this is a hit target, not a look */
+  appearance: none;
+}
+.core:focus-visible {
+  outline: 2px solid rgba(255, 215, 107, 0.9);
+  outline-offset: 4px;
+}
+
+/* ---------- the prompt ---------- */
+/* Delayed: offering an instruction before the galaxy has resolved reads as an
+   apology for it. Sits below the core, never over the arms. */
+.prompt {
+  position: absolute;
+  left: 50%;
+  bottom: 8vh;
+  margin: 0;
+  transform: translateX(-50%);
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  white-space: nowrap;
+  pointer-events: none;
+  animation:
+    promptIn 700ms ease-out 1700ms both,
+    promptBreath 3.4s ease-in-out 2400ms infinite;
+}
+@keyframes promptIn {
+  from { opacity: 0; transform: translate(-50%, 10px); }
+  to { opacity: 1; transform: translate(-50%, 0); }
+}
+@keyframes promptBreath {
+  0%, 100% { opacity: 0.55; }
+  50% { opacity: 1; }
+}
+/* On a narrow screen the Skip button reaches into the middle of the bar, so
+   the prompt moves up rather than sitting beside it. */
+@media (max-width: 640px) {
+  .prompt { bottom: 16vh; }
+}
+
 /* ---------- reduced motion: fade only ---------- */
 .reduced {
-  /* no canvas, no particles, no travel — just the line, then the page */
+  /* no galaxy, no particles, no travel — a held black frame, then the page */
   background: var(--black);
-}
-.staticLine {
-  max-width: min(82vw, 62ch);
-  text-align: center;
-  font-family: var(--font-mono);
-  font-size: clamp(0.95rem, 2.2vw, 1.4rem);
-  font-weight: 600;
-  line-height: 1.6;
-  letter-spacing: 0.06em;
-  /* white, matching the canvas pixels — --text-primary is the body-text grey */
-  color: var(--white);
-  text-shadow: var(--glow-soft);
-  animation: lineIn 320ms ease-out both;
-}
-@keyframes lineIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
 }
 
 /* ---------- Skip ---------- */
@@ -126,5 +167,5 @@
 @media (prefers-reduced-motion: reduce) {
   .reveal { display: none; }
   .skip { animation: none; opacity: 1; }
-  .staticLine { animation-duration: 200ms; }
+  .prompt { animation: promptIn 700ms ease-out 1700ms both; }
 }
