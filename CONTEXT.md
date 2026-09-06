@@ -1,21 +1,25 @@
 # CONTEXT — Pixel Archipelago Portfolio (session handoff)
 
-**Read this first in a new session.** Last updated: **2026-07-27** (all 6 phases done, plus a
-media-presentation pass: full-width board decks, real Lightbox zoom, ten looping videos, and
-the Manifesto typeset as a book). Working tree clean, build green, **ready to deploy**.
+**Read this first in a new session.** Last updated: **2026-07-28** (all 6 phases done, plus a
+16th project, a first-load intro on the landing, and two artwork swaps). Working tree clean at
+`ee1f3f6`, build green, **ready to deploy**.
 
-**What changed most recently** — jump to §9's last four entries for the detail:
-board decks read edge-to-edge (BookBabies · HODL · Frontline · Magenta Moves), the Lightbox
-zooms to native pixels, HODL's hero and the Manifesto's nine chapter cards are crossfade-looped
-video, and the Manifesto's text spreads are now 4,705 words of real DOM text.
+**What changed most recently** — jump to §9's last three entries for the detail:
+a new **Avengers Exhibition Design** project (35 images as a scripted walk, not a gallery), a
+**~6.5s first-load intro** on the landing (pixels assemble the opening line, then stream into
+the orb), HODL's card art, and the About portrait swapped to the pixel-art avatar.
+
+⚠️ **The intro has never been watched end to end** — the preview pane went `document.hidden`
+and throttled rAF, which freezes the canvas. It is verified by code and numbers only. This is
+the single most important thing for the next session to confirm by eye (§10 item 1).
 
 **⚡ GIT IS LIVE.** `main`, local only — **no remote** (nothing is backed up off this machine).
 Commit at every milestone. Media (~780M of masters) is in history; `.gitignore` excludes
 `node_modules/` and `dist/`.
 
-**Dev server + caches:** nothing is running and `dist/` + `node_modules/.vite` were cleared at
-the end of the last session — `npm run dev` will do a cold (slightly slower) first start. That
-is expected, not a fault.
+**Dev server + caches:** the last session left a `dev` server on 5173 and a current `dist/`,
+but a server only lives as long as the session that started it — **assume it is gone and
+restart it** (§10). Caches are warm, so the first start should be quick.
 
 Project root: `C:\Users\zab\Desktop\Portfolio 2026\`
 App root: `pixel-archipelago/` · Dev: `npm run dev` (port 5173) · Build: `npm run build`
@@ -60,19 +64,27 @@ React + Vite + TypeScript + React Router + Zustand + GSAP. Canvas for the orb; *
 pixel-archipelago/src/
 ├── app/          RootLayout.tsx (header hidden on landing; route crossfade), router.tsx
 │                 — interior pages are React.lazy behind Suspense; Landing stays eager
-├── pages/        Landing/, CategoryPage.tsx, ProjectDetail.tsx, About.tsx, Contact.tsx, NotFound.tsx
+├── pages/        Landing/(Landing.tsx, Intro.tsx — first-load intro overlay),
+│                 CategoryPage.tsx, ProjectDetail.tsx, About.tsx, Contact.tsx, NotFound.tsx
 ├── components/   layout/(Header,Footer,CategoryBanner) navigation/IndexMenu
 │                 gallery/(Gallery,Lightbox) project/ProjectCard
-│                 media/(MediaFigure, AmbientVideo, VideoEmbed)
-│                 story/StoryScroll      contact/ContactDialog
+│                 media/(MediaFigure, AmbientVideo, VideoEmbed, LoopVideo)
+│                 story/(StoryScroll, BookScroll)   exhibit/ExhibitScroll
+│                 contact/ContactDialog
 ├── world/        OrbLayer.tsx (cursor-following orb), Starfield.tsx
-├── data/         categories.ts, projects.ts, solarpunkStory.ts, siteContent.ts,
-│                 types.ts, mediaDimensions.ts (generated), worldManifest.json
+├── data/         categories.ts, projects.ts, siteContent.ts, types.ts,
+│                 solarpunkStory.ts, manifestoBook.ts, avengersExhibition.ts,
+│                 mediaDimensions.ts (generated), worldManifest.json
 ├── hooks/        useWorldStore.ts (Zustand: orb pos, explored, indexOpen, contactOpen,
 │                 reducedMotion; partially persisted)
 │                 useHeroReveal.ts, useStaggerReveal.ts (GSAP ScrollTrigger)
 └── styles/       tokens.css, global.css, interior.module.css
 ```
+
+**Three long-form renderers replace the gallery on a project** — `book` (Manifesto),
+`story` (Solarpunk publication) and `exhibit` (Avengers walk). `ProjectDetail` guards the
+gallery with `!project.book && !project.exhibit`; each is chosen by the field being present on
+the `Project`, never by category.
 
 **Routes:** `/` + 13 categories (`/app-design`, `/website-design`, `/visual-artwork`, `/manifesto-design`, `/exhibition-design`, `/poster-design`, `/animation`, `/documentary`, `/renders`, `/3d-lettering`, `/t-mobile`, `/about`, `/contact`) + `/:categoryId/:slug` project details.
 
@@ -87,6 +99,10 @@ Layer order inside a fixed-aspect stage (`1672 × 941`):
 4. **DOM nameplates** — 13 clickable/hover plates, positioned by `PLATE_X` / `PLATE_Y` in `Landing.tsx`
 5. `OrbLayer` canvas — white orb that **follows the cursor** (system cursor hidden: `cursor:none`)
 6. **HUD** (fixed, no parallax): title, "Move to Explore", Index button, world map, status legend
+7. **First-load intro** (`Intro.tsx`, added 2026-07-28) — a fixed overlay *above* all of the
+   above, once per tab session. It deliberately changes nothing here: the landing is mounted
+   and fully laid out underneath it from the first paint, so there is no layout shift. It reads
+   the live orb's position via `[data-orb-target]` on the centre orb — keep that attribute.
 
 ### Hard-won decisions — do not regress
 - **Use the layered approach**, not a single flattened image, and **not** per-island sprites (that lost the bridges/centre platform and drifted from the concept).
@@ -749,10 +765,15 @@ The site is **finished and deploy-ready**. Nothing is half-done. Suggested order
    and the history carries ~780M of media).
 
 **Open items — all judgement calls for the user, none blocking:**
-1. ⚠️ **Things only a human eye can confirm** (the Browser pane can't): reduced-motion orb
-   burst; warp / crossfade / stagger feel at real frame rate; the 720p re-encode of the
-   Solarpunk talk on a big screen; the ten looping videos actually playing; **and now — the
-   Avengers walk's scene reveals and the parallax drift on its two flagged plates.**
+1. ⚠️ **Things only a human eye can confirm** (the Browser pane can't). In priority order:
+   **(a) the landing intro, end to end** — never once watched; the text pass that made it
+   minimal/white was verified by reading the render loop, not by looking. Open a *fresh tab*
+   (it is gated per tab session) to `/`. Check: the words gather smoothly with no punch, the
+   pixels are clean white and not mottled grey, the ~1.26s hold, the stream into the orb, the
+   rings, and the settle. Constants to tune are at the top of `Intro.tsx`.
+   **(b)** the Avengers walk's scene reveals and the parallax drift on its ten plates.
+   **(c)** reduced-motion orb burst; warp / crossfade / stagger feel at real frame rate; the
+   720p re-encode of the Solarpunk talk on a big screen; the ten looping videos playing.
    The pane suspends media (`document.hidden`), so every loop was verified by DOM assertion
    and by measuring the encoded files, never watched. Worth one pass by eye, especially the
    crossfaded loop seams on Manifesto chapter 8 and the HODL hero.
