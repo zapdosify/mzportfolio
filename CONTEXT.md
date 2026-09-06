@@ -1,26 +1,27 @@
 # CONTEXT — Pixel Archipelago Portfolio (session handoff)
 
 **Read this first in a new session.** Last updated: **2026-09-06** (all 6 phases done, plus a
-16th project, a first-load intro on the landing, and two artwork swaps). Working tree clean at
-`d33e771`, build green, **ready to deploy**.
+16th project, an interactive-galaxy intro on the landing, and two artwork swaps). Working tree
+clean at `799b418`, `tsc` and `npm run build` both green, **ready to deploy**.
 
 **What changed most recently** — the landing's first-load intro is now an **interactive
 spiral galaxy**: it turns with your cursor, particles light up gold where you touch them, and
 pressing the glowing core sucks the whole thing into the orb and opens the site. It replaces
 the text intro. See §9's last entry — it also records a keyboard bug that fix surfaced.
 
-✅ **The whole by-eye verification list is CLOSED** (2026-09-06) — the intro, the Avengers
-walk, the reduced-motion burst, warp / crossfade / stagger at real frame rate, the Solarpunk
-talk and all ten looping videos were each observed, and every one behaves as designed.
-**Nothing needed changing.** See §9's last two entries; §10 item 1 is now closed.
+✅ **The old by-eye verification list is CLOSED** (2026-09-06) — the Avengers walk, the
+reduced-motion burst, warp / crossfade / stagger at real frame rate, the Solarpunk talk and
+all ten looping videos were each observed and behave as designed. Nothing needed changing.
+⚠️ **But the galaxy intro is newer than that pass** and is the one thing still wanting a look
+on real hardware — see §10 item 1.
 
 **⚡ GIT IS LIVE.** `main`, local only — **no remote** (nothing is backed up off this machine).
 Commit at every milestone. Media (~780M of masters) is in history; `.gitignore` excludes
 `node_modules/` and `dist/`.
 
-**Dev server + caches:** the last session left a `dev` server on 5173 and a current `dist/`,
-but a server only lives as long as the session that started it — **assume it is gone and
-restart it** (§10). Caches are warm, so the first start should be quick.
+**Dev server + caches:** this session left a `dev` server on 5173 and a current `dist/`, but a
+server only lives as long as the session that started it — **assume it is gone and restart
+it** (§10). Caches are warm, so the first start should be quick.
 
 Project root: `C:\Users\zab\Desktop\Portfolio 2026\`
 App root: `pixel-archipelago/` · Dev: `npm run dev` (port 5173) · Build: `npm run build`
@@ -65,7 +66,7 @@ React + Vite + TypeScript + React Router + Zustand + GSAP. Canvas for the orb; *
 pixel-archipelago/src/
 ├── app/          RootLayout.tsx (header hidden on landing; route crossfade), router.tsx
 │                 — interior pages are React.lazy behind Suspense; Landing stays eager
-├── pages/        Landing/(Landing.tsx, Intro.tsx — first-load intro overlay),
+├── pages/        Landing/(Landing.tsx, Intro.tsx — first-load galaxy intro overlay),
 │                 CategoryPage.tsx, ProjectDetail.tsx, About.tsx, Contact.tsx, NotFound.tsx
 ├── components/   layout/(Header,Footer,CategoryBanner) navigation/IndexMenu
 │                 gallery/(Gallery,Lightbox) project/ProjectCard
@@ -686,6 +687,12 @@ exhibition-design/Avengers Exhibition/` — a 22-page project book, Unreal rende
 
 ### 2026-07-28 — First-load intro on the landing page
 
+⚠️ **SUPERSEDED 2026-09-06** — the text phase described here no longer exists; the intro
+opens on an interactive galaxy now (see this section's last two entries). Kept because the
+*second* half — the absorption into the orb, the power-up and the radial reveal — survives
+unchanged, and because the reasoning about layout shift, the settle cascade's fill-mode and
+the hidden-tab safety timer still applies.
+
 `pages/Landing/Intro.tsx` + `Intro.module.css`. A ~6.5s cinematic cold open:
 starfield → the sentence *"The idea you tossed away was probably the best one you've ever
 had."* assembles word by word out of scattered pixels → holds with a restrained flicker/glitch
@@ -971,7 +978,8 @@ released back to the page afterwards.
 
 ## 10 · ⏭️ Resume here (next session)
 
-The site is **finished and deploy-ready**. Nothing is half-done. Suggested order:
+The site is **finished and deploy-ready**. Nothing is half-done — the galaxy intro landed
+complete, typechecked, built and measured. Suggested order:
 
 1. **Deploy** — see `pixel-archipelago/DEPLOY.md`. `npm run build` → publish `dist/` on
    Netlify or Vercel (SPA fallback configs for both are already committed). This also
@@ -980,24 +988,49 @@ The site is **finished and deploy-ready**. Nothing is half-done. Suggested order
    Offer to set up a GitHub remote; **confirm with the user before pushing** (outward action,
    and the history carries ~780M of media).
 
-**Open items — all judgement calls for the user, none blocking:**
-1. ✅ **CLOSED (2026-09-06) — the whole by-eye list passed.** The intro, the Avengers walk's
-   reveals and plate drift, the reduced-motion orb burst, warp / crossfade / stagger at real
-   frame rate, the 720p Solarpunk talk, and all ten looping videos including both flagged
-   crossfade seams. Nothing needed changing. See §9's last two entries for the numbers and
-   for the method, which is reusable for any future motion work.
-2. **Ripple** (`/website-design/ripple`) — the case study is written and the looping motion
+**Open items — judgement calls for the user, none blocking:**
+1. ⚠️ **The galaxy intro wants one look on the user's own hardware.** They reported it
+   stuttering and the core press misfiring; both were traced to a real defect (the galaxy was
+   being rebuilt on every mouse move — §9's last entry) and fixed at the root. It now measures
+   **74.7 fps with zero frames over 33ms** while the pointer moves continuously, and the press
+   works first-time 4/4. But that is this machine at 75Hz; **their machine is the real test**,
+   and it is the one thing in the build that has changed since they last looked. If the follow
+   still feels wrong, `C.ease` / `C.yawRange` / `C.pitchRange` at the top of `Intro.tsx` are
+   the knobs, and `G` holds the galaxy's shape.
+2. ✒️ **The opening line is now homeless.** *"The idea you tossed away was probably the best
+   one you've ever had."* was the whole point of the old intro and is no longer anywhere on the
+   site — replacing it was the user's explicit instruction, so this is not a regression, but
+   it is a good line to have lost. Worth offering it a home (About, or the landing HUD) rather
+   than letting it vanish by accident.
+3. **The 15s idle auto-advance on the intro was my call, not theirs.** Phase 1 waits for a
+   press, so something has to stop an abandoned tab sitting on a galaxy forever. It resets on
+   any input, so an engaged visitor never sees it. One constant (`IDLE_ADVANCE_MS`) if they
+   want it longer, shorter or gone.
+4. ✅ **The older by-eye list passed** (2026-09-06) — the Avengers walk's reveals and plate
+   drift, the reduced-motion orb burst, warp / crossfade / stagger at real frame rate, the
+   720p Solarpunk talk, and all ten looping videos including both flagged crossfade seams.
+   See §9 for the numbers and for the method, which is reusable for any future motion work.
+5. **Ripple** (`/website-design/ripple`) — the case study is written and the looping motion
    piece plays, but there are still no website screenshots. Leave, or source visuals.
-3. **Two Manifesto passages were flagged, not silently rewritten** — chapter 2's
+6. **Two Manifesto passages were flagged, not silently rewritten** — chapter 2's
    "the more you gain knowledge, the more it genuinely opens up numerous doors" (agreement
    fixed, but the intended subject is a guess) and the deduplicated "mental copulations"
    clause. Both are the author's call; see `MANIFESTO-TRANSCRIPT.md`.
-4. **Solarpunk category placement was my call**, not the user's: it sits in Manifesto Design,
+7. **Solarpunk category placement was my call**, not the user's: it sits in Manifesto Design,
    cross-linked with Ripple. One-line move if they disagree (`categoryId` + two `projectIds`).
-5. Résumé download **stays .docx** (decided 2026-07-24 — don't re-raise).
-6. Cosmetic cleanup: `pagePreviewImage` in `categories.ts` is dead data, and
+8. Résumé download **stays .docx** (decided 2026-07-24 — don't re-raise).
+9. Cosmetic cleanup: `pagePreviewImage` in `categories.ts` is dead data, and
    `design-manifesto`'s `gallery`/`galleryVariant` are now unreachable (`book` wins) —
    kept deliberately as the fallback if the book is ever pulled.
+
+⚠️ **A rule the galaxy work earned — applies to anything under `pages/Landing/`.**
+`Landing` re-renders on *every mouse move*, and it hands `Intro` its callbacks as inline
+arrows. So any effect that lists a callback prop in its deps re-runs on every mouse move. That
+destroyed and rebuilt the whole galaxy mid-motion, and separately kept resetting the overlay's
+unmount timer. **Anything that must outlive a re-render belongs in a ref, and the render
+effect's deps stay `[reducedMotion]`.** There are comments in `Intro.tsx` saying so; believe
+them. A neat way to catch a recurrence: patch `document.createElement`, count canvas
+creations, and move the mouse — the count should not climb.
 
 **Dev-server note:** the root `.claude/launch.json` config `dev` binds 5173; a second config
 `dev-alt` (port 5183, `autoPort`) exists so a session can start its own server when 5173 is
