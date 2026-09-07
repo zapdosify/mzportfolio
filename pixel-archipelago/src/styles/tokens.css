@@ -50,9 +50,18 @@
   --maxw: 1280px;
   --header-h: 60px;
   /* Vertical room the fixed mode switch needs at the top of the viewport.
-     0 on wide screens (it sits between the identity and the Index button);
-     a real offset on narrow ones, where there is no horizontal room. */
+
+     --switch-clear: for the landing HUD and the business masthead, which have
+     a lone identity block on the left and acres of empty middle. They only
+     need to move on narrow screens.
+
+     --switch-band: for the interior header, which does NOT. Its right-hand
+     nav (Return to World + breadcrumb + Index) is ~530px, and the content
+     column caps at 1280px, so the arithmetic never leaves room for a 230px
+     switch between them — not even at 1920. The switch gets its own band
+     there at every width, and the header row sits under it. */
   --switch-clear: 0px;
+  --switch-band: 52px;
   /* height of the full-bleed landmark banner on interior pages */
   --banner-h: clamp(360px, 58vh, 680px);
 

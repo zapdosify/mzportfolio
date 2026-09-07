@@ -67,23 +67,35 @@ const ORBIT = (() => {
   return { cx, cy, rings, dots };
 })();
 
-/* ---------- 3 · strata: banded line density ---------- */
-const STRATA = (() => {
-  const r = rng(31337);
-  const rows: { y: number; x: number; w: number; op: number }[] = [];
-  let y = 22;
-  while (y < 284) {
-    // density peaks toward the middle of the block
-    const t = (y - 22) / 262;
-    const gap = 4 + 12 * Math.abs(Math.cos(t * Math.PI));
-    const w = 70 + r() * 250 * (0.4 + 0.75 * Math.sin(t * Math.PI));
-    rows.push({ y, x: 34 + r() * 26, w, op: 0.1 + r() * 0.3 });
-    y += gap;
+/* ---------- 3 · drift: short strokes following a smooth angle field ---------- */
+/* Bucketed into three opacity tiers and emitted as three <path>s rather than
+   several hundred <line>s — same drawing, a fraction of the DOM. */
+const DRIFT = (() => {
+  const r = rng(20260907);
+  const tiers: string[][] = [[], [], []];
+  for (let gy = 14; gy < 292; gy += 13) {
+    for (let gx = 16; gx < 390; gx += 15) {
+      const x = gx + (r() - 0.5) * 7;
+      const y = gy + (r() - 0.5) * 7;
+      // three harmonics — enough to curve, too few to look noisy
+      const a =
+        Math.sin(x * 0.0105) * 1.15 +
+        Math.cos(y * 0.0165) * 0.95 +
+        Math.sin((x + y) * 0.0062) * 0.85;
+      const len = 4.5 + 6.5 * Math.abs(Math.sin(x * 0.0085 + y * 0.011));
+      const dx = Math.cos(a) * len;
+      const dy = Math.sin(a) * len;
+      const t = Math.abs(Math.cos(y * 0.0125 + x * 0.004));
+      const tier = t > 0.66 ? 2 : t > 0.33 ? 1 : 0;
+      tiers[tier].push(
+        `M${(x - dx).toFixed(1)} ${(y - dy).toFixed(1)}L${(x + dx).toFixed(1)} ${(y + dy).toFixed(1)}`,
+      );
+    }
   }
-  return rows;
+  return tiers.map((d, i) => ({ d: d.join(""), op: 0.12 + i * 0.11 }));
 })();
 
-export type CoverKind = "contour" | "orbit" | "strata";
+export type CoverKind = "contour" | "orbit" | "drift";
 
 export default function Cover({ kind, className }: { kind: CoverKind; className?: string }) {
   return (
@@ -122,32 +134,22 @@ export default function Cover({ kind, className }: { kind: CoverKind; className?
               transform={`rotate(${ring.rot.toFixed(1)} ${ORBIT.cx} ${ORBIT.cy})`}
             />
           ))}
-          <line
-            x1={ORBIT.cx - 168}
-            y1={ORBIT.cy}
-            x2={ORBIT.cx + 168}
-            y2={ORBIT.cy}
-            stroke="currentColor"
-            strokeWidth="0.5"
-            opacity="0.16"
-          />
           {ORBIT.dots.map((d, i) => (
             <circle key={i} cx={d.x} cy={d.y} r={d.rad} fill="currentColor" opacity="0.4" />
           ))}
         </>
       )}
 
-      {kind === "strata" &&
-        STRATA.map((row, i) => (
-          <line
+      {kind === "drift" &&
+        DRIFT.map((band, i) => (
+          <path
             key={i}
-            x1={row.x}
-            y1={row.y}
-            x2={row.x + row.w}
-            y2={row.y}
+            d={band.d}
+            fill="none"
             stroke="currentColor"
-            strokeWidth="1"
-            opacity={row.op}
+            strokeWidth="0.9"
+            strokeLinecap="round"
+            opacity={band.op}
           />
         ))}
     </svg>

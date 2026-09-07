@@ -4,8 +4,8 @@
   left: 0;
   right: 0;
   z-index: var(--z-header);
-  height: calc(var(--header-h) + var(--switch-clear, 0px));
-  padding-top: var(--switch-clear, 0px);
+  height: calc(var(--header-h) + var(--switch-band, 0px));
+  padding-top: var(--switch-band, 0px);
   display: flex;
   align-items: center;
   /* strong enough that header text never collides with scrolled content,
@@ -83,10 +83,18 @@
   color: var(--text-muted);
 }
 
-@media (max-width: 640px) {
+/* The breadcrumb repeats the eyebrow that already sits above the page H1,
+   and it is `aria-hidden`, so it is the first thing to go when the row is
+   full. Below 900px identity + Return to World + breadcrumb + Index cannot
+   share a row — they were wrapping into each other before the mode switch
+   existed. (Pre-existing; revert this breakpoint to 640px to restore it.) */
+@media (max-width: 900px) {
   .breadcrumb {
     display: none;
   }
+}
+
+@media (max-width: 640px) {
   .nav {
     gap: var(--space-3);
   }

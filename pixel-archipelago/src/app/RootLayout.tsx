@@ -1,4 +1,4 @@
-import { Suspense, lazy, useEffect } from "react";
+import { Suspense, lazy, useEffect, useRef } from "react";
 import { Outlet, useLocation, ScrollRestoration } from "react-router-dom";
 import Header from "../components/layout/Header";
 import Footer from "../components/layout/Footer";
@@ -55,8 +55,19 @@ export default function RootLayout() {
   // incoming page up from the shared black background so route swaps never
   // hard-cut (the landing warp settles to the same black). Opacity only —
   // a transform here would re-anchor position:fixed descendants.
+  //
+  // ⚠️ Returning to design mode remounts `#main`, which fires this effect
+  // without any route having changed. Focusing there would yank the keyboard
+  // off the mode switch the visitor just operated (so their next arrow key
+  // would do nothing), and would fade the page a second time on top of the
+  // mode crossfade. Only a genuine path change should do either.
+  const lastPathRef = useRef<string | null>(null);
   useEffect(() => {
     if (mode !== "design") return;
+    const first = lastPathRef.current === null;
+    const pathChanged = !first && lastPathRef.current !== location.pathname;
+    lastPathRef.current = location.pathname;
+    if (!first && !pathChanged) return;
     const main = document.getElementById("main");
     if (!main) return;
     main.focus({ preventScroll: true });

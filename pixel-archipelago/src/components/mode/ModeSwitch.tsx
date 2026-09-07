@@ -79,7 +79,11 @@ export default function ModeSwitch() {
   const onPointerDown = (e: React.PointerEvent) => {
     if (e.pointerType === "mouse" && e.button !== 0) return;
     dragRef.current = { id: e.pointerId, startX: e.clientX, moved: false };
-    trackRef.current?.setPointerCapture(e.pointerId);
+    try {
+      trackRef.current?.setPointerCapture(e.pointerId);
+    } catch {
+      /* no live pointer to capture — the drag still works off the events */
+    }
   };
 
   const onPointerMove = (e: React.PointerEvent) => {

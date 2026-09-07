@@ -32,7 +32,9 @@ export const businessCopy = {
   },
 
   learning: {
-    eyebrow: "Continuous learning",
+    // The H2 is "Continuous learning" (as briefed); the eyebrow must not
+    // simply repeat it back.
+    eyebrow: "Credentials",
     heading: "Continuous learning",
     intro:
       "A running record of coursework taken alongside the degree. Each slot carries the badge as issued — original artwork, original proportions — with the course title, the institution, the completion date, and a link to verify it.",
@@ -81,7 +83,7 @@ export const fieldTerms: string[] = [
  * activates itself once `href` is no longer null.
  *
  * `cover` picks one of the abstract SVG covers in
- * components/business/Covers.tsx ("contour" | "orbit" | "strata").
+ * components/business/Covers.tsx ("contour" | "orbit" | "drift").
  * Swap it for `image: "/media/…"` later if you'd rather use artwork.
  * ------------------------------------------------------------------ */
 
@@ -101,7 +103,7 @@ export interface BusinessProject {
   outcome: string;
   /** null keeps the link inert and labelled "Details coming soon". */
   href: string | null;
-  cover: "contour" | "orbit" | "strata";
+  cover: "contour" | "orbit" | "drift";
   /** Optional real cover image; overrides `cover` when set. */
   image?: string;
 }
@@ -110,7 +112,7 @@ export const businessProjects: BusinessProject[] = [
   {
     id: "project-01",
     index: "01",
-    status: "Project placeholder",
+    status: "Details coming soon",
     title: "Project placeholder",
     standfirst: "The feature case study will open this section.",
     question: "The decision this project set out to inform will be stated here.",
@@ -145,7 +147,7 @@ export const businessProjects: BusinessProject[] = [
     methods: [],
     outcome: "What it made possible.",
     href: null,
-    cover: "strata",
+    cover: "drift",
   },
 ];
 

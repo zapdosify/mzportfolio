@@ -91,21 +91,29 @@
   display: flex;
   flex-direction: column;
   line-height: 1.1;
-  padding: calc(var(--space-6) + var(--switch-clear, 0px)) var(--space-6) 18px;
+  padding: calc(var(--space-6) + var(--switch-clear, 0px)) var(--space-6) 56px;
   pointer-events: none;
+  /* Fully opaque across the band the type occupies, then ~50px of runway to
+     dissolve in. A dark page can rely on a soft scrim because contrast
+     collapses quickly; ink on paper does not, so on this side the masthead
+     needs a real edge and a long enough tail to hide it. */
   background: linear-gradient(
     to bottom,
-    rgba(247, 247, 243, 0.96) 0%,
-    rgba(247, 247, 243, 0.78) 62%,
+    var(--biz-bg) 0%,
+    var(--biz-bg) 58%,
+    rgba(247, 247, 243, 0.86) 76%,
     rgba(247, 247, 243, 0) 100%
   );
-  backdrop-filter: blur(6px);
+  backdrop-filter: blur(12px);
   -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 62%, transparent 100%);
   mask-image: linear-gradient(to bottom, #000 0%, #000 62%, transparent 100%);
 }
 
 .bizName {
-  font-size: clamp(1.1rem, 2vw, 1.6rem);
+  /* Montserrat 600 sets ~25% wider than the design world's IBM Plex Mono at
+     the same size, so it needs its own curve: at tablet widths the identity
+     would otherwise run under the centred mode switch. */
+  font-size: clamp(0.88rem, 1.8vw, 1.6rem);
   font-weight: 600;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -473,7 +481,7 @@
 .badges {
   list-style: none;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(196px, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 0;
   border-bottom: 1px solid var(--biz-line);
 }
@@ -487,8 +495,8 @@
 /* The badge is drawn whole — never cropped, never masked, never forced to
    a square. Its own artwork and proportions survive intact. */
 .badgeArt {
-  width: clamp(66px, 6vw, 92px);
-  height: clamp(66px, 6vw, 92px);
+  width: clamp(72px, 7vw, 104px);
+  height: clamp(72px, 7vw, 104px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -626,6 +634,12 @@
   }
 }
 
+@media (max-width: 900px) {
+  .badges {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
 @media (max-width: 860px) {
   .learnHead {
     grid-template-columns: minmax(0, 1fr);
@@ -651,6 +665,9 @@
   }
   .field dt {
     padding-top: 0;
+  }
+  .badges {
+    grid-template-columns: minmax(0, 1fr);
   }
   .badge {
     padding-right: 0;
