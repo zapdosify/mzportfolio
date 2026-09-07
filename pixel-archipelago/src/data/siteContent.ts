@@ -124,7 +124,7 @@ export const about = {
   // The pixel-art avatar, not the photographic headshot. It is a square
   // composition — corner marks and a "Pixel Archipelago" caption along the
   // bottom edge — so it is framed square, not in the old circular mask.
-  portraitImage: "/images/about/about-avatar.png" as string | undefined,
+  portraitImage: "/images/about/about-avatar.webp" as string | undefined,
   resumeFile: "/Mohammed-Zaabi-Noor-Resume-2026.docx" as string | undefined,
 };
 

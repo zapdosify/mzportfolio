@@ -43,7 +43,7 @@ const vid = (
 const chapterLoop = (n: number, title: string): ProjectMedia => ({
   type: "video",
   src: `${VID}/design-manifesto/chapter-${n}.mp4`,
-  poster: `${IMG}/design-manifesto/chapter-${n}-poster.jpg`,
+  poster: `${IMG}/design-manifesto/chapter-${n}-poster.webp`,
   alt: `Chapter ${title}`,
 });
 
@@ -71,13 +71,13 @@ export const projects: Project[] = [
       { title: "Mood Board & Visual Style", description: "A mood board encapsulating tranquility and sophistication informed the app's design language for consistency and harmony." },
       { title: "High-Fidelity Design & Prototyping", description: "Polished mockups of key screens and interactions, built into an interactive prototype to test and validate the user experience." },
     ],
-    coverImage: `${IMG}/bookbabies-app/01_A.png`,
+    coverImage: `${IMG}/bookbabies-app/01_A.webp`,
     // Presentation boards — read full width in sequence, as they were designed.
     galleryVariant: "boards",
     gallery: Array.from({ length: 22 }, (_, i) => {
       const n = String(i + 1).padStart(2, "0");
       const letter = String.fromCharCode(65 + i); // A..V
-      return im("bookbabies-app", `${n}_${letter}.png`, `BookBabies UI screen ${letter}`);
+      return im("bookbabies-app", `${n}_${letter}.webp`, `BookBabies UI screen ${letter}`);
     }),
     relatedProjectIds: ["hodl", "frontline-readiness"],
     sourceUrl: "https://mznoor8.wixsite.com/portfolio/appdesign",
@@ -98,7 +98,7 @@ export const projects: Project[] = [
     // scratchpad/hodl_card2.py), so `cover` here is a no-op and it fills the
     // tile edge-to-edge like its neighbours. Cropping to 4:3 in the browser
     // instead would centre the crop and slice "Welcome" mid-word.
-    cardImage: `${IMG}/hodl-crypto-app/hodl-card.jpg`,
+    cardImage: `${IMG}/hodl-crypto-app/hodl-card.webp`,
     summary:
       "An innovative crypto-asset management solution unifying technology and community — manage NFTs and cryptocurrencies in a single interface, with education and a supportive community.",
     body: [
@@ -112,22 +112,22 @@ export const projects: Project[] = [
       { title: "User Storyboards", description: "Storyboards mapping key flows and interactions across the app." },
       { title: "App Showcase", description: "Final high-fidelity interface across dashboard, portfolio, and community." },
     ],
-    coverImage: `${IMG}/hodl-crypto-app/01_NFT_APP.jpg`,
+    coverImage: `${IMG}/hodl-crypto-app/01_NFT_APP.webp`,
     heroVideo: {
       src: `${VID}/hodl-crypto-app/hodl-loop.mp4`,
-      poster: `${IMG}/hodl-crypto-app/hodl-loop-poster.jpg`,
+      poster: `${IMG}/hodl-crypto-app/hodl-loop-poster.webp`,
       caption: "HODL Watch OS — title sequence",
     },
     // Personas and full app-flow sheets — legible only at full width.
     galleryVariant: "boards",
     gallery: [
-      im("hodl-crypto-app", "01_NFT_APP.jpg", "HODL app cover"),
-      im("hodl-crypto-app", "02_persona_1.png", "Persona 1"),
-      im("hodl-crypto-app", "03_Persona_2.png", "Persona 2"),
-      im("hodl-crypto-app", "04_Persona_3.png", "Persona 3"),
-      im("hodl-crypto-app", "05_User_storyboards.jpg", "User storyboards"),
-      im("hodl-crypto-app", "06_Group_188-min.png", "App showcase 1"),
-      im("hodl-crypto-app", "07_Group_189-min.png", "App showcase 2"),
+      im("hodl-crypto-app", "01_NFT_APP.webp", "HODL app cover"),
+      im("hodl-crypto-app", "02_persona_1.webp", "Persona 1"),
+      im("hodl-crypto-app", "03_Persona_2.webp", "Persona 2"),
+      im("hodl-crypto-app", "04_Persona_3.webp", "Persona 3"),
+      im("hodl-crypto-app", "05_User_storyboards.webp", "User storyboards"),
+      im("hodl-crypto-app", "06_Group_188-min.webp", "App showcase 1"),
+      im("hodl-crypto-app", "07_Group_189-min.webp", "App showcase 2"),
     ],
     relatedProjectIds: ["bookbabies", "frontline-readiness"],
     sourceUrl: "https://mznoor8.wixsite.com/portfolio/project-2",
@@ -148,16 +148,16 @@ export const projects: Project[] = [
       "The app's intuitive interface makes it easy to navigate, with clear categorization of training materials and resources. Users can track their progress and receive feedback on their performance, allowing them to identify areas for improvement. The app also provides a centralized platform for organizing and accessing all relevant training materials — product guides, sales scripts, and customer service tools.",
       "The app features gamification elements, such as rewards and badges, to encourage users to engage with the content and make learning a fun and enjoyable experience. With its focus on learning and development, this app could revolutionize the way T-Mobile for Business sellers approach their training and development.",
     ],
-    coverImage: `${IMG}/frontline-readiness-app/03_1-min.png`,
+    coverImage: `${IMG}/frontline-readiness-app/03_1-min.webp`,
     // Full app-flow sheets — legible only at full width.
     galleryVariant: "boards",
     gallery: [
-      im("frontline-readiness-app", "01_T-Mobile_logo.png", "T-Mobile logo"),
-      im("frontline-readiness-app", "03_1-min.png", "Frontline app screen 1"),
-      im("frontline-readiness-app", "02_2-min.png", "Frontline app screen 2"),
-      im("frontline-readiness-app", "04_3-min.png", "Frontline app screen 3"),
-      im("frontline-readiness-app", "05_4-min.png", "Frontline app screen 4"),
-      im("frontline-readiness-app", "06_5.png", "Frontline app screen 5"),
+      im("frontline-readiness-app", "01_T-Mobile_logo.webp", "T-Mobile logo"),
+      im("frontline-readiness-app", "03_1-min.webp", "Frontline app screen 1"),
+      im("frontline-readiness-app", "02_2-min.webp", "Frontline app screen 2"),
+      im("frontline-readiness-app", "04_3-min.webp", "Frontline app screen 3"),
+      im("frontline-readiness-app", "05_4-min.webp", "Frontline app screen 4"),
+      im("frontline-readiness-app", "06_5.webp", "Frontline app screen 5"),
     ],
     relatedProjectIds: ["magenta-moves", "hodl"],
     sourceUrl: "https://mznoor8.wixsite.com/portfolio/project-3",
@@ -174,7 +174,7 @@ export const projects: Project[] = [
     featured: true,
     ambientVideo: {
       src: `${VID}/ripple-symposium-website/ripple-motion.mp4`,
-      poster: `${IMG}/ripple-symposium-website/ripple-motion-poster.jpg`,
+      poster: `${IMG}/ripple-symposium-website/ripple-motion-poster.webp`,
       caption: "Ripple — identity in motion",
     },
     summary:
@@ -186,7 +186,7 @@ export const projects: Project[] = [
       "The Ripple project not only allowed me to exercise my creative and technical skills but also served as a valuable lesson in the power of collaboration. By working in unison with diverse teams, I discovered how harmonizing different talents and visions could generate a more cohesive, innovative, and successful design outcome.",
     ],
     // No website screenshots exist; the symposium wordmark stands in on the card.
-    cardImage: `${IMG}/ripple-symposium-website/ripple-wordmark.png`,
+    cardImage: `${IMG}/ripple-symposium-website/ripple-wordmark.webp`,
     cardImageFit: "contain",
     relatedProjectIds: ["solarpunk", "bookbabies"],
     sourceUrl: "https://mznoor8.wixsite.com/portfolio/website-design",
@@ -208,10 +208,10 @@ export const projects: Project[] = [
       "In my ever-evolving artistic journey, I relish exploring new avenues of creativity to push the boundaries of visual expression. By harnessing the power of Adobe Photoshop and Affinity Designer, I crafted multiple pieces of digital artwork that meld diverse digital brushes and themes to create visually captivating compositions.",
       "Experimenting with an array of brushes, ranging from textural strokes to painterly flourishes, allowed me to weave a rich tapestry of styles that evoke a sense of depth and dynamism. Simultaneously, I embraced the challenge of blending contrasting themes — the natural and the abstract, the serene and the energetic — to forge a harmonious and visually compelling narrative.",
     ],
-    coverImage: `${IMG}/visual-artwork-digital-painting/01_artwork.jpg`,
+    coverImage: `${IMG}/visual-artwork-digital-painting/01_artwork.webp`,
     gallery: Array.from({ length: 10 }, (_, i) => {
       const n = String(i + 1).padStart(2, "0");
-      return im("visual-artwork-digital-painting", `${n}_artwork.jpg`, `Digital painting ${i + 1}`);
+      return im("visual-artwork-digital-painting", `${n}_artwork.webp`, `Digital painting ${i + 1}`);
     }),
     relatedProjectIds: ["poster-design", "3d-lettering"],
     sourceUrl: "https://mznoor8.wixsite.com/portfolio/visualartwork",
@@ -232,45 +232,45 @@ export const projects: Project[] = [
       "In the pursuit of authenticity and self-discovery, my manifesto explores the intricate relationship between art and the human experience, drawing inspiration from design ideologies such as authoritarianism and the Dunning-Kruger effect. I also delve into the importance of not allowing external factors to define our identities, emphasizing the need for introspection and self-reliance in the quest for artistic fulfillment.",
       "By exploring the concept of archetypes and phenomenology, I celebrate the universal threads that connect us all, transcending cultural and historical boundaries. As I navigate this rich tapestry of ideas and experiences, I am continually reminded of Marshall McLuhan's poignant maxim, \"the medium is the message,\" underscoring the profound impact of artistic expression on the world around us.",
     ],
-    coverImage: `${IMG}/design-manifesto/01_1.jpg`,
+    coverImage: `${IMG}/design-manifesto/01_1.webp`,
     // "Manifesto of Awakening" is read as a book, not viewed as a gallery: the
     // text spreads are set as real DOM text, while the artwork spreads and the
     // animated chapter cards stay as media inside the same sequence.
     book: manifestoBook,
     galleryVariant: "boards",
     gallery: [
-      im("design-manifesto", "1.jpg", "Emblem — may your flame burn forever"),
+      im("design-manifesto", "1.webp", "Emblem — may your flame burn forever"),
       {
         type: "video",
         src: `${VID}/design-manifesto/intro-loop.mp4`,
-        poster: `${IMG}/design-manifesto/intro-loop-poster.jpg`,
+        poster: `${IMG}/design-manifesto/intro-loop-poster.webp`,
         alt: "Manifesto of Awakening — title spread",
       },
-      im("design-manifesto", "3.jpg", "Giacometti epigraph"),
-      im("design-manifesto", "4.jpg", "This is my journey, perhaps our journey"),
-      im("design-manifesto", "5.jpg", "Prologue"),
-      im("design-manifesto", "6.jpg", "Prologue, continued"),
-      im("design-manifesto", "7.jpg", "Prologue, continued"),
-      im("design-manifesto", "8.jpg", "Prologue, continued"),
+      im("design-manifesto", "3.webp", "Giacometti epigraph"),
+      im("design-manifesto", "4.webp", "This is my journey, perhaps our journey"),
+      im("design-manifesto", "5.webp", "Prologue"),
+      im("design-manifesto", "6.webp", "Prologue, continued"),
+      im("design-manifesto", "7.webp", "Prologue, continued"),
+      im("design-manifesto", "8.webp", "Prologue, continued"),
       chapterLoop(1, "One — The Torch"),
-      im("design-manifesto", "10.jpg", "Chapter One — The Torch, text"),
+      im("design-manifesto", "10.webp", "Chapter One — The Torch, text"),
       chapterLoop(2, "Two — The Bonfire"),
-      im("design-manifesto", "12.jpg", "Chapter Two — The Bonfire, text"),
+      im("design-manifesto", "12.webp", "Chapter Two — The Bonfire, text"),
       chapterLoop(3, "Three — The Journey"),
-      im("design-manifesto", "14.jpg", "Chapter Three — The Journey, text"),
+      im("design-manifesto", "14.webp", "Chapter Three — The Journey, text"),
       chapterLoop(4, "Four — The Oasis"),
-      im("design-manifesto", "16.jpg", "Chapter Four — The Oasis, text"),
+      im("design-manifesto", "16.webp", "Chapter Four — The Oasis, text"),
       chapterLoop(5, "Five — The Stray Path"),
-      im("design-manifesto", "18.jpg", "Chapter Five — The Stray Path, text"),
+      im("design-manifesto", "18.webp", "Chapter Five — The Stray Path, text"),
       chapterLoop(6, "Six — The Weary Traveller"),
-      im("design-manifesto", "20.jpg", "Chapter Six — The Weary Traveller, text"),
+      im("design-manifesto", "20.webp", "Chapter Six — The Weary Traveller, text"),
       chapterLoop(7, "Seven — The Final Ascent"),
-      im("design-manifesto", "21a.jpg", "Chapter Seven — The Final Ascent, text"),
+      im("design-manifesto", "21a.webp", "Chapter Seven — The Final Ascent, text"),
       chapterLoop(8, "Eight — Enlightenment"),
-      im("design-manifesto", "23a.jpg", "Chapter Eight — Enlightenment, text"),
-      im("design-manifesto", "23b.jpg", "Epilogue"),
-      im("design-manifesto", "23c.jpg", "The Five People You Meet in Heaven epigraph"),
-      im("design-manifesto", "24.jpg", "May you be the best version of yourself"),
+      im("design-manifesto", "23a.webp", "Chapter Eight — Enlightenment, text"),
+      im("design-manifesto", "23b.webp", "Epilogue"),
+      im("design-manifesto", "23c.webp", "The Five People You Meet in Heaven epigraph"),
+      im("design-manifesto", "24.webp", "May you be the best version of yourself"),
     ],
     externalLinks: [
       { label: "Manifesto website", note: "Referenced on the original site; URL not recoverable." },
@@ -299,13 +299,13 @@ export const projects: Project[] = [
       "To make the vision tangible it is narrowed from macro to micro: a week in the life of Mia Greenfield, an urban agriculture specialist, moving through Solaris' water, energy and canopy districts. Each speculative scene is anchored to a real precedent — Curitiba's transit and green space, Vauban's car-free streets, Costa Rica's renewable grid.",
       "The work was published as a printed publication of six illustrated spreads and presented as the closing address of the Ripple graduate symposium. Both are gathered below: the film of the talk, and the publication read as a progressive story.",
     ],
-    coverImage: `${IMG}/solarpunk-worldbuilding/solarpunk-talk-poster.jpg`,
+    coverImage: `${IMG}/solarpunk-worldbuilding/solarpunk-talk-poster.webp`,
     videos: [
       vid(
         "solarpunk-worldbuilding",
         "worldbuilding-through-solarpunk.mp4",
         "solarpunk-worldbuilding",
-        "solarpunk-talk-poster.jpg",
+        "solarpunk-talk-poster.webp",
         "Worldbuilding Through Solarpunk — the symposium presentation",
         "The full symposium address, envisioning Greater Phoenix — Solaris.",
       ),
@@ -316,7 +316,7 @@ export const projects: Project[] = [
     storySpreads: Array.from({ length: 6 }, (_, i) =>
       im(
         "solarpunk-worldbuilding",
-        `spread-${i + 1}.jpg`,
+        `spread-${i + 1}.webp`,
         `Publication spread ${i + 1} of 6`,
         undefined,
         `Spread ${i + 1} of 6`,
@@ -362,18 +362,18 @@ export const projects: Project[] = [
         ],
       },
     ],
-    coverImage: `${IMG}/exhibition-design/01_Slide_1.jpg`,
+    coverImage: `${IMG}/exhibition-design/01_Slide_1.webp`,
     gallery: [
-      im("exhibition-design", "01_Slide_1.jpg", "Geometric Harmony slide 1"),
-      im("exhibition-design", "02_slide_2.jpg", "Geometric Harmony slide 2"),
-      im("exhibition-design", "03_1.jpg", "BMX pop-up stand 1"),
-      im("exhibition-design", "04_2.jpg", "BMX pop-up stand 2"),
-      im("exhibition-design", "05_7.jpg", "BMX pop-up stand 3"),
-      im("exhibition-design", "06_8.jpg", "BMX pop-up stand 4"),
-      im("exhibition-design", "07_1_b.jpg", "Avengers museum exhibit 1"),
-      im("exhibition-design", "08_2_b.jpg", "Avengers museum exhibit 2"),
-      im("exhibition-design", "09_ScreenShot00015.png", "Avengers museum Unreal render 1"),
-      im("exhibition-design", "10_HighresScreenshot00000.png", "Avengers museum Unreal render 2"),
+      im("exhibition-design", "01_Slide_1.webp", "Geometric Harmony slide 1"),
+      im("exhibition-design", "02_slide_2.webp", "Geometric Harmony slide 2"),
+      im("exhibition-design", "03_1.webp", "BMX pop-up stand 1"),
+      im("exhibition-design", "04_2.webp", "BMX pop-up stand 2"),
+      im("exhibition-design", "05_7.webp", "BMX pop-up stand 3"),
+      im("exhibition-design", "06_8.webp", "BMX pop-up stand 4"),
+      im("exhibition-design", "07_1_b.webp", "Avengers museum exhibit 1"),
+      im("exhibition-design", "08_2_b.webp", "Avengers museum exhibit 2"),
+      im("exhibition-design", "09_ScreenShot00015.webp", "Avengers museum Unreal render 1"),
+      im("exhibition-design", "10_HighresScreenshot00000.webp", "Avengers museum Unreal render 2"),
     ],
     relatedProjectIds: ["renders"],
     sourceUrl: "https://mznoor8.wixsite.com/portfolio/exhibitiondesign",
@@ -395,8 +395,8 @@ export const projects: Project[] = [
       "The framing decision was to treat admission as induction. A visitor is not a ticket holder but a recruit, which is why the entry document is a clearance pass, the wall panels are laid out as case files, and the wayfinding reads as signage inside a facility rather than labels inside a museum.",
       "The room itself is an L. That shape means the whole show can never be seen at once, so the plan uses the corner as the turn in the story instead of designing around it. Each run is divided into character segments carrying one Avenger's history, weapons, equipment, background and props, each with its own souvenir point. Building it in a game engine rather than a CAD viewport was the point: dynamic lighting, specified materials and a walkable camera let the sequence be judged the way a visitor meets it — in order, at eye height.",
     ],
-    coverImage: `${IMG}/avengers-exhibition/book-01-cover.jpg`,
-    cardImage: `${IMG}/avengers-exhibition/book-12-entrance-walkthrough.jpg`,
+    coverImage: `${IMG}/avengers-exhibition/book-01-cover.webp`,
+    cardImage: `${IMG}/avengers-exhibition/book-12-entrance-walkthrough.webp`,
     exhibit: avengersExhibition,
     credits: [
       "An unaffiliated academic concept. Marvel, the Avengers and S.H.I.E.L.D. are trademarks of Marvel Characters, Inc.; Arizona Science Center is named as the brief's venue. Neither commissioned or endorsed this work.",
@@ -423,9 +423,9 @@ export const projects: Project[] = [
     credits: [
       "Series titles: Gallery of Infinite · Awakening · Balance · Collective Consciousness · Essence of Time · Call to Reality · Détournement · The Medium Is The Message · Media · The Study Of Signs And Symbols",
     ],
-    coverImage: `${IMG}/poster-design/05_poster-6.jpg`,
+    coverImage: `${IMG}/poster-design/05_poster-6.webp`,
     gallery: [2, 3, 4, 5, 6, 7, 8, 9, 10].map((num, i) =>
-      im("poster-design", `${String(i + 1).padStart(2, "0")}_poster-${num}.jpg`, `Poster ${num}`),
+      im("poster-design", `${String(i + 1).padStart(2, "0")}_poster-${num}.webp`, `Poster ${num}`),
     ),
     relatedProjectIds: ["visual-artwork", "design-manifesto"],
     sourceUrl: "https://mznoor8.wixsite.com/portfolio/posters",
@@ -451,9 +451,9 @@ export const projects: Project[] = [
       { title: "Adobe After Effects — Building the 3D Environment", description: "Constructing detailed 3D scenes with the Element 3D plugin — experimenting with shapes, materials, and lighting to complement the 2D work." },
     ],
     videos: [
-      vid("animation-animated-shorts", "01_b0eba2c1f3.mp4", "animation-animated-shorts", "01_53ff1d_b0eba2c1f3b84a6a91366755fbe572acf000.jpg", "Animated short 1"),
-      vid("animation-animated-shorts", "02_329c98fc64.mp4", "animation-animated-shorts", "02_53ff1d_329c98fc64264ea8896bec0a97b90302f000.jpg", "Animated short 2"),
-      vid("animation-animated-shorts", "03_c568b7816c.mp4", "animation-animated-shorts", "03_53ff1d_c568b7816c2d4c08b601550835c15f29f000.jpg", "Original trailer concept for animated TV series"),
+      vid("animation-animated-shorts", "01_b0eba2c1f3.mp4", "animation-animated-shorts", "01_53ff1d_b0eba2c1f3b84a6a91366755fbe572acf000.webp", "Animated short 1"),
+      vid("animation-animated-shorts", "02_329c98fc64.mp4", "animation-animated-shorts", "02_53ff1d_329c98fc64264ea8896bec0a97b90302f000.webp", "Animated short 2"),
+      vid("animation-animated-shorts", "03_c568b7816c.mp4", "animation-animated-shorts", "03_53ff1d_c568b7816c2d4c08b601550835c15f29f000.webp", "Original trailer concept for animated TV series"),
     ],
     relatedProjectIds: ["documentary", "renders"],
     sourceUrl: "https://mznoor8.wixsite.com/portfolio/animation",
@@ -476,7 +476,7 @@ export const projects: Project[] = [
       "As editor, I crafted the story we wanted to tell, ensuring interviews, b-roll, and motion graphics came together seamlessly with attention to pacing and rhythm. For motion graphics, I created animations and infographics that illustrated the issues — from the impact of social media on children's mental health to explanations of complex concepts.",
       "In the end, I am incredibly proud of the final product. \"The Social Pandemic\" is a powerful and thought-provoking documentary that effectively communicates the dangers and risks children face on social media, and I am confident it will help raise awareness about this important issue.",
     ],
-    coverImage: `${IMG}/documentary-social-pandemic/02_53ff1d_78c63e40fd2048539f279c81e9410fdef000.jpg`,
+    coverImage: `${IMG}/documentary-social-pandemic/02_53ff1d_78c63e40fd2048539f279c81e9410fdef000.webp`,
     embeds: [
       {
         provider: "youtube",
@@ -486,12 +486,12 @@ export const projects: Project[] = [
           "The complete film, hosted on YouTube. Click to load the player.",
       },
     ],
-    gallery: [im("documentary-social-pandemic", "01_pngegg.png", "Introduction logo")],
+    gallery: [im("documentary-social-pandemic", "01_pngegg.webp", "Introduction logo")],
     videos: [
-      vid("documentary-social-pandemic", "01_78c63e40fd.mp4", "documentary-social-pandemic", "02_53ff1d_78c63e40fd2048539f279c81e9410fdef000.jpg", "Motion graphics news reel 1"),
-      vid("documentary-social-pandemic", "02_e99ccdaf21.mp4", "documentary-social-pandemic", "03_53ff1d_e99ccdaf214a46adb4e2641dd0b121aaf000.jpg", "Motion graphics news reel 2"),
-      vid("documentary-social-pandemic", "03_6c8124d78f.mp4", "documentary-social-pandemic", "04_53ff1d_6c8124d78feb459aabdea19f9f8929caf000.jpg", "Motion graphics news reel 3"),
-      vid("documentary-social-pandemic", "04_9bcd06ea8f.mp4", "documentary-social-pandemic", "05_53ff1d_9bcd06ea8ff9438985590664f32f88a4f000.jpg", "Motion graphics news reel 4"),
+      vid("documentary-social-pandemic", "01_78c63e40fd.mp4", "documentary-social-pandemic", "02_53ff1d_78c63e40fd2048539f279c81e9410fdef000.webp", "Motion graphics news reel 1"),
+      vid("documentary-social-pandemic", "02_e99ccdaf21.mp4", "documentary-social-pandemic", "03_53ff1d_e99ccdaf214a46adb4e2641dd0b121aaf000.webp", "Motion graphics news reel 2"),
+      vid("documentary-social-pandemic", "03_6c8124d78f.mp4", "documentary-social-pandemic", "04_53ff1d_6c8124d78feb459aabdea19f9f8929caf000.webp", "Motion graphics news reel 3"),
+      vid("documentary-social-pandemic", "04_9bcd06ea8f.mp4", "documentary-social-pandemic", "05_53ff1d_9bcd06ea8ff9438985590664f32f88a4f000.webp", "Motion graphics news reel 4"),
     ],
     externalLinks: [
       { label: "Live stream event", note: "Referenced on the original site; URL not recoverable." },
@@ -520,11 +520,11 @@ export const projects: Project[] = [
       "Pieces: Tesla Roadster Reveal · Talespin Harbor · Made it to Mars first · Quiet Night · Muscle Car Showcase · Lamborghini Huracán EVO launch trailer · Recreations from Interstellar",
     ],
     videos: [
-      vid("renders-3d-animation", "01_27dc6fad64.mp4", "renders-3d-animation", "01_53ff1d_27dc6fad649c401d9662655e17fe2e2cf000.jpg", "Render 1"),
-      vid("renders-3d-animation", "02_b59e63f665.mp4", "renders-3d-animation", "02_53ff1d_b59e63f66586490eabf90ff6b31a2d41f001.jpg", "Render 2"),
-      vid("renders-3d-animation", "03_2af2ed2f9d.mp4", "renders-3d-animation", "03_53ff1d_2af2ed2f9db943ad812186077bbf1e66f000.jpg", "Render 3"),
-      vid("renders-3d-animation", "04_b9c6d54a2b.mp4", "renders-3d-animation", "04_53ff1d_b9c6d54a2bba41ec9b29934f6086b564f000.jpg", "Render 4"),
-      vid("renders-3d-animation", "05_85e1966985.mp4", "renders-3d-animation", "05_53ff1d_85e19669859b4d4eb2de8a42c0ab8d0af000.jpg", "Render 5"),
+      vid("renders-3d-animation", "01_27dc6fad64.mp4", "renders-3d-animation", "01_53ff1d_27dc6fad649c401d9662655e17fe2e2cf000.webp", "Render 1"),
+      vid("renders-3d-animation", "02_b59e63f665.mp4", "renders-3d-animation", "02_53ff1d_b59e63f66586490eabf90ff6b31a2d41f001.webp", "Render 2"),
+      vid("renders-3d-animation", "03_2af2ed2f9d.mp4", "renders-3d-animation", "03_53ff1d_2af2ed2f9db943ad812186077bbf1e66f000.webp", "Render 3"),
+      vid("renders-3d-animation", "04_b9c6d54a2b.mp4", "renders-3d-animation", "04_53ff1d_b9c6d54a2bba41ec9b29934f6086b564f000.webp", "Render 4"),
+      vid("renders-3d-animation", "05_85e1966985.mp4", "renders-3d-animation", "05_53ff1d_85e19669859b4d4eb2de8a42c0ab8d0af000.webp", "Render 5"),
     ],
     relatedProjectIds: ["3d-lettering", "animated-shorts"],
     sourceUrl: "https://mznoor8.wixsite.com/portfolio/renders",
@@ -546,10 +546,10 @@ export const projects: Project[] = [
       "I appreciate the challenge that comes with creating 3D lettering and the opportunity to constantly push the boundaries of what is possible with this art form. Whether it's a bold and impactful logo animation or a mesmerizing 3D typographical sequence, I find immense joy and satisfaction in creating dynamic and engaging 3D text animations.",
     ],
     videos: [
-      vid("3d-lettering", "01_0372be1e98.mp4", "3d-lettering", "01_53ff1d_0372be1e984844498112f91f292c7b36f000.jpg", "Serenity logo with fluid simulation"),
-      vid("3d-lettering", "02_b499e1c376.mp4", "3d-lettering", "02_53ff1d_b499e1c376484cea9bd8c05daa3c9bfaf000.jpg", "Porsche logo concept art"),
-      vid("3d-lettering", "03_88fc8abd93.mp4", "3d-lettering", "03_53ff1d_88fc8abd93934f42abd7137f182a7e4ff000.jpg", "Netflix promo concept art"),
-      vid("3d-lettering", "04_7330f78424.mp4", "3d-lettering", "04_53ff1d_7330f78424114a279eea66e2994836c2f000.jpg", "Activision logo concept"),
+      vid("3d-lettering", "01_0372be1e98.mp4", "3d-lettering", "01_53ff1d_0372be1e984844498112f91f292c7b36f000.webp", "Serenity logo with fluid simulation"),
+      vid("3d-lettering", "02_b499e1c376.mp4", "3d-lettering", "02_53ff1d_b499e1c376484cea9bd8c05daa3c9bfaf000.webp", "Porsche logo concept art"),
+      vid("3d-lettering", "03_88fc8abd93.mp4", "3d-lettering", "03_53ff1d_88fc8abd93934f42abd7137f182a7e4ff000.webp", "Netflix promo concept art"),
+      vid("3d-lettering", "04_7330f78424.mp4", "3d-lettering", "04_53ff1d_7330f78424114a279eea66e2994836c2f000.webp", "Activision logo concept"),
     ],
     relatedProjectIds: ["renders", "digital-painting"],
     sourceUrl: "https://mznoor8.wixsite.com/portfolio/3dlettering",
@@ -576,15 +576,15 @@ export const projects: Project[] = [
       "The solution included a mix of physical and digital components — instructional cards, interactive games, role-playing scenarios, and multimedia presentations. A deck of illustrated flashcards reinforced product knowledge, while an interactive board game encouraged practicing negotiation and problem-solving in a fun, engaging way. I worked closely with vendors to produce high-quality materials, then collaborated with sales managers to integrate the solution into their regular team meetings.",
       "This project was a unique and innovative approach to sales training that combined instructional design, graphic design, and project management. By creating an engaging and interactive learning experience, we equipped the sales team with the tools and knowledge to excel — a testament to the power of creative, out-of-the-box thinking in instructional design.",
     ],
-    coverImage: `${IMG}/internship-t-mobile/03_Project_Presentation.png`,
+    coverImage: `${IMG}/internship-t-mobile/03_Project_Presentation.webp`,
     // Presentation slides and kit photography — read full width in sequence.
     galleryVariant: "boards",
     gallery: [
-      im("internship-t-mobile", "01_photo_2023-03-16_14-50-52.jpg", "Physical box photo 1"),
-      im("internship-t-mobile", "02_photo_2023-05-03_11-03-47_(2).jpg", "Physical box photo 2"),
-      im("internship-t-mobile", "03_Project_Presentation.png", "Project presentation"),
+      im("internship-t-mobile", "01_photo_2023-03-16_14-50-52.webp", "Physical box photo 1"),
+      im("internship-t-mobile", "02_photo_2023-05-03_11-03-47_(2).webp", "Physical box photo 2"),
+      im("internship-t-mobile", "03_Project_Presentation.webp", "Project presentation"),
       ...[4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20].map((_n, i) => {
-        const files = ["04_7.png", "05_8.png", "06_9.png", "07_10.png", "08_11.png", "09_12.png", "10_13.png", "11_15.png", "12_16.png", "13_17.png", "14_18.png", "15_19.png", "16_20.png", "17_22.png", "18_23.png", "19_25.png", "20_26.png"];
+        const files = ["04_7.webp", "05_8.webp", "06_9.webp", "07_10.webp", "08_11.webp", "09_12.webp", "10_13.webp", "11_15.webp", "12_16.webp", "13_17.webp", "14_18.webp", "15_19.webp", "16_20.webp", "17_22.webp", "18_23.webp", "19_25.webp", "20_26.webp"];
         return im("internship-t-mobile", files[i], `Meeting in a Box design ${i + 1}`);
       }),
     ],
