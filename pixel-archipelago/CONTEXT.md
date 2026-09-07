@@ -10,25 +10,25 @@ Committed:
 | `76332ea` | **CP1** landing first paint | landing art 5.6 MB → 370 KB (lossless WebP); Intro lazy-chunked; fonts non-blocking; also folded in the earlier landing colour/orb work + starfield fix |
 | `9840b63` | **CP2** vendor chunk split | app chunk 139 → 51 KB gzip; `react-vendor` (91 KB) + `gsap` (44 KB) cache independently; `ANALYZE=1 npm run build` → `dist/stats.html` |
 | `ea4c109` | **CP3** media → WebP | `public/` 415 → 240 MB; 209 images → WebP q88 (downscaled to ≤2560px); dead `worldManifest.json` + `images/islands/*` + 2 unused portraits removed |
+| `f2dc37c` | **CP4** code cleanup | `react-router-dom` → `react-router` (drops a dep; ~0 bytes); delete unused `src/world/Starfield.tsx`; tidy `manualChunks` matcher |
 
 Verified per checkpoint: `npm run build` + `oxlint` clean; browser-crawled the
 landing, every category page, and the heaviest project pages (avengers
 ExhibitScroll, design-manifesto BookScroll, bookbabies / digital-painting
-galleries) — no broken images, all `/media` requests serve `image/webp`.
+galleries) — no broken images, all `/media` requests serve `image/webp`;
+CP4 nav crawl (landing → category → project → back → deep link) clean.
 
-### Still to do
+### Optimization pass — closed
 
-- **Videos** — 28 MP4s, still **183 MB** (the bulk of remaining `public/` weight).
-  `scripts/reencode-videos.sh` is ready (H.264 CRF 20, `+faststart`, keeps the
-  original if a re-encode saves < 8%). Same `.mp4` paths, so no code changes.
-  Not run here because ffmpeg spawns slowly in this environment — run it locally
-  or in the next session, then verify video playback on `/documentary/*`,
-  `/animation/*`, `/renders/*` and the manifesto/ripple hero loops.
-- **CP4 (code pass)** — not started: `react-router-dom` → `react-router`;
-  memoization / dead-code / unused-dep / dead-CSS audit; `Starfield.tsx` in
-  `src/world/` is defined but never imported (decide: wire it up or delete).
-- `npm audit` reports pre-existing vulnerabilities in the dep tree (not from this
-  work) — left for a deliberate `npm audit fix` review.
+- **Videos: left as-is by decision.** At CRF 20 (visually transparent) none of
+  the 28 clips re-encoded to even 8 % smaller — they're already efficiently
+  encoded; the size is inherent to their length/resolution. Cutting them would
+  need a real fidelity trade (CRF ≈ 23 and/or a resolution cap).
+  `scripts/reencode-videos.sh` stays in the tree if that's ever revisited.
+- `ts-prune` + an orphan-file scan found no other dead exports or unused modules.
+- `npm audit` reports pre-existing dep-tree vulnerabilities (not from this work)
+  — left for a deliberate `npm audit fix` review.
+- Nothing merged — all of the above is on branch `perf/optimize-assets-and-code`.
 
 ### Notes / gotchas
 
