@@ -22,7 +22,7 @@ export const businessCopy = {
   subtitle: "Business Analytics Portfolio",
 
   hero: {
-    eyebrow: "MSc Business Analytics · Master of Design",
+    eyebrow: "Master of Science in Business Analytics · Master of Design",
     headline: "Turning complexity into clear decisions.",
     intro:
       "I'm Mohammed Zaabi Noor. I hold a master's degree in design and a Master of Science in Business Analytics — two disciplines that ask the same question from opposite ends: what is actually going on here, and what should we do about it?",
