@@ -1,14 +1,15 @@
 # CONTEXT — Pixel Archipelago Portfolio (session handoff)
 
-**Read this first in a new session.** Last updated: **2026-09-06 (evening)** — the site now
+**Read this first in a new session.** Last updated: **2026-09-07** — the site now
 holds **TWO portfolios**: the existing Pixel Archipelago (design) and a new **Business
 Analytics** landing page, joined by a mode switch in the header. `tsc` and `npm run build`
 are both green.
 
 **Jump to SECTION 11 for the business mode — that is the live piece of work.** It is built,
-wired and seen working at 1440x900, but it is **PAUSED MID-POLISH**: the mobile pass, the
-reduced-motion pass, and everything below the business hero are still unobserved. Section 11
-ends with the resume list.
+wired and **verified**: switch / drag / keyboard, the round trip from a scrolled interior
+page, the whole page at 375 / 768 / 1440, and the reduced-motion JS paths. Section 11 ends
+with a table of exactly what was observed and a short list of what still has not been
+(chiefly the CSS `prefers-reduced-motion` blocks, and one look on real hardware).
 
 (Everything before section 11 describes the design portfolio, which is finished, deploy-ready
 and was not redesigned by the business work.)
@@ -1204,10 +1205,13 @@ Everything the user will replace lives in one commented file: `businessCopy` (al
 ### What was touched in the existing app (the complete list)
 `RootLayout.tsx` (branch on mode, mount `ModeSwitch`, `data-mode`/title/theme-color effect),
 `index.html` (Montserrat 300/400/500/600 added to the existing Google Fonts link),
-`global.css` (append-only: mode wash + `.mode-in/.mode-out` + `.mode-dock`),
-`tokens.css` (`--switch-clear`), `Header.module.css` / `interior.module.css` /
-`StoryScroll.module.css` / `Landing.module.css` (add `--switch-clear` to a top offset),
-`Landing.tsx` (one effect that flags `data-intro` on `<html>`). **Nothing else.** All business
+`global.css` (mode wash + `.mode-in/.mode-out` + `.mode-dock`, then `scrollbar-gutter` and
+the light-world focus ring / skip link), `tokens.css` (`--switch-clear`, `--switch-band`),
+`Header.module.css` / `interior.module.css` / `StoryScroll.module.css` /
+`Landing.module.css` (add the right clearance token to a top offset; Header also moves the
+breadcrumb's hide-breakpoint to 900px), `RootLayout.tsx` again (the route-focus effect now
+ignores mode changes), `Landing.tsx` (one effect that flags `data-intro` on `<html>`).
+**Nothing else.** All business
 styling is in CSS modules scoped inside `.page`, so it cannot reach the design portfolio.
 
 ### ⏭️ Resume here (business mode)
