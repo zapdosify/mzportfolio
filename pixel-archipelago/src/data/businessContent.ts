@@ -43,8 +43,8 @@ export const businessCopy = {
     eyebrow: "Credentials",
     heading: "Continuous learning",
     intro:
-      "A running record of coursework taken alongside the degree. Each slot carries the badge as issued — original artwork, original proportions — with the course title, the institution, the completion date, and a link to verify it.",
-    note: "Credentials to be added.",
+      "A running record of coursework taken alongside the degree — the course title, the institution, the completion date, and a link to verify each one.",
+    note: "Issuer badge artwork can be dropped in later; every entry links out to its verification page now.",
   },
 
   closing: {
@@ -505,11 +505,71 @@ export interface Credential {
   href: string | null;
 }
 
+// From LinkedIn → Licenses & certifications (Google "UX Design" and the
+// Bocconi "Management of Fashion and Luxury Companies" are intentionally
+// omitted). `href` is the public verification page for each.
 export const credentials: Credential[] = [
-  { id: "c1", title: "Course title", issuer: "Issuing institution", date: "Completion date", href: null },
-  { id: "c2", title: "Course title", issuer: "Issuing institution", date: "Completion date", href: null },
-  { id: "c3", title: "Course title", issuer: "Issuing institution", date: "Completion date", href: null },
-  { id: "c4", title: "Course title", issuer: "Issuing institution", date: "Completion date", href: null },
-  { id: "c5", title: "Course title", issuer: "Issuing institution", date: "Completion date", href: null },
-  { id: "c6", title: "Course title", issuer: "Issuing institution", date: "Completion date", href: null },
+  {
+    id: "data-visualization-with-r",
+    title: "Data Visualization with R",
+    issuer: "IBM",
+    date: "Dec 2024",
+    href: "https://www.coursera.org/account/accomplishments/records/TWL6UO6HFGWS",
+  },
+  {
+    id: "data-analysis-with-r",
+    title: "Data Analysis with R",
+    issuer: "IBM",
+    date: "Dec 2024",
+    href: "https://www.coursera.org/account/accomplishments/records/M1THI2353OYJ",
+  },
+  {
+    id: "sql-for-data-science-with-r",
+    title: "SQL for Data Science with R",
+    issuer: "IBM",
+    date: "Nov 2024",
+    href: "https://www.coursera.org/account/accomplishments/records/MJ7H6OAU0NTJ",
+  },
+  {
+    id: "intro-to-r-programming",
+    title: "Introduction to R Programming for Data Science",
+    issuer: "IBM",
+    date: "Nov 2024",
+    href: "https://www.coursera.org/account/accomplishments/records/FJ1JHMTJ6485",
+  },
+  {
+    id: "data-visualization-dashboard-essentials",
+    title: "Data Visualization & Dashboard Essentials",
+    issuer: "IBM",
+    date: "Nov 2024",
+    href: "https://www.credly.com/badges/5f161c0e-8aac-417d-86db-d77d13e4fa84/linked_in_profile",
+  },
+  {
+    id: "data-visualization-excel-cognos",
+    title: "Data Visualization and Dashboards with Excel and Cognos",
+    issuer: "IBM",
+    date: "Nov 2024",
+    href: "https://www.coursera.org/account/accomplishments/records/LTZCPQMGBG7O",
+  },
+  {
+    id: "excel-basics-for-data-analysis",
+    title: "Excel Basics for Data Analysis",
+    issuer: "IBM",
+    date: "Nov 2024",
+    href: "https://www.coursera.org/account/accomplishments/records/L6LDR5P83HS0",
+  },
+  {
+    id: "introduction-to-data-analytics",
+    title: "Introduction to Data Analytics",
+    issuer: "IBM",
+    date: "Oct 2024",
+    href: "https://www.coursera.org/account/accomplishments/records/YFSDSQ8PPKQ6",
+  },
+  {
+    id: "citi-irb-social-behavioral-research",
+    title: "IRB – Social and Behavioral Research (Group 2)",
+    issuer: "CITI Program",
+    date: "Oct 2022 – Oct 2026",
+    href: "https://www.citiprogram.org/verify/?w7275ab28-3319-49c5-b038-dcf7eafa89b8-52402704",
+  },
 ];

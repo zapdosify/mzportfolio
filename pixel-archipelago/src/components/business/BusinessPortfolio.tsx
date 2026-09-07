@@ -415,7 +415,13 @@ export default function BusinessPortfolio() {
                       <BadgeMark />
                     )}
                   </div>
-                  <p className={`${styles.badgeTitle} ${c.image ? "" : styles.ph}`}>{c.title}</p>
+                  <p
+                    className={`${styles.badgeTitle} ${
+                      c.image || c.href ? "" : styles.ph
+                    }`}
+                  >
+                    {c.title}
+                  </p>
                   <p className={styles.badgeMeta}>{c.issuer}</p>
                   <p className={styles.badgeMeta}>{c.date}</p>
                   {c.href ? (
