@@ -166,7 +166,13 @@ export default function BusinessPortfolio() {
     ? businessProjects.find((p) => p.slug === openSlug) ?? null
     : null;
 
+  /* Set from the click handler (not an effect, so StrictMode can't muddle it).
+     Once a study has been opened, the homepage sections remount on the way
+     back and are simply shown, not re-animated. */
+  const hasOpenedCase = useRef(false);
+
   const openCase = useCallback((slug: string) => {
+    hasOpenedCase.current = true;
     returnScroll.current = window.scrollY;
     setOpenSlug(slug);
     try {
@@ -229,15 +235,22 @@ export default function BusinessPortfolio() {
   );
 
   /* Restrained entrance: sections rise a little as they arrive. One observer,
-     no library, and it simply does not run under reduced motion. */
+     no library, and it simply does not run under reduced motion.
+     Re-runs when the case-study view closes, because the homepage sections
+     remount fresh (opacity 0) with nothing observing them — on that return
+     they are simply shown, not re-animated. */
   useEffect(() => {
     const root = rootRef.current;
-    if (!root) return;
+    // Case study open: its content has no [data-reveal] to watch.
+    if (!root || openSlug) return;
     const items = Array.from(root.querySelectorAll<HTMLElement>("[data-reveal]"));
-    // The store's reduced-motion toggle is not a media query, so the CSS
-    // fallback can't catch it — reveal everything here instead of leaving
-    // the page sitting at opacity 0.
-    if (reducedMotion || !("IntersectionObserver" in window)) {
+    // Reveal outright on the return trip, under reduced motion, or with no
+    // IntersectionObserver — anything but the first, scroll-driven entrance.
+    if (
+      hasOpenedCase.current ||
+      reducedMotion ||
+      !("IntersectionObserver" in window)
+    ) {
       items.forEach((el) => el.classList.add(styles.revealed));
       return;
     }
@@ -253,7 +266,7 @@ export default function BusinessPortfolio() {
     );
     items.forEach((el) => io.observe(el));
     return () => io.disconnect();
-  }, [reducedMotion]);
+  }, [reducedMotion, openSlug]);
 
   return (
     <div ref={rootRef} className={styles.page}>
