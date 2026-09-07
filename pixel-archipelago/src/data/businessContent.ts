@@ -52,7 +52,7 @@ export const businessCopy = {
     statement: "Analysis decides what is true. Design decides what is understood.",
     body:
       "A model that nobody trusts changes nothing, and a decision that isn't understood doesn't survive the room it was made in. Both disciplines are in service of the same thing: giving people a clear enough picture to act on.",
-    contactLead: "Open to analytics and strategy roles, and to conversations that don't have a job attached.",
+    contactLead: "Open to analytics and strategy roles.",
   },
 };
 
