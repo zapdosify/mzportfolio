@@ -16,7 +16,7 @@
   --biz-ink-soft: #2c2c28;
   --biz-muted: #5e5e57;
   /* 4.71:1 on the paper — the old #93938c was 2.88:1 and it carried
-     every eyebrow, placeholder value, note and badge line on the page. */
+     every eyebrow, faint value, note and badge line on the page. */
   --biz-faint: #6f6f68;
   --biz-line: #e2e2da;
   --biz-line-strong: #c8c8bf;
@@ -290,8 +290,8 @@
 }
 
 /* ---------- Projects ---------- */
-/* Three placeholders, one below the next, divided by a hairline. Side by
-   side they read as a broken row on a wide monitor — the second card sat
+/* The project rows, one below the next, divided by a hairline. Side by
+   side they read as a broken row on a wide monitor — the second row sat
    ~100px lower than the first and that offset stops looking deliberate
    past about 1600px. Stacked, the rhythm holds at any width. */
 .projectList {
@@ -407,26 +407,15 @@
   line-height: 1.65;
   color: var(--biz-ink-soft);
 }
-/* Every placeholder value is set a shade lighter than real copy, so the
-   difference is visible at a glance once real content lands beside it.
-   Needs the `.field dd` compound to win — a bare `.ph` loses the specificity
+/* The card's question, summary and key-insight values sit a shade lighter
+   than the card title and standfirst, so the title stays dominant. Needs
+   the `.field dd` compound to win — a bare `.ph` loses the specificity
    fight with `.field dd` and silently does nothing. Both shades clear AA. */
 .ph,
 .field dd.ph {
   color: var(--biz-faint);
 }
 
-.slots {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-.slot {
-  display: block;
-  height: 22px;
-  border: 1px dashed var(--biz-line-strong);
-  border-radius: 2px;
-}
 .chips {
   display: flex;
   flex-wrap: wrap;
@@ -493,8 +482,8 @@
   color: var(--biz-muted);
 }
 
-/* Hairline rows only — no cell grid. The list can hold six placeholders or
-   twenty real badges and the rules always land correctly. */
+/* Hairline rows only — no cell grid. The list can hold three badges or
+   thirty and the rules always land correctly. */
 .badges {
   list-style: none;
   display: grid;

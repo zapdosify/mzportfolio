@@ -14,7 +14,7 @@ import BusinessCaseStudy from "./BusinessCaseStudy";
 import type { BusinessProject } from "../../data/businessContent";
 import styles from "./BusinessPortfolio.module.css";
 
-/** Placeholder badge mark — replaced the moment a real badge image is set. */
+/** Abstract badge mark — drawn until an entry sets a real badge image. */
 function BadgeMark() {
   return (
     <svg viewBox="0 0 100 100" className={styles.badgeMark} aria-hidden="true" focusable="false">
@@ -34,24 +34,13 @@ function BadgeMark() {
   );
 }
 
-/** Dashed slots stand in for methods/tools until the array is filled. */
-function MethodSlots() {
-  return (
-    <span className={styles.slots} aria-label="Methods and tools to be added">
-      {[62, 48, 78, 40].map((w, i) => (
-        <span key={i} className={styles.slot} style={{ width: `${w}px` }} />
-      ))}
-    </span>
-  );
-}
-
 const Arrow = () => (
   <svg viewBox="0 0 24 12" className={styles.ctaArrow} aria-hidden="true" focusable="false">
     <path d="M0 6h21M16 1l5 5-5 5" fill="none" stroke="currentColor" strokeWidth="1.2" />
   </svg>
 );
 
-/** The four labelled slots every case study will fill. */
+/** The four labelled fields shown on every project card. */
 function ProjectFields({ p }: { p: BusinessProject }) {
   return (
     <dl className={styles.fields}>
@@ -66,17 +55,13 @@ function ProjectFields({ p }: { p: BusinessProject }) {
       <div className={styles.field}>
         <dt>Methods &amp; tools</dt>
         <dd>
-          {p.methods.length ? (
-            <span className={styles.chips}>
-              {p.methods.map((m) => (
-                <span key={m} className={styles.chip}>
-                  {m}
-                </span>
-              ))}
-            </span>
-          ) : (
-            <MethodSlots />
-          )}
+          <span className={styles.chips}>
+            {p.methods.map((m) => (
+              <span key={m} className={styles.chip}>
+                {m}
+              </span>
+            ))}
+          </span>
         </dd>
       </div>
       <div className={styles.field}>
@@ -354,7 +339,7 @@ export default function BusinessPortfolio() {
               <p className={styles.sectionNote}>{businessCopy.projects.note}</p>
             </div>
 
-            {/* One placeholder below the next, separated by a hairline. The
+            {/* One project below the next, separated by a hairline. The
                 first is given more weight through its column split, its cover
                 ratio and its title size — not by breaking the rhythm. */}
             <div className={styles.projectList}>
@@ -396,8 +381,8 @@ export default function BusinessPortfolio() {
               <p className={styles.learnIntro}>{businessCopy.learning.intro}</p>
             </div>
 
-            {/* The grid takes however many credentials the data holds — six
-                placeholders now, any number later, no layout change needed. */}
+            {/* The grid takes however many credentials the data holds —
+                any number, no layout change needed. */}
             <ul className={styles.badges} data-reveal="">
               {credentials.map((c) => (
                 <li key={c.id} className={styles.badge}>

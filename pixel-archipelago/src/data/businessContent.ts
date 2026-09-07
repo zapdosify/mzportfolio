@@ -1,16 +1,15 @@
 /**
  * Business Analytics portfolio — ALL editable content lives here.
  *
- * Page copy (hero / closing / learning) is unchanged from the original design.
- * The three project placeholders have been replaced with the four real
- * case studies from the Phase 2 content package
- * (`Anayltics Portfolio-Package/phase-2/`). Every claim below is taken
- * verbatim from that package, which is deliberate about separating original
- * academic work from metrics recalculated during portfolio preparation.
+ * The four project entries are the case studies from the Phase 2 content
+ * package (`Anayltics Portfolio-Package/phase-2/`). Every claim below is
+ * taken verbatim from that package, which is deliberate about separating
+ * original academic work from metrics recalculated during portfolio
+ * preparation.
  *
- * Card fields (`question`, `summary`, `methods`, `outcome`) feed the existing
- * project rows. The `caseStudy` block on each project carries the full
- * write-up for the case-study view.
+ * Card fields (`question`, `summary`, `methods`, `outcome`) feed the project
+ * rows; the `caseStudy` block on each project carries the full write-up for
+ * the case-study view.
  */
 
 /* ------------------------------------------------------------------ *
@@ -43,8 +42,8 @@ export const businessCopy = {
     eyebrow: "Credentials",
     heading: "Continuous learning",
     intro:
-      "A running record of coursework taken alongside the degree — the course title, the institution, the completion date, and a link to verify each one.",
-    note: "Issuer badge artwork can be dropped in later; every entry links out to its verification page now.",
+      "Coursework completed alongside the degree — the course title, the institution, the completion date, and a link to verify each one.",
+    note: "Every credential links to its issuer's official verification record.",
   },
 
   closing: {
@@ -147,7 +146,7 @@ export interface BusinessProject {
   slug: string;
   /** "01" · "02" — the large index numeral on the card */
   index: string;
-  /** Placeholder chip. null once the case study is real. */
+  /** Optional status chip (e.g. "In progress"); null for a published study. */
   status: string | null;
   title: string;
   /** One line under the card title. */
@@ -490,8 +489,8 @@ export const businessProjects: BusinessProject[] = [
  * TO ADD A COURSERA BADGE: set `image` to the badge file you drop into
  * public/media/badges/ (it is drawn uncropped, at its own proportions),
  * fill in `title`, `issuer` and `date`, and set `href` to the Coursera
- * verification URL. The grid grows to fit however many entries exist —
- * add a tenth, a twentieth, nothing else needs changing.
+ * verification URL. The grid grows to fit however many entries exist;
+ * nothing else needs changing.
  * ------------------------------------------------------------------ */
 
 export interface Credential {
