@@ -447,15 +447,21 @@
   align-items: center;
   gap: 12px;
   margin-top: 28px;
+  font-family: inherit;
   font-size: var(--t-label);
   font-weight: 600;
   letter-spacing: 0.18em;
   text-transform: uppercase;
+  /* button reset — .caseLink is a <button> when the study opens in-page */
+  background: none;
+  border: 0;
+  padding: 0;
 }
 .caseLink {
   padding-bottom: 6px;
   border-bottom: 1px solid var(--biz-ink);
   color: var(--biz-ink);
+  cursor: pointer;
 }
 .caseLink:hover .ctaArrow {
   transform: translateX(6px);

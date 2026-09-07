@@ -10,6 +10,7 @@ import { useWorldStore } from "../../hooks/useWorldStore";
 import { useModeStore } from "../../hooks/useModeStore";
 import WordField from "./WordField";
 import Cover from "./Covers";
+import BusinessCaseStudy from "./BusinessCaseStudy";
 import type { BusinessProject } from "../../data/businessContent";
 import styles from "./BusinessPortfolio.module.css";
 
@@ -107,19 +108,33 @@ function ProjectCover({ p, feature }: { p: BusinessProject; feature?: boolean })
   );
 }
 
-function CaseLink({ href }: { href: string | null }) {
-  if (!href) {
+function CaseLink({
+  p,
+  onOpen,
+}: {
+  p: BusinessProject;
+  onOpen: (slug: string) => void;
+}) {
+  if (p.caseStudy?.sections.length) {
     return (
-      <span className={styles.caseLinkOff} aria-disabled="true">
-        Details coming soon
-      </span>
+      <button type="button" className={styles.caseLink} onClick={() => onOpen(p.slug)}>
+        Read the case study
+        <Arrow />
+      </button>
+    );
+  }
+  if (p.href) {
+    return (
+      <a className={styles.caseLink} href={p.href}>
+        Read the case study
+        <Arrow />
+      </a>
     );
   }
   return (
-    <a className={styles.caseLink} href={href}>
-      Read the case study
-      <Arrow />
-    </a>
+    <span className={styles.caseLinkOff} aria-disabled="true">
+      Details coming soon
+    </span>
   );
 }
 
@@ -140,6 +155,57 @@ export default function BusinessPortfolio() {
   const [fieldPaused, setFieldPaused] = useState(false);
   const projectsRef = useRef<HTMLElement>(null);
   const rootRef = useRef<HTMLDivElement>(null);
+
+  /* Case-study reader. Business mode is not routed, so this is a state view
+     shown in place of the homepage. A history entry is pushed (URL kept
+     identical) so the browser Back button closes it, and the homepage
+     scroll position is restored on the way out. */
+  const [openSlug, setOpenSlug] = useState<string | null>(null);
+  const returnScroll = useRef(0);
+  const openProject = openSlug
+    ? businessProjects.find((p) => p.slug === openSlug) ?? null
+    : null;
+
+  const openCase = useCallback((slug: string) => {
+    returnScroll.current = window.scrollY;
+    setOpenSlug(slug);
+    try {
+      history.pushState({ ...history.state, bizCase: slug }, "");
+    } catch {
+      /* history unavailable — the in-page view still works */
+    }
+  }, []);
+
+  const closeCase = useCallback(() => {
+    if (typeof history !== "undefined" && history.state?.bizCase) {
+      history.back(); // -> popstate -> setOpenSlug(null)
+    } else {
+      setOpenSlug(null);
+    }
+  }, []);
+
+  useEffect(() => {
+    const onPop = () => {
+      const slug =
+        (history.state && (history.state as { bizCase?: string }).bizCase) || null;
+      setOpenSlug(slug);
+      if (!slug) {
+        requestAnimationFrame(() =>
+          window.scrollTo({ top: returnScroll.current, behavior: "instant" as ScrollBehavior }),
+        );
+      }
+    };
+    // A reload with a study open keeps its history entry; restore that view so
+    // the page and the Back button stay in agreement.
+    if ((history.state as { bizCase?: string })?.bizCase) onPop();
+    window.addEventListener("popstate", onPop);
+    return () => window.removeEventListener("popstate", onPop);
+  }, []);
+
+  // Leaving business mode with a study open: drop it (and its history entry).
+  useEffect(() => {
+    if (mode !== "business" && openSlug) closeCase();
+  }, [mode, openSlug, closeCase]);
 
   /* The slight positional half of the mode transition lives here, on the
      content, rather than on a wrapper: a transform on an ancestor would
@@ -199,6 +265,16 @@ export default function BusinessPortfolio() {
         <span className={styles.bizRole}>{businessCopy.subtitle}</span>
       </header>
 
+      {openProject ? (
+        <main id="main" tabIndex={-1} className={styles.main}>
+          <BusinessCaseStudy
+            project={openProject}
+            siblings={businessProjects}
+            onClose={closeCase}
+            onOpen={openCase}
+          />
+        </main>
+      ) : (
       <main id="main" tabIndex={-1} className={`${styles.main} ${shift}`}>
         {/* ---------------- Hero ---------------- */}
         <section className={styles.hero} aria-labelledby="biz-hero-title">
@@ -283,7 +359,7 @@ export default function BusinessPortfolio() {
                     </h3>
                     <p className={styles.standfirst}>{p.standfirst}</p>
                     <ProjectFields p={p} />
-                    <CaseLink href={p.href} />
+                    <CaseLink p={p} onOpen={openCase} />
                   </div>
                 </article>
               ))}
@@ -407,6 +483,7 @@ export default function BusinessPortfolio() {
           </div>
         </footer>
       </main>
+      )}
     </div>
   );
 }

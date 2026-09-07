@@ -1,0 +1,231 @@
+/* ------------------------------------------------------------------ *
+ * Business Analytics — case-study reader.
+ *
+ * Same art direction as BusinessPortfolio: paper, ink, hairlines, no
+ * boxes or shadows, generous margins, prose narrower than the charts.
+ * The `--biz-*` tokens are inherited from the enclosing `.page`.
+ * ------------------------------------------------------------------ */
+
+.wrap {
+  position: relative;
+  padding-top: clamp(120px, 16vh, 172px);
+  padding-bottom: clamp(72px, 12vh, 132px);
+  animation: caseIn 420ms var(--ease-out) both;
+}
+@keyframes caseIn {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .wrap {
+    animation: none;
+  }
+}
+
+.shell {
+  width: 100%;
+  max-width: 920px;
+  margin-inline: auto;
+  padding-inline: var(--biz-gutter);
+}
+
+/* ---------- Back / forward ---------- */
+.nav {
+  border: 0;
+  background: none;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: inherit;
+  font-size: var(--t-label);
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--biz-faint);
+  cursor: pointer;
+  transition: color 200ms var(--ease-out);
+}
+.nav:hover,
+.nav:focus-visible {
+  color: var(--biz-ink);
+}
+.nav svg {
+  width: 22px;
+  height: 10px;
+  flex: none;
+}
+.navNext svg {
+  transform: scaleX(-1);
+}
+
+/* ---------- Header ---------- */
+.head {
+  margin-top: clamp(28px, 5vw, 52px);
+  max-width: 40ch;
+}
+.kicker {
+  font-size: var(--t-micro);
+  font-weight: 600;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--biz-faint);
+}
+.title {
+  margin-top: 14px;
+  font-size: clamp(2rem, 4.4vw, 3.4rem);
+  font-weight: 300;
+  line-height: 1.06;
+  letter-spacing: -0.03em;
+  color: var(--biz-ink);
+  text-wrap: balance;
+}
+.standfirst {
+  margin-top: clamp(14px, 2vw, 22px);
+  max-width: 56ch;
+  font-size: var(--t-body-l);
+  line-height: 1.55;
+  color: var(--biz-ink-soft);
+}
+
+.meta {
+  list-style: none;
+  margin-top: clamp(20px, 3vw, 32px);
+  padding-top: 16px;
+  border-top: 1px solid var(--biz-line);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 22px;
+  font-size: var(--t-small);
+  color: var(--biz-muted);
+}
+.meta li {
+  position: relative;
+}
+.meta li + li::before {
+  content: "";
+  position: absolute;
+  left: -12px;
+  top: 50%;
+  width: 1px;
+  height: 12px;
+  transform: translateY(-50%);
+  background: var(--biz-line-strong);
+}
+.metaProof {
+  color: var(--biz-ink-soft);
+  font-weight: 500;
+}
+
+/* ---------- Figures (charts wider than the prose) ---------- */
+.figure {
+  margin: clamp(30px, 5vw, 58px) 0;
+}
+.figure img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--biz-line);
+  background: var(--biz-panel);
+}
+.figure figcaption {
+  margin-top: 12px;
+  max-width: 74ch;
+  font-size: var(--t-small);
+  line-height: 1.55;
+  color: var(--biz-muted);
+}
+
+/* ---------- Body sections ---------- */
+.body {
+  margin-top: clamp(8px, 2vw, 20px);
+}
+.section {
+  margin-top: clamp(26px, 4vw, 44px);
+  padding-top: 18px;
+  border-top: 1px solid var(--biz-line);
+}
+.section h2 {
+  font-size: var(--t-label);
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--biz-faint);
+}
+.section p {
+  margin-top: 12px;
+  max-width: 68ch;
+  font-size: var(--t-body);
+  line-height: 1.66;
+  color: var(--biz-ink-soft);
+}
+
+/* ---------- Proposed evaluation matrix ---------- */
+.matrixWrap {
+  margin-top: clamp(34px, 5vw, 56px);
+  padding-top: 20px;
+  border-top: 1px solid var(--biz-line-strong);
+}
+.matrixWrap h2 {
+  font-size: clamp(1.15rem, 2vw, 1.5rem);
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  color: var(--biz-ink);
+}
+.matrixStatus {
+  margin-top: 6px;
+  font-size: var(--t-small);
+  color: var(--biz-muted);
+}
+.tableScroll {
+  margin-top: 20px;
+  overflow-x: auto;
+}
+.matrix {
+  border-collapse: collapse;
+  width: 100%;
+  min-width: 620px;
+  font-size: var(--t-body-s);
+}
+.matrix thead th {
+  text-align: left;
+  padding: 0 18px 12px 0;
+  border-bottom: 1px solid var(--biz-line-strong);
+  font-size: var(--t-micro);
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--biz-faint);
+}
+.matrix tbody th,
+.matrix tbody td {
+  text-align: left;
+  vertical-align: top;
+  padding: 14px 18px 14px 0;
+  border-bottom: 1px solid var(--biz-line);
+  line-height: 1.55;
+  color: var(--biz-ink-soft);
+}
+.matrix tbody th {
+  width: 24%;
+  padding-right: 26px;
+  font-weight: 600;
+  color: var(--biz-ink);
+}
+
+/* ---------- Footer nav ---------- */
+.foot {
+  margin-top: clamp(48px, 8vw, 92px);
+  padding-top: 22px;
+  border-top: 1px solid var(--biz-line-strong);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 18px 28px;
+  flex-wrap: wrap;
+}
+.foot .navNext {
+  text-align: right;
+}
