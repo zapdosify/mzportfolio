@@ -1187,6 +1187,35 @@ Business vocabulary arranged as a slow turning **column**, not a word cloud.
   **"Pause motion"** control at the bottom-right of the hero stops time without rebuilding the
   field (`paused` is read through a ref — same rule as §10's Landing warning).
 
+### Type scale and contrast — audited, do not regress
+The `/ui-ux-pro-max` rules were run against this page. Its **style/colour/font output was
+rejected again** (it proposes Archivo + Space Grotesk and a blue accent, which contradict the
+brief's Montserrat-on-soft-white) — same call as §6. Its *rule* checks found real defects:
+
+- **`--biz-faint` was `#93938c` — 2.88:1 on the paper, and it carried every eyebrow,
+  placeholder value, section note, badge line and cover numeral on the page.** Now `#6f6f68`
+  (4.71:1). The inert "Verification link" was `#a9a9a2` at 2.20:1 and now shares the token.
+  **All 78 real text elements measure ≥4.71:1**; re-check with the snippet in §11's log before
+  changing any grey. The word field is exempt — it is `aria-hidden` decoration, not content.
+- **The type scale was fourteen near-duplicate sizes bottoming out at 8.5px.** It is now six
+  tokens (`--t-micro` 11 / `--t-label` 12 / `--t-small` 13 / `--t-body-s` 15 / `--t-body` 16 /
+  `--t-body-l` 17). Reading text is 16px everywhere, including mobile. Use the tokens.
+- **`.ph` never worked.** `.field dd` (0,1,1) out-specifies a bare `.ph` (0,1,0), so
+  placeholder values had always rendered at full body contrast and the documented "a shade
+  lighter" distinction did not exist. Fixed with a `.field dd.ph` compound; both shades
+  clear AA.
+- Badge and cover images carry `loading="lazy"` + `decoding="async"`.
+
+### Projects are stacked, not paired (user request, 2026-09-07)
+The original layout was a feature row plus two side-by-side cards, the second offset down by
+`clamp(0px, 7vw, 104px)`. On a wide monitor that offset stops reading as composition and
+starts reading as breakage — the user reported it as "distorted when I make the website full
+screen". All three placeholders are now **one below the next**, hairline-separated, cover left
+and body right, with the feature earning its weight from the column split (1.24fr vs 1fr), its
+cover ratio (16/11 vs 4/3) and its title size rather than from breaking the sequence.
+`--biz-maxw` went 1300 → 1400 at the same time. `.feature` / `.pair` / `.card` are gone;
+the classes are `.projectList` / `.row` / `.rowFeature` / `.rowBody`.
+
 ### Content is data, not markup — `src/data/businessContent.ts`
 Everything the user will replace lives in one commented file: `businessCopy` (all page copy),
 `fieldTerms` (the 12 background words), `businessProjects` (3 placeholders) and `credentials`

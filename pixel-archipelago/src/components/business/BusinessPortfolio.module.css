@@ -15,13 +15,24 @@
   --biz-ink: #0f0f0e;
   --biz-ink-soft: #2c2c28;
   --biz-muted: #5e5e57;
-  --biz-faint: #93938c;
+  /* 4.71:1 on the paper — the old #93938c was 2.88:1 and it carried
+     every eyebrow, placeholder value, note and badge line on the page. */
+  --biz-faint: #6f6f68;
   --biz-line: #e2e2da;
   --biz-line-strong: #c8c8bf;
 
   --biz-font: "Montserrat", "Segoe UI", -apple-system, BlinkMacSystemFont, sans-serif;
+  /* Type scale. Six steps, nothing between them. The old set had fourteen
+     near-duplicate values and bottomed out at 8.5px. */
+  --t-micro: 0.6875rem; /* 11px — uppercase tracked labels */
+  --t-label: 0.75rem;   /* 12px — eyebrows, link labels, chips */
+  --t-small: 0.8125rem; /* 13px — badge meta */
+  --t-body-s: 0.9375rem;/* 15px — secondary notes */
+  --t-body: 1rem;       /* 16px — reading text */
+  --t-body-l: 1.0625rem;/* 17px — closing paragraph */
+
   --biz-gutter: clamp(22px, 5.5vw, 92px);
-  --biz-maxw: 1300px;
+  --biz-maxw: 1400px;
 
   position: relative;
   min-height: 100dvh;
@@ -133,7 +144,7 @@
   display: flex;
   align-items: center;
   gap: 14px;
-  font-size: 0.6rem;
+  font-size: var(--t-label);
   font-weight: 600;
   letter-spacing: 0.24em;
   text-transform: uppercase;
@@ -190,7 +201,7 @@
   gap: 1.05em;
   margin-top: clamp(26px, 3vw, 40px);
   max-width: 54ch;
-  font-size: clamp(0.94rem, 1.02vw, 1.06rem);
+  font-size: clamp(var(--t-body), 1.02vw, 1.125rem);
   line-height: 1.76;
   color: var(--biz-muted);
 }
@@ -202,7 +213,7 @@
   margin-top: clamp(34px, 4vw, 54px);
   padding-bottom: 8px;
   border-bottom: 1px solid var(--biz-line-strong);
-  font-size: 0.66rem;
+  font-size: var(--t-label);
   font-weight: 600;
   letter-spacing: 0.2em;
   text-transform: uppercase;
@@ -232,7 +243,7 @@
   background: rgba(247, 247, 243, 0.72);
   backdrop-filter: blur(4px);
   font-family: var(--biz-font);
-  font-size: 0.53rem;
+  font-size: var(--t-micro);
   font-weight: 600;
   letter-spacing: 0.17em;
   text-transform: uppercase;
@@ -273,18 +284,38 @@
 .sectionNote {
   margin-top: 18px;
   max-width: 48ch;
-  font-size: 0.86rem;
+  font-size: var(--t-body-s);
   line-height: 1.7;
   color: var(--biz-faint);
 }
 
 /* ---------- Projects ---------- */
-.feature {
+/* Three placeholders, one below the next, divided by a hairline. Side by
+   side they read as a broken row on a wide monitor — the second card sat
+   ~100px lower than the first and that offset stops looking deliberate
+   past about 1600px. Stacked, the rhythm holds at any width. */
+.projectList {
   display: grid;
-  grid-template-columns: minmax(0, 1.12fr) minmax(0, 1fr);
-  gap: clamp(28px, 4.4vw, 76px);
+}
+.row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(28px, 4vw, 72px);
   align-items: start;
-  padding-bottom: clamp(60px, 8vw, 118px);
+  padding-block: clamp(44px, 5.5vw, 80px);
+  border-top: 1px solid var(--biz-line);
+}
+.row:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+/* The feature earns its weight from the column split, the cover ratio and
+   the title size — not from breaking out of the sequence. */
+.rowFeature {
+  grid-template-columns: minmax(0, 1.24fr) minmax(0, 1fr);
+}
+.rowBody {
+  padding-top: clamp(4px, 1vw, 16px);
 }
 
 .cover {
@@ -313,21 +344,17 @@
   position: absolute;
   left: 18px;
   top: 15px;
-  font-size: 0.6rem;
+  font-size: var(--t-label);
   font-weight: 600;
   letter-spacing: 0.2em;
   color: var(--biz-faint);
-}
-
-.featureBody {
-  padding-top: clamp(4px, 1vw, 16px);
 }
 
 .status {
   display: inline-block;
   padding: 5px 11px;
   border: 1px dashed var(--biz-line-strong);
-  font-size: 0.53rem;
+  font-size: var(--t-micro);
   font-weight: 600;
   letter-spacing: 0.18em;
   text-transform: uppercase;
@@ -350,7 +377,7 @@
 .standfirst {
   margin-top: 12px;
   max-width: 46ch;
-  font-size: 0.93rem;
+  font-size: var(--t-body);
   line-height: 1.7;
   color: var(--biz-muted);
 }
@@ -361,7 +388,7 @@
 }
 .field {
   display: grid;
-  grid-template-columns: 148px minmax(0, 1fr);
+  grid-template-columns: 172px minmax(0, 1fr);
   gap: 20px;
   align-items: start;
   padding: 16px 0;
@@ -369,20 +396,23 @@
 }
 .field dt {
   padding-top: 3px;
-  font-size: 0.55rem;
+  font-size: var(--t-micro);
   font-weight: 600;
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--biz-faint);
 }
 .field dd {
-  font-size: 0.89rem;
+  font-size: var(--t-body);
   line-height: 1.65;
   color: var(--biz-ink-soft);
 }
 /* Every placeholder value is set a shade lighter than real copy, so the
-   difference is visible at a glance once real content lands beside it. */
-.ph {
+   difference is visible at a glance once real content lands beside it.
+   Needs the `.field dd` compound to win — a bare `.ph` loses the specificity
+   fight with `.field dd` and silently does nothing. Both shades clear AA. */
+.ph,
+.field dd.ph {
   color: var(--biz-faint);
 }
 
@@ -406,7 +436,7 @@
   display: inline-block;
   padding: 5px 10px;
   border: 1px solid var(--biz-line-strong);
-  font-size: 0.62rem;
+  font-size: var(--t-label);
   letter-spacing: 0.06em;
   color: var(--biz-ink-soft);
 }
@@ -417,7 +447,7 @@
   align-items: center;
   gap: 12px;
   margin-top: 28px;
-  font-size: 0.6rem;
+  font-size: var(--t-label);
   font-weight: 600;
   letter-spacing: 0.18em;
   text-transform: uppercase;
@@ -442,25 +472,6 @@
   background: var(--biz-line-strong);
 }
 
-.pair {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: clamp(28px, 4.4vw, 76px);
-  align-items: start;
-}
-/* The offset is the composition: two equal cards on one baseline would be
-   a grid, not an arrangement. */
-.pair > :nth-child(2) {
-  margin-top: clamp(0px, 7vw, 104px);
-}
-.card .field {
-  grid-template-columns: minmax(0, 1fr);
-  gap: 6px;
-}
-.card .field dt {
-  padding-top: 0;
-}
-
 /* ---------- Continuous learning ---------- */
 .learnHead {
   display: grid;
@@ -471,7 +482,7 @@
 }
 .learnIntro {
   max-width: 54ch;
-  font-size: 0.94rem;
+  font-size: var(--t-body);
   line-height: 1.76;
   color: var(--biz-muted);
 }
@@ -515,20 +526,20 @@
   height: 100%;
 }
 .badgeTitle {
-  font-size: 0.9rem;
+  font-size: var(--t-body);
   font-weight: 500;
   line-height: 1.45;
 }
 .badgeMeta {
   margin-top: 4px;
-  font-size: 0.72rem;
+  font-size: var(--t-small);
   line-height: 1.5;
   color: var(--biz-faint);
 }
 .verify,
 .verifyOff {
   margin-top: 16px;
-  font-size: 0.55rem;
+  font-size: var(--t-micro);
   font-weight: 600;
   letter-spacing: 0.16em;
   text-transform: uppercase;
@@ -539,7 +550,7 @@
   color: var(--biz-ink);
 }
 .verifyOff {
-  color: #a9a9a2;
+  color: var(--biz-faint);
   cursor: default;
 }
 
@@ -556,7 +567,7 @@
 .closingBody {
   margin-top: 30px;
   max-width: 58ch;
-  font-size: 1rem;
+  font-size: var(--t-body-l);
   line-height: 1.76;
   color: var(--biz-muted);
 }
@@ -568,7 +579,7 @@
 }
 .contactLead {
   max-width: 50ch;
-  font-size: 0.94rem;
+  font-size: var(--t-body);
   line-height: 1.72;
   color: var(--biz-muted);
 }
@@ -579,7 +590,7 @@
   gap: 28px 40px;
 }
 .contactList dt {
-  font-size: 0.55rem;
+  font-size: var(--t-micro);
   font-weight: 600;
   letter-spacing: 0.18em;
   text-transform: uppercase;
@@ -587,7 +598,7 @@
 }
 .contactList dd {
   margin-top: 9px;
-  font-size: 0.95rem;
+  font-size: var(--t-body);
   color: var(--biz-ink);
 }
 .contactLink {
@@ -608,7 +619,7 @@
   flex-wrap: wrap;
   justify-content: space-between;
   gap: 14px;
-  font-size: 0.56rem;
+  font-size: var(--t-micro);
   font-weight: 600;
   letter-spacing: 0.18em;
   text-transform: uppercase;
@@ -625,12 +636,16 @@
 
 /* ---------- Responsive ---------- */
 @media (max-width: 1000px) {
-  .feature {
+  .row,
+  .rowFeature {
     grid-template-columns: minmax(0, 1fr);
-    gap: clamp(24px, 4vw, 40px);
+    gap: clamp(22px, 3.5vw, 36px);
+  }
+  .rowBody {
+    padding-top: 0;
   }
   .field {
-    grid-template-columns: 132px minmax(0, 1fr);
+    grid-template-columns: 156px minmax(0, 1fr);
   }
 }
 
@@ -644,13 +659,6 @@
   .learnHead {
     grid-template-columns: minmax(0, 1fr);
     align-items: start;
-  }
-  .pair {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 60px;
-  }
-  .pair > :nth-child(2) {
-    margin-top: 0;
   }
 }
 

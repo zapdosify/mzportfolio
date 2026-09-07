@@ -119,7 +119,7 @@
 @media (max-width: 560px) {
   .option {
     padding: 8px 10px;
-    font-size: 0.5rem;
+    font-size: 0.5625rem;
     letter-spacing: 0.07em;
     min-height: 38px; /* ~46px of pill — a comfortable thumb target */
   }

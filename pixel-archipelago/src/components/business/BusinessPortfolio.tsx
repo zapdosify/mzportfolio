@@ -90,7 +90,13 @@ function ProjectCover({ p, feature }: { p: BusinessProject; feature?: boolean })
   return (
     <div className={`${styles.cover} ${feature ? styles.coverFeature : ""}`}>
       {p.image ? (
-        <img src={p.image} alt="" className={styles.coverImg} />
+        <img
+          src={p.image}
+          alt=""
+          className={styles.coverImg}
+          loading="lazy"
+          decoding="async"
+        />
       ) : (
         <Cover kind={p.cover} className={styles.coverSvg} />
       )}
@@ -259,30 +265,26 @@ export default function BusinessPortfolio() {
               <p className={styles.sectionNote}>{businessCopy.projects.note}</p>
             </div>
 
-            {/* Feature — the first project runs the full width, cover leading. */}
-            {businessProjects.slice(0, 1).map((p) => (
-              <article key={p.id} className={styles.feature} data-reveal="">
-                <ProjectCover p={p} feature />
-                <div className={styles.featureBody}>
-                  {p.status && <span className={styles.status}>{p.status}</span>}
-                  <h3 className={styles.featureTitle}>{p.title}</h3>
-                  <p className={styles.standfirst}>{p.standfirst}</p>
-                  <ProjectFields p={p} />
-                  <CaseLink href={p.href} />
-                </div>
-              </article>
-            ))}
-
-            {/* The pair — deliberately offset, not a symmetric row. */}
-            <div className={styles.pair}>
-              {businessProjects.slice(1, 3).map((p) => (
-                <article key={p.id} className={styles.card} data-reveal="">
-                  <ProjectCover p={p} />
-                  {p.status && <span className={styles.status}>{p.status}</span>}
-                  <h3 className={styles.cardTitle}>{p.title}</h3>
-                  <p className={styles.standfirst}>{p.standfirst}</p>
-                  <ProjectFields p={p} />
-                  <CaseLink href={p.href} />
+            {/* One placeholder below the next, separated by a hairline. The
+                first is given more weight through its column split, its cover
+                ratio and its title size — not by breaking the rhythm. */}
+            <div className={styles.projectList}>
+              {businessProjects.map((p, i) => (
+                <article
+                  key={p.id}
+                  className={`${styles.row} ${i === 0 ? styles.rowFeature : ""}`}
+                  data-reveal=""
+                >
+                  <ProjectCover p={p} feature={i === 0} />
+                  <div className={styles.rowBody}>
+                    {p.status && <span className={styles.status}>{p.status}</span>}
+                    <h3 className={i === 0 ? styles.featureTitle : styles.cardTitle}>
+                      {p.title}
+                    </h3>
+                    <p className={styles.standfirst}>{p.standfirst}</p>
+                    <ProjectFields p={p} />
+                    <CaseLink href={p.href} />
+                  </div>
                 </article>
               ))}
             </div>
@@ -313,7 +315,13 @@ export default function BusinessPortfolio() {
                   <div className={styles.badgeArt}>
                     {c.image ? (
                       /* Drawn uncropped, at whatever proportions the issuer used. */
-                      <img src={c.image} alt="" className={styles.badgeImg} />
+                      <img
+                        src={c.image}
+                        alt=""
+                        className={styles.badgeImg}
+                        loading="lazy"
+                        decoding="async"
+                      />
                     ) : (
                       <BadgeMark />
                     )}
