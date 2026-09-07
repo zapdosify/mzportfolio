@@ -676,6 +676,23 @@
     right: auto;
     left: var(--biz-gutter);
   }
+
+  /* Hairline-underlined text links are the right look and the wrong touch
+     target. Extend the hit area without touching the drawing. */
+  .cta,
+  .caseLink,
+  .contactLink,
+  .verify {
+    position: relative;
+  }
+  .cta::after,
+  .caseLink::after,
+  .contactLink::after,
+  .verify::after {
+    content: "";
+    position: absolute;
+    inset: -12px -8px;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

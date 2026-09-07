@@ -121,7 +121,7 @@
     padding: 8px 10px;
     font-size: 0.5rem;
     letter-spacing: 0.07em;
-    min-height: 32px; /* stays a comfortable touch target */
+    min-height: 38px; /* ~46px of pill — a comfortable thumb target */
   }
 }
 

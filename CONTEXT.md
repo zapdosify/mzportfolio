@@ -1123,14 +1123,48 @@ the landing warp's 50 and the modals' 1000).
 - Hovering/focusing the switch **prefetches the business chunk**, so the first switch is as
   instant as every one after it.
 
-### `--switch-clear` — how the switch makes room on narrow screens
-On wide screens the switch sits in the empty top-centre between the identity and the Index
-button, and costs nothing. Below **760px** there is no horizontal room, so `tokens.css` sets
-`--switch-clear: 42px` and four places add it to their top offset: `Header.module.css`
-(height + padding-top), `interior.module.css` (page padding-top), `StoryScroll.module.css`
-(sticky top), and `Landing.module.css` (`.titleBlock` and `.indexBtn`). **That is the entire
-mechanism** — if the switch ever collides with something on mobile, add
-`var(--switch-clear, 0px)` there rather than inventing a second offset.
+### The two clearance tokens — read before touching anything at the top of a page
+The switch is fixed at `top:14px`, centred. Two separate offsets keep things out of
+its way, and they are NOT interchangeable:
+
+- **`--switch-clear`** (0, and `42px` below 760px) — the **landing HUD** and the
+  **business masthead**. Both have a lone identity block on the left and an empty
+  middle, so they only need to move on narrow screens. Used by `Landing.module.css`
+  (`.titleBlock`, `.indexBtn`) and `BusinessPortfolio.module.css` (`.bizHeader`).
+- **`--switch-band`** (`52px`, **every width**) — the **interior design header**.
+  Its right-hand nav (Return to World + breadcrumb + Index) is ~530px and the content
+  column caps at 1280px, so the arithmetic never leaves room for a 230px switch
+  between identity and nav — measured overlap of 25.7px at 1440 with the longest
+  category name, and it gets worse, not better, on a 1920 monitor. The switch gets its
+  own band there and the header row sits under it (header height 60 → 112). Used by
+  `Header.module.css`, `interior.module.css` and `StoryScroll.module.css`, which must
+  stay in step or the page content will tuck under the header.
+
+If the switch ever collides with something new, add the right one of these to its top
+offset rather than inventing a third mechanism.
+
+### `scrollbar-gutter: stable` on `<html>` — load-bearing, do not remove
+The business portfolio is one long scrolling page; the design landing is a single
+fixed screen that never scrolls. Without a reserved gutter the initial containing
+block changes width by ~15px between them, which slid the centred switch sideways by
+7.5px **mid-transition** — precisely when the brief requires it not to move. The
+gutter also removes the same 15px jump that already existed between the landing and
+interior pages. Cost: the landing stage is 1425px instead of 1440px at a 1440
+viewport. Platforms with overlay scrollbars (macOS, mobile) are unaffected.
+
+### Light-world focus states
+`global.css`'s focus ring and skip link are white — correct on the archipelago,
+invisible on paper. `html[data-mode="business"]` repaints both. The business page also
+sets its own ring on `.page a/button`. On phones the hairline-underlined text links
+(CTA, case link, contact, verify) carry a `::after` hit-area extension so a 22px-tall
+link is a ~46px target without changing the drawing.
+
+### Pre-existing issue found and fixed during this pass (easily reverted)
+Below 900px the interior header's identity + Return to World + breadcrumb + Index were
+wrapping into each other — this predates the mode switch. The breadcrumb is
+`aria-hidden` and repeats the eyebrow that already sits above the page H1, so its
+hide-breakpoint moved from 640px to 900px. **Revert that one media query in
+`Header.module.css` to restore the old behaviour** if the breadcrumb is wanted back.
 
 ### The word field (`components/business/WordField.tsx`) — the signature background
 Business vocabulary arranged as a slow turning **column**, not a word cloud.
@@ -1177,25 +1211,40 @@ Everything the user will replace lives in one commented file: `businessCopy` (al
 styling is in CSS modules scoped inside `.page`, so it cannot reach the design portfolio.
 
 ### ⏭️ Resume here (business mode)
-Verified so far: the switch works in both directions at 1440x900, the business hero renders,
-the word column turns (two screenshots seconds apart show it rotated), `tsc` + `npm run build`
-green, and business ships as its own lazy chunk (**15.2 kB JS / 12.3 kB CSS, gzip 5.0 / 3.3**)
-so the design bundle is unchanged.
 
-**Not yet done — pick up here:**
-1. **Scroll the business page past the hero and look at it.** Projects, Continuous learning and
-   Closing have been written and built but have **not been seen rendered**. The scroll-reveal
-   (`[data-reveal]` + one IntersectionObserver) in particular is unobserved.
-2. **Mobile + tablet pass.** 375 / 768. Especially: does the switch clear the landing HUD and
-   the interior header at `--switch-clear: 42px`, and does the hero's `padding-top` clear both?
-3. **Reduced motion.** The store-toggle path is handled in JS (reveals are force-shown rather
-   than left at opacity 0 — that was a real bug, fixed); the media-query path is CSS. Neither
-   has been observed. The pane cannot emulate `prefers-reduced-motion` (§10).
-4. **Switch from an interior design page** (e.g. `/poster-design`, scrolled down) to business
-   and back. The scroll-memory restore is written but unobserved on that path.
-5. **Drag the pill by hand**, and keyboard-arrow it. Both are implemented, neither observed.
-6. A thin dark vertical strip appears at ~x1290 in Browser-pane screenshots. Almost certainly
-   the pane drawing the scrollbar at a scaled position (`document.documentElement.clientWidth`
-   is 1425 of 1440, i.e. a normal 15px scrollbar) — **not chased, worth a glance on real hardware.**
-7. Judgement calls the user may want to overturn: mode persistence (above), the switch keeping
-   IBM Plex Mono in both worlds, and hiding the switch during the galaxy intro.
+**Verified by observation** (dev server, Browser pane, 2026-09-07):
+
+| What | Result |
+|---|---|
+| Switch: click, drag, tap, arrow/Home/End keys | works both directions |
+| Drag follow | pill tracks the pointer continuously (`--pos` 0 → 0.28 → 0.64 → 1) |
+| Round trip from a scrolled interior page | returns to `/poster-design` at scroll 900 |
+| Deep link + persisted business mode | deep links still open in design mode |
+| Transition timeline | out 0→220ms, swap at 300ms, in to 700ms, `#main` lifts 6.5px |
+| Switch anchored | `left` is 597.2px in all three states (landing / business / interior) |
+| Reduced motion (JS paths) | swap instant (<60ms), word field static over 1.8s, pause control absent, all 8 reveals at opacity 1 |
+| Whole business page | hero, projects, credentials, closing, footer — all seen rendered |
+| Keyboard | 7 focusables, roving tabindex, visible rings; all 9 placeholder links inert (`aria-disabled` spans, not focusable) |
+| 375 / 768 / 1440 | no collisions; mobile targets 46–50px |
+| `tsc`, `npm run build`, `oxlint` | green |
+
+**Still unobserved / open:**
+1. **CSS `@media (prefers-reduced-motion: reduce)` blocks.** The pane cannot emulate
+   it. The JS paths were tested by patching `window.matchMedia` and remounting — that
+   is what proved the store-toggle path works. The CSS blocks are written but have
+   never been exercised. **Worth one look with the OS setting on.**
+2. **Real hardware.** Everything above is one machine through the Browser pane. The
+   word field's frame rate in particular has not been measured (the pane is not a fair
+   test); the same measurement method used for the galaxy intro in §9 would settle it.
+3. The Browser pane draws a dark vertical strip at ~x1290 in screenshots.
+   **Confirmed a pane artifact** — `scrollWidth === clientWidth`, no horizontal
+   overflow, and `elementFromPoint` there returns ordinary page content. Ignore it.
+4. A smooth scroll started by the pane's *synthetic* click stalls partway; the same
+   click dispatched as `element.click()` completes to the section exactly. Pane input
+   cancelling an in-flight smooth scroll, not a page defect.
+5. Judgement calls the user may want to overturn: mode persistence in `localStorage`
+   (one line in `initialMode()`), the switch keeping IBM Plex Mono in both worlds,
+   hiding the switch during the galaxy intro, and the breadcrumb breakpoint above.
+6. Content: three project placeholders and six badge slots are waiting for real
+   material — see `src/data/businessContent.ts`, every block has a "TO ADD A REAL …"
+   comment.

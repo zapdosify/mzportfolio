@@ -9,6 +9,12 @@
 }
 
 html {
+  /* Reserve the scrollbar gutter permanently. The business portfolio is one
+     long page and the landing is a single fixed screen, so without this the
+     layout width changes by ~15px between them — which slides the centred
+     mode switch sideways mid-transition, exactly when it must not move. It
+     also removes the same jump between the landing and interior pages. */
+  scrollbar-gutter: stable;
   -webkit-text-size-adjust: 100%;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -194,4 +200,14 @@ html[data-intro] .mode-dock {
 .mode-dock {
   opacity: 1;
   transition: opacity 700ms cubic-bezier(0.16, 1, 0.3, 1) 320ms;
+}
+
+/* The global focus ring and the skip link are both white — correct on the
+   archipelago, invisible on paper. Repaint them for the light world. */
+html[data-mode="business"] :focus-visible {
+  outline-color: #111110;
+}
+html[data-mode="business"] .skip-link {
+  background: #111110;
+  color: #f8f8f5;
 }
