@@ -47,18 +47,18 @@ const chapter = (n: number, title: string): BookBlock => ({
   number: n,
   title,
   src: `${VID}/chapter-${n}.mp4`,
-  poster: `${IMG}/chapter-${n}-poster.jpg`,
+  poster: `${IMG}/chapter-${n}-poster.webp`,
 });
 
 export const manifestoBook: BookBlock[] = [
-  art("1.jpg", "Emblem — may your flame burn forever"),
+  art("1.webp", "Emblem — may your flame burn forever"),
 
   {
     kind: "chapter",
     number: 0,
     title: "Manifesto of Awakening",
     src: `${VID}/intro-loop.mp4`,
-    poster: `${IMG}/intro-loop-poster.jpg`,
+    poster: `${IMG}/intro-loop-poster.webp`,
   },
 
   {
@@ -75,7 +75,7 @@ export const manifestoBook: BookBlock[] = [
     ],
   },
 
-  art("5.jpg", "Prologue"),
+  art("5.webp", "Prologue"),
 
   {
     kind: "prose",
@@ -241,7 +241,7 @@ export const manifestoBook: BookBlock[] = [
     ],
   },
 
-  art("23b.jpg", "Epilogue"),
+  art("23b.webp", "Epilogue"),
 
   {
     kind: "epigraph",

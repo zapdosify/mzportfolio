@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams } from "react-router";
 import { categoryById, categoryByRoute } from "../data/categories";
 import { projectsByCategory } from "../data/projects";
 import { useWorldStore } from "../hooks/useWorldStore";

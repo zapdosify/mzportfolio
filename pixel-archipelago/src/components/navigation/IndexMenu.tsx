@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router";
 import { useWorldStore } from "../../hooks/useWorldStore";
 import { categories } from "../../data/categories";
 import { projects } from "../../data/projects";

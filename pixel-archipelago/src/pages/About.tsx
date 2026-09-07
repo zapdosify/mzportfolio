@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import { about, identity } from "../data/siteContent";
 import { categoryById } from "../data/categories";
 import { useWorldStore } from "../hooks/useWorldStore";

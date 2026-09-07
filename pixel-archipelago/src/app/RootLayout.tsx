@@ -1,5 +1,5 @@
 import { Suspense, lazy, useEffect, useRef } from "react";
-import { Outlet, useLocation, ScrollRestoration } from "react-router-dom";
+import { Outlet, useLocation, ScrollRestoration } from "react-router";
 import Header from "../components/layout/Header";
 import Footer from "../components/layout/Footer";
 import IndexMenu from "../components/navigation/IndexMenu";

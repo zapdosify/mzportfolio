@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import styles from "./Intro.module.css";
+import { INTRO_SEEN_KEY } from "./introKey";
 
-/** Shown once per tab session, not once per mount. */
-export const INTRO_SEEN_KEY = "pa:intro-seen";
+export { INTRO_SEEN_KEY };
 
 /**
  * Beat sheet, in ms from the moment the core is pressed.
