@@ -43,6 +43,45 @@
   filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.6));
 }
 
+/* Permanent colour: the coloured twin laid straight over the mono base (same
+   box + parallax → pixel-aligned). The coloured art is a fully opaque frame,
+   so it is masked by TWO layers, intersected:
+     1. islands.webp's alpha — paint colour only on the islands, never over the
+        starfield background (otherwise its black sky hides the L0 star layer);
+     2. a feathered elliptical hole at the archipelago centre (49.5% / 50.4%,
+        the orb anchor) — drop the art's painted planet so the DOM centre orb
+        owns that spot. Ratio 1.777 compensates the 1672:941 box → round hole. */
+.colorBase {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+  --hole-rx: 4.8%;
+  --hole-ry: calc(var(--hole-rx) * 1.777);
+  -webkit-mask-image:
+    radial-gradient(
+      ellipse var(--hole-rx) var(--hole-ry) at 49.5% 50.4%,
+      transparent 0%, transparent 72%, #000 100%
+    ),
+    url("/images/landing/islands.webp");
+  mask-image:
+    radial-gradient(
+      ellipse var(--hole-rx) var(--hole-ry) at 49.5% 50.4%,
+      transparent 0%, transparent 72%, #000 100%
+    ),
+    url("/images/landing/islands.webp");
+  -webkit-mask-repeat: no-repeat, no-repeat;
+  mask-repeat: no-repeat, no-repeat;
+  -webkit-mask-size: 100% 100%, 100% 100%;
+  mask-size: 100% 100%, 100% 100%;
+  -webkit-mask-position: 0 0, 0 0;
+  mask-position: 0 0, 0 0;
+  -webkit-mask-composite: source-in;
+  mask-composite: intersect;
+}
+
 /* ---------- Orb-powered colour reveal ---------- */
 /* The coloured islands sit directly over the mono ones (identical box + parallax).
    Two intersected masks confine the reveal: a feathered circle that follows the
@@ -68,13 +107,13 @@
       ellipse var(--reveal-rx) var(--reveal-ry) at var(--rx, -50%) var(--ry, -50%),
       #000 0%, #000 40%, transparent 100%
     ),
-    url("/images/landing/islands.png");
+    url("/images/landing/islands.webp");
   mask-image:
     radial-gradient(
       ellipse var(--reveal-rx) var(--reveal-ry) at var(--rx, -50%) var(--ry, -50%),
       #000 0%, #000 40%, transparent 100%
     ),
-    url("/images/landing/islands.png");
+    url("/images/landing/islands.webp");
   -webkit-mask-repeat: no-repeat, no-repeat;
   mask-repeat: no-repeat, no-repeat;
   -webkit-mask-size: 100% 100%, 100% 100%;
@@ -116,13 +155,13 @@
       ellipse var(--burst-rx) var(--burst-ry) at 49.5% 50.4%,
       #000 0%, #000 78%, transparent 100%
     ),
-    url("/images/landing/islands.png");
+    url("/images/landing/islands.webp");
   mask-image:
     radial-gradient(
       ellipse var(--burst-rx) var(--burst-ry) at 49.5% 50.4%,
       #000 0%, #000 78%, transparent 100%
     ),
-    url("/images/landing/islands.png");
+    url("/images/landing/islands.webp");
   -webkit-mask-repeat: no-repeat, no-repeat;
   mask-repeat: no-repeat, no-repeat;
   -webkit-mask-size: 100% 100%, 100% 100%;
@@ -487,7 +526,8 @@
 .introSettle .bg {
   animation: settleBg 700ms var(--ease-out) backwards;
 }
-.introSettle .islandsImg {
+.introSettle .islandsImg,
+.introSettle .colorBase {
   animation: settleIslands 780ms var(--ease-out) 160ms backwards;
 }
 .introSettle .centerOrb {
@@ -528,6 +568,7 @@
 @media (prefers-reduced-motion: reduce) {
   .introSettle .bg,
   .introSettle .islandsImg,
+  .introSettle .colorBase,
   .introSettle .centerOrb,
   .introSettle .plateItem,
   .introSettle .hud {

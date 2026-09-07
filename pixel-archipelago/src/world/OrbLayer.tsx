@@ -275,21 +275,21 @@ export default function OrbLayer({
       const t = now / 1000;
       const rm = rmRef.current;
 
-      // trail
+      // trail — warm amber, matching the centre orb and the pulse wave
       for (let i = 0; i < trail.current.length; i++) {
         const tp = trail.current[i];
         const a = (i / trail.current.length) * 0.28;
         c.beginPath();
         c.arc(tp.x, tp.y, 2 + i * 0.25, 0, Math.PI * 2);
-        c.fillStyle = `rgba(255,255,255,${a})`;
+        c.fillStyle = `rgba(255,214,140,${a})`;
         c.fill();
       }
 
       // outer glow
       const glow = c.createRadialGradient(p.x, p.y, 0, p.x, p.y, 34);
-      glow.addColorStop(0, "rgba(255,255,255,0.55)");
-      glow.addColorStop(0.3, "rgba(255,255,255,0.18)");
-      glow.addColorStop(1, "rgba(255,255,255,0)");
+      glow.addColorStop(0, "rgba(255,224,160,0.55)");
+      glow.addColorStop(0.3, "rgba(255,205,110,0.18)");
+      glow.addColorStop(1, "rgba(255,205,90,0)");
       c.fillStyle = glow;
       c.fillRect(p.x - 40, p.y - 40, 80, 80);
 
@@ -305,7 +305,7 @@ export default function OrbLayer({
         c.rotate(r.rot);
         c.beginPath();
         c.ellipse(0, 0, r.rx, r.ry, 0, 0, Math.PI * 2);
-        c.strokeStyle = "rgba(255,255,255,0.5)";
+        c.strokeStyle = "rgba(255,216,150,0.5)";
         c.lineWidth = 1;
         c.stroke();
         // orbiting particle on the ring
@@ -314,18 +314,19 @@ export default function OrbLayer({
           const py = Math.sin(t * 1.5 + r.rot) * r.ry;
           c.beginPath();
           c.arc(px, py, 1.6, 0, Math.PI * 2);
-          c.fillStyle = "rgba(255,255,255,0.9)";
+          c.fillStyle = "rgba(255,232,180,0.9)";
           c.fill();
         }
         c.restore();
       }
 
-      // core (breathing)
+      // core (breathing) — hot near-white centre with a warm amber bloom,
+      // echoing the .orbCore gradient (#fff6d8 → #ffd76b)
       const breathe = rm ? 1 : 1 + Math.sin(t * 1.6) * 0.12;
       c.beginPath();
       c.arc(p.x, p.y, 5 * breathe, 0, Math.PI * 2);
-      c.fillStyle = "#ffffff";
-      c.shadowColor = "rgba(255,255,255,0.9)";
+      c.fillStyle = "#fff3d6";
+      c.shadowColor = "rgba(255,205,90,0.95)";
       c.shadowBlur = 16;
       c.fill();
       c.shadowBlur = 0;

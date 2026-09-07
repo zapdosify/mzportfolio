@@ -1,11 +1,16 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Suspense, lazy, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { categories, categoryById } from "../../data/categories";
 import { identity } from "../../data/siteContent";
 import { useWorldStore } from "../../hooks/useWorldStore";
 import OrbLayer from "../../world/OrbLayer";
-import Intro, { INTRO_SEEN_KEY } from "./Intro";
+import { INTRO_SEEN_KEY } from "./introKey";
 import styles from "./Landing.module.css";
+
+// The first-load intro is a one-per-tab curtain; the landing is fully painted
+// behind it. Loading it on demand keeps ~28 KB of animation code out of the
+// initial bundle without any visible delay.
+const Intro = lazy(() => import("./Intro"));
 
 // Plate positions (% of the world layer). X = measured centre of each island;
 // Y = label row. The world layer is the same 1672×941 frame as the islands art.
@@ -195,15 +200,26 @@ export default function Landing() {
       >
         {/* L0 background void + stars (minimal parallax) */}
         <div className={`${styles.layer} ${styles.parallax}`} style={fx(F_BG)} aria-hidden="true">
-          <img src="/images/landing/background.png" alt="" className={`${styles.fill} ${styles.bg} pixelated`} />
+          <img src="/images/landing/background.webp" alt="" className={`${styles.fill} ${styles.bg} pixelated`} />
         </div>
 
         {/* L1 world layer: transparent islands + DOM nameplates (more parallax) */}
         <div className={`${styles.worldLayer} ${styles.parallax}`} style={fx(F_WORLD)}>
           <img
-            src="/images/landing/islands.png"
+            src="/images/landing/islands.webp"
             alt=""
             className={`${styles.islandsImg} pixelated`}
+            aria-hidden="true"
+          />
+
+          {/* The archipelago reads in full colour by default: the coloured art
+              sits permanently over the mono base, pixel-aligned, with a hole
+              punched at the centre so the coloured art's own painted planet
+              never covers the DOM centre orb. */}
+          <img
+            src="/images/landing/Colored_Archipelago.webp"
+            alt=""
+            className={`${styles.colorBase} pixelated`}
             aria-hidden="true"
           />
 
@@ -213,7 +229,7 @@ export default function Landing() {
               the mono islands, so the two stay pixel-aligned. */}
           <img
             ref={revealRef}
-            src="/images/landing/Colored_Archipelago.png"
+            src="/images/landing/Colored_Archipelago.webp"
             alt=""
             className={`${styles.colorReveal} pixelated`}
             aria-hidden="true"
@@ -227,7 +243,7 @@ export default function Landing() {
             <>
               <img
                 key={`burst-${burstId}`}
-                src="/images/landing/Colored_Archipelago.png"
+                src="/images/landing/Colored_Archipelago.webp"
                 alt=""
                 aria-hidden="true"
                 className={`${styles.colorBurst} ${
@@ -430,14 +446,16 @@ export default function Landing() {
           Under reduced motion there is no staged settle to run, so the reveal
           goes straight to `done`. */}
       {introMounted && (
-        <Intro
-          reducedMotion={reducedMotion}
-          onReveal={() => setIntroPhase(reducedMotion ? "done" : "settle")}
-          onDone={() => {
-            setIntroPhase("done");
-            setIntroMounted(false);
-          }}
-        />
+        <Suspense fallback={null}>
+          <Intro
+            reducedMotion={reducedMotion}
+            onReveal={() => setIntroPhase(reducedMotion ? "done" : "settle")}
+            onDone={() => {
+              setIntroPhase("done");
+              setIntroMounted(false);
+            }}
+          />
+        </Suspense>
       )}
     </section>
   );
