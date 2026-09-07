@@ -23,7 +23,7 @@ export default defineConfig({
         // returning visitors. GSAP (interior-only, lazy) caches separately too.
         manualChunks(id) {
           if (!id.includes("node_modules")) return;
-          if (/[\\/]node_modules[\\/](react|react-dom|react-router|react-router-dom|scheduler|zustand)[\\/]/.test(id)) {
+          if (/[\\/]node_modules[\\/](react|react-dom|react-router|scheduler|zustand)[\\/]/.test(id)) {
             return "react-vendor";
           }
           if (id.includes("node_modules/gsap")) return "gsap";

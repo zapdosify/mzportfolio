@@ -1,4 +1,4 @@
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams } from "react-router";
 import { categoryById } from "../data/categories";
 import { projectBySlug, projectById } from "../data/projects";
 import Gallery from "../components/gallery/Gallery";

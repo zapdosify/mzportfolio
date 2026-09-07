@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import type { Project } from "../../data/types";
 import styles from "./ProjectCard.module.css";
 

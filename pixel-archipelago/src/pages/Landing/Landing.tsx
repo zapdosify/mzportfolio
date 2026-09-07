@@ -1,5 +1,5 @@
 import { Suspense, lazy, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router";
 import { categories, categoryById } from "../../data/categories";
 import { identity } from "../../data/siteContent";
 import { useWorldStore } from "../../hooks/useWorldStore";
