@@ -3,6 +3,9 @@
 Everything below is **on `main`** (the perf branch was merged; the business work
 was committed straight to `main`). Working tree clean, `npm run build` green.
 
+Last updated at `0a40459`. Runtime deps: `react`, `react-dom`, `react-router`,
+`zustand`, `gsap`, and **`lenis`** (added in § 3).
+
 ---
 
 ## 1 · Performance optimization pass — done & merged
@@ -25,6 +28,18 @@ Merge commit `691ef66` brought in branch `perf/optimize-assets-and-code`:
 
 ### Perf gotchas
 
+- ⚠️ **Nothing in the eager entry chunk may import `gsap`.** `useModeStore`, `RootLayout`
+  and `ModeSwitch` are all downloaded before first paint; an import chain from any of them
+  into GSAP drags its 44 KB chunk onto the design landing page's critical path and undoes
+  CP1/CP2. This already happened once — `useModeStore` needed a Lenis scroll helper, which
+  lived in `useLenis.ts` next to the GSAP import (entry went 57.5 → 63.1 KB gzip). Fix was
+  `hooks/lenisInstance.ts`, which holds the instance and helpers and has **no runtime
+  imports at all** (its `Lenis` import is type-only). Keep it that way. Check with:
+  `grep -oE 'from"\./[A-Za-z0-9._-]+\.js"' dist/assets/index-*.js | sort -u` — after a
+  build the entry chunk should list only `react-vendor` and `rolldown-runtime`.
+- Entry chunk is **57.48 KB gzip** as of `0a40459`. The "51 KB" in the CP2 row above is
+  the figure at `9840b63`, before the business case-study content landed — it is history,
+  not the current baseline.
 - `Colored_Archipelago.webp` is a **fully opaque** frame (black sky included). Any
   layer drawing it over the scene must be masked by `islands.webp`'s alpha (see
   `.colorReveal` / `.colorBurst` / `.colorBase` in `Landing.module.css`) or it
@@ -49,6 +64,13 @@ Merge commit `691ef66` brought in branch `perf/optimize-assets-and-code`:
 | `3e566e9` | `credentials` — the **9 LinkedIn certifications** (8 IBM + CITI), with verify links |
 | `851637a` | closing line trimmed to "Open to analytics and strategy roles." |
 | `b8598e7` | hero eyebrow: "MSc Business Analytics" → "Master of Science in Business Analytics" |
+| `46cce0d` | two lines of visitor-facing copy that read as working notes reworded; the placeholder-era code comments across the three business files de-staled and the dead `MethodSlots` helper removed |
+
+**Copy rule, learned the hard way.** The credentials footnote used to read "Issuer badge
+artwork can be dropped in later; every entry links out to its verification page now" — a
+note-to-self that shipped to the page. The owner's standing instruction: this is a
+showcase, not a diary. Nothing about unfinished implementation work, and nothing
+conversational, belongs in `businessCopy`.
 
 ### How it's wired
 
@@ -69,8 +91,9 @@ Merge commit `691ef66` brought in branch `perf/optimize-assets-and-code`:
 - **`caseStudy.reviewNotes` are INTERNAL** — a to-do list for correcting the
   original Tableau workbooks before any live dashboard/workbook link is enabled.
   They are not rendered anywhere.
-- The 4 charts are WebP under **`public/media/business/`**. The AI evaluation
-  matrix renders as a native HTML table, never an image.
+- The 4 charts are **drawn natively** from `src/data/businessCharts.ts` (see § 3).
+  The WebPs under `public/media/business/` are no longer rendered but are kept as
+  the verified record. The AI evaluation matrix renders as a native HTML table.
 
 ### What's still open for the business portfolio
 
@@ -80,10 +103,84 @@ Merge commit `691ef66` brought in branch `perf/optimize-assets-and-code`:
   and titles render at full strength once `image` or `href` is present.
 - **Original Tableau corrections** — before turning on any "view the dashboard /
   workbook" link, apply each project's `reviewNotes` (day-of-month → real dates,
-  HHMM aggregation, currency-comparison logic, etc.). Until then only the static
-  WebP charts are used.
+  HHMM aggregation, currency-comparison logic, etc.). Until then the four native
+  exhibits are the only data shown.
+- **The hourly chart's ten non-peak bars are transcribed, not sourced** — see § 3.
+  They are accurate to the exhibit's own display precision (~0.05%). If the
+  workbook is ever corrected, re-derive them from the data rather than the image.
 - The **design-side About page** (`src/data/siteContent.ts`) still lists the
   degree as `"M.S. Business Analytics"` — left as-is; spell out to match if wanted.
 - Optional: rename `Anayltics Portfolio-Package/` → `Analytics…`.
 - Contact fields in `website-content.json` were `null`; the live site already
   pulls real email / LinkedIn / location from `siteContent.ts`.
+
+---
+
+## 3 · Cinematic pass — native charts + motion system
+
+| commit | what |
+|---|---|
+| `09e490f` | the 4 exhibits rebuilt as native charts (`businessCharts.ts`, `BusinessChart.tsx` + `.module.css`) |
+| `0a40459` | GSAP/ScrollTrigger choreography, Lenis smooth scroll, `SplitWords`, `useMagnetic`, reading progress — plus the entry-chunk fix |
+
+Brief was "cinematic, premium, data-driven, Apple-level polish." The **paper/ink art
+direction was kept deliberately** — the whole budget went on motion and structure, not a
+reskin. A dark "dashboard" idiom was considered and rejected: it breaks the light-vs-dark
+premise the mode switch is built on, and it visually asserts exactly what the case-study
+copy carefully refuses to claim.
+
+### The four charts
+
+`src/data/businessCharts.ts` is the single source. Three kinds render from it: `columns`
+(hourly share), `rows` (city share, delay causes) and `stats` (EVV validation).
+
+**Provenance — read this before touching any number.** `cityShare`, `delayCauses` and
+`evvValidation` are printed as data labels on the source exhibit *and* restated in
+`businessContent.ts`; two independent sources agree, so they are exact. `hourlyShare`
+prints only its 12.3% peak — the other ten bars were transcribed from
+`phase-2/assets/supermarket-hourly-share.png` against its 2% gridlines. **The
+transcription sums to 99.95%**, which is what confirms hours 10–20 are the complete set
+and the readings are sound. The 19:00 bar uses the printed 12.3%, not a reading.
+
+Each chart's `caption` / `notes` are quoted from its exhibit and several are **more
+precise than the case-study prose** (the EVV note that the ten missing client IDs *may
+overlap* the amount exceptions, for one). They are the reason these charts can be shown
+without overclaiming — do not drop or soften them.
+
+Charts are DOM+CSS, not SVG, so text stays legible and responsive at any width. Bars
+animate on `transform` only (`scaleX`/`scaleY`), so a page of charts never thrashes layout.
+
+### Motion system
+
+- **Lenis is the site's one smooth-scroll engine**, scoped to business mode and destroyed
+  on exit (`useLenis.ts`). A document-wide instance would fight `ExhibitScroll`,
+  `StoryScroll`, `BookScroll` and `OrbLayer` on the design side. Verified clean across
+  repeated mode switches.
+- **Every programmatic scroll in business mode must go through `scrollToInstant` /
+  `smoothScrollTo`** (`lenisInstance.ts`). Lenis runs its own rAF loop, so a bare
+  `window.scrollTo` is overwritten on the next frame and the page drifts back. This is why
+  `useModeStore`, the popstate handler and `BusinessCaseStudy` all call the helper.
+- **No Three.js was added.** Ornamental WebGL behind a text-and-data portfolio is exactly
+  the "shader as background noise" the brief for this work rules out.
+
+### Cinematic-pass gotchas
+
+- **`[data-reveal]` no longer defaults to `opacity: 0`.** It used to, which meant no JS =
+  blank page. Every resting state is now the *finished* state and GSAP animates `from`
+  hidden. Keep it that way: reduced motion and a failed GSAP chunk both need to leave a
+  readable page. Same rule in `SplitWords.module.css` and `BusinessChart.module.css`.
+- **Chart bars and counters are started BY their ScrollTrigger, not bound to it.** Bound,
+  a tween writes its start value into the DOM on creation — every stat panel below the
+  fold read **"0 / 0 / 0.00%"** until scrolled to, and stayed at zero for good if a
+  trigger mismeasured. Started via `onEnter`, the published figure stands until the
+  animation actually begins.
+- **ScrollTrigger must be refreshed when the case-study view mounts** (it changes document
+  height by thousands of px) **and after `document.fonts.ready`** (webfont swap reflows
+  every heading). Both are wired; without them reveals arm against positions the elements
+  no longer occupy.
+- **`SplitWords` keeps real spaces between the word masks**, so the element's accessible
+  name is the ordinary sentence. Verified: the `h1` reads "Turning complexity into clear
+  decisions." Do not switch to margin-based word spacing — inline-block spans swallow the
+  whitespace and screen readers get word soup.
+- The magnetic CTA (`useMagnetic`) engages only for `(pointer: fine)`, is clamped to 14px,
+  and releases on leave/blur/visibilitychange. It is purely additive.
