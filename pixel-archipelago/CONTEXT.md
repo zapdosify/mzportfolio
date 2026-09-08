@@ -1,13 +1,48 @@
 # Pixel Archipelago — session handoff
 
 Everything below is **on `main`** (the perf branch was merged; the business work
-was committed straight to `main`). Working tree clean, `npm run build` green.
-
-Last updated at `d5ebfea`. Runtime deps: `react`, `react-dom`, `react-router`,
-`zustand`, `gsap`, and **`lenis`** (added in § 3, extended to the design side in § 4).
+was committed straight to `main`).
 
 Both portfolios now share one motion vocabulary: `components/motion/` (`SplitWords`,
 `SectionHead`) and `hooks/` (`useLenis`, `lenisInstance`, `useMagnetic`, `useTilt`).
+Runtime deps: `react`, `react-dom`, `react-router`, `zustand`, `gsap`, and **`lenis`**
+(added in § 3, extended to the design side in § 4).
+
+---
+
+## 0 · State at the last pause — 8 September 2026
+
+Paused at `e783919`, mid-project but at a clean stopping point. Verified at that commit,
+not assumed:
+
+| check | result |
+|---|---|
+| working tree | clean |
+| `tsc --noEmit` | passes |
+| `npm run lint` | clean apart from 5 pre-existing `router.tsx` fast-refresh warnings |
+| `npm run build` | green, 1.09s |
+| entry chunk | 57.53 kB gzip — unchanged across both motion passes |
+| eager critical path | `index` + `react-vendor` + `rolldown-runtime`, **no gsap** |
+
+⚠️ **There is no git remote. 72 commits exist only on this machine** — the whole project
+history, both portfolios and every asset. `git remote -v` is empty and nothing has ever
+been pushed. Setting up a remote is the highest-value thing to do before more work lands.
+
+### Picking up from here
+
+Nothing is half-finished; the four sections below are each complete. What is genuinely
+open, in rough priority:
+
+1. **Back the repo up** (above).
+2. **Issuer badge artwork** for the business credentials grid — § 2. The only visible
+   placeholder left anywhere on the site.
+3. **Original Tableau corrections** before any live workbook link — § 2.
+4. Small stuff: the `Anayltics` folder typo, the About-page degree wording — § 2.
+
+Deliberately *not* done, with the reasoning recorded so it is not re-litigated: no hero
+pin (§ 4), no charts on the design side (§ 4), no tilt on cards or gallery tiles (§ 4),
+no Three.js on interior pages (§ 4), no motion on the landing at all (§ 4 — it is the
+eager chunk and must stay GSAP-free).
 
 ---
 
