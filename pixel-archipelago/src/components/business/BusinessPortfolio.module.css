@@ -20,6 +20,11 @@
   --biz-faint: #6f6f68;
   --biz-line: #e2e2da;
   --biz-line-strong: #c8c8bf;
+  /* The single accent. Carried over from the author's own chart exhibits so
+     the rebuilt charts stay continuous with the verified originals; one cool
+     signal against warm neutrals, used for data emphasis and nothing else.
+     7.02:1 on the paper. */
+  --biz-accent: #0f6b66;
 
   --biz-font: "Montserrat", "Segoe UI", -apple-system, BlinkMacSystemFont, sans-serif;
   /* Type scale. Six steps, nothing between them. The old set had fourteen

@@ -1,5 +1,7 @@
 import { useEffect, useRef } from "react";
 import type { BusinessProject } from "../../data/businessContent";
+import { businessCharts } from "../../data/businessCharts";
+import BusinessChart from "./BusinessChart";
 import styles from "./BusinessCaseStudy.module.css";
 
 const NavArrow = () => (
@@ -70,12 +72,7 @@ export default function BusinessCaseStudy({ project, siblings, onClose, onOpen }
           </ul>
         </header>
 
-        {c.hero && (
-          <figure className={styles.figure}>
-            <img src={c.hero} alt={c.heroAlt ?? ""} loading="lazy" decoding="async" />
-            {c.heroAlt && <figcaption>{c.heroAlt}</figcaption>}
-          </figure>
-        )}
+        {c.chart && <BusinessChart spec={businessCharts[c.chart]} />}
 
         <div className={styles.body}>
           {c.sections.map((s) => (
@@ -86,11 +83,8 @@ export default function BusinessCaseStudy({ project, siblings, onClose, onOpen }
           ))}
         </div>
 
-        {c.supporting?.map((im) => (
-          <figure key={im.src} className={styles.figure}>
-            <img src={im.src} alt={im.alt} loading="lazy" decoding="async" />
-            <figcaption>{im.alt}</figcaption>
-          </figure>
+        {c.supportingCharts?.map((id) => (
+          <BusinessChart key={id} spec={businessCharts[id]} />
         ))}
 
         {c.matrix && (

@@ -1,0 +1,340 @@
+/* ------------------------------------------------------------------ *
+ * Native business charts — the paper system's rules applied to data.
+ *
+ * Hairlines instead of boxes, no chart furniture, one accent and no more.
+ * Every resting state here is the FINAL state: GSAP only ever animates
+ * *from* somewhere into these values, so a chart with no JS, a failed
+ * chunk, or reduced motion is still a correct, readable chart.
+ * ------------------------------------------------------------------ */
+
+.figure {
+  margin: 0;
+  padding: clamp(24px, 3vw, 40px) 0 0;
+}
+
+.head {
+  margin-bottom: clamp(28px, 3.4vw, 44px);
+}
+.title {
+  margin: 0;
+  font-size: clamp(1.25rem, 2.1vw, 1.75rem);
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  line-height: 1.22;
+  color: var(--biz-ink, #0f0f0e);
+  text-wrap: balance;
+}
+.subtitle {
+  margin: 10px 0 0;
+  font-size: var(--t-body-s, 0.9375rem);
+  line-height: 1.6;
+  color: var(--biz-faint, #6f6f68);
+}
+
+.plotArea {
+  position: relative;
+}
+
+/* ---------------- Columns ---------------- */
+
+.colChart {
+  display: block;
+}
+
+/* Set horizontally above the plot rather than rotated up the y-axis — a
+   turned axis title is chart furniture, and it clips at small heights. */
+.measureAxis {
+  display: block;
+  margin-left: 44px;
+  padding-bottom: 14px;
+  font-size: var(--t-micro, 0.6875rem);
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  line-height: 1.4;
+  color: var(--biz-faint, #6f6f68);
+}
+
+.colPlot {
+  height: clamp(220px, 30vw, 330px);
+  /* Room for the accent bar's value label to sit above its column. */
+  padding-top: 26px;
+}
+/* The measured box. Gridlines and columns are both positioned against this,
+   never against the padded outer box, or the two scales drift apart. */
+.plotInner {
+  position: relative;
+  height: 100%;
+}
+
+.gridRow {
+  position: absolute;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  pointer-events: none;
+}
+.tick {
+  flex: 0 0 auto;
+  width: 34px;
+  text-align: right;
+  font-size: var(--t-micro, 0.6875rem);
+  font-variant-numeric: tabular-nums;
+  color: var(--biz-faint, #6f6f68);
+  transform: translateY(0.5px);
+}
+.gridLine {
+  flex: 1 1 auto;
+  height: 1px;
+  background: var(--biz-line, #e2e2da);
+}
+/* The baseline is the only line that earns full weight. */
+.gridRow:first-child .gridLine {
+  background: var(--biz-line-strong, #c8c8bf);
+}
+
+.cols {
+  position: absolute;
+  inset: 0 0 0 44px;
+  display: flex;
+  align-items: flex-end;
+  gap: clamp(4px, 0.9vw, 12px);
+}
+.col {
+  position: relative;
+  flex: 1 1 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+}
+.colBar {
+  width: 100%;
+  background: var(--biz-line-strong, #c8c8bf);
+  transform-origin: bottom center;
+  will-change: transform;
+}
+.colBar.accent {
+  background: var(--biz-accent, #0f6b66);
+}
+.colValue {
+  position: absolute;
+  bottom: 100%;
+  margin-bottom: 8px;
+  font-size: var(--t-label, 0.75rem);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  color: var(--biz-accent, #0f6b66);
+}
+
+.colLabels {
+  display: flex;
+  gap: clamp(4px, 0.9vw, 12px);
+  margin-left: 44px;
+  padding-top: 10px;
+}
+.colLabels span {
+  flex: 1 1 0;
+  text-align: center;
+  font-size: var(--t-micro, 0.6875rem);
+  font-variant-numeric: tabular-nums;
+  color: var(--biz-muted, #5e5e57);
+}
+
+.catAxis {
+  display: block;
+  margin-left: 44px;
+  padding-top: 14px;
+  font-size: var(--t-micro, 0.6875rem);
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--biz-faint, #6f6f68);
+}
+
+/* ---------------- Rows ---------------- */
+
+.rowChart {
+  display: block;
+}
+/* Row bars start at the label column, not at a tick gutter, so the measure
+   title has nothing to indent past. */
+.rowChart .catAxis {
+  margin-left: 0;
+}
+.rows {
+  display: grid;
+  gap: clamp(14px, 2vw, 26px);
+}
+.row {
+  display: grid;
+  grid-template-columns: minmax(84px, 168px) 1fr;
+  align-items: center;
+  gap: clamp(12px, 1.6vw, 22px);
+}
+.rowLabel {
+  text-align: right;
+  font-size: var(--t-small, 0.8125rem);
+  line-height: 1.35;
+  color: var(--biz-muted, #5e5e57);
+}
+.rowTrack {
+  position: relative;
+  height: clamp(30px, 3.6vw, 44px);
+  /* Leaves room for the value label to sit past the end of the longest bar. */
+  padding-right: 62px;
+}
+.rowBar {
+  height: 100%;
+  background: var(--biz-line-strong, #c8c8bf);
+  transform-origin: left center;
+  will-change: transform;
+}
+.rowBar.accent {
+  background: var(--biz-accent, #0f6b66);
+}
+.rowValue {
+  position: absolute;
+  top: 50%;
+  translate: 0 -50%;
+  margin-left: 14px;
+  font-size: var(--t-label, 0.75rem);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  color: var(--biz-ink-soft, #2c2c28);
+}
+
+.rowAxis {
+  display: grid;
+  grid-template-columns: minmax(84px, 168px) 1fr;
+  gap: clamp(12px, 1.6vw, 22px);
+  margin-top: 14px;
+  padding-top: 12px;
+}
+.rowLabelSpacer {
+  display: block;
+}
+.rowTicks {
+  position: relative;
+  height: 14px;
+  margin-right: 62px;
+  border-top: 1px solid var(--biz-line-strong, #c8c8bf);
+}
+.rowTick {
+  position: absolute;
+  top: 6px;
+  translate: -50% 0;
+  font-size: var(--t-micro, 0.6875rem);
+  font-variant-numeric: tabular-nums;
+  color: var(--biz-faint, #6f6f68);
+}
+
+/* ---------------- Stats ---------------- */
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(20px, 3vw, 48px);
+  border-top: 1px solid var(--biz-line, #e2e2da);
+  border-bottom: 1px solid var(--biz-line, #e2e2da);
+  padding: clamp(28px, 3.4vw, 44px) 0;
+}
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.statValue {
+  font-size: clamp(1.9rem, 4.4vw, 3.1rem);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  color: var(--biz-accent, #0f6b66);
+}
+.statLabel {
+  font-size: var(--t-label, 0.75rem);
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--biz-faint, #6f6f68);
+}
+
+.method {
+  margin: clamp(24px, 3vw, 36px) 0 0;
+  font-size: var(--t-body, 1rem);
+  line-height: 1.65;
+  color: var(--biz-ink-soft, #2c2c28);
+}
+
+/* ---------------- Caption & notes ---------------- */
+
+/* These carry the limits of each exhibit. They are not decoration — the
+   charts may not be shown without them. */
+.caption {
+  margin: clamp(22px, 2.6vw, 32px) 0 0;
+  max-width: 62ch;
+  font-size: var(--t-body-s, 0.9375rem);
+  line-height: 1.66;
+  color: var(--biz-muted, #5e5e57);
+}
+.notes {
+  margin: 12px 0 0;
+  padding: 0;
+  list-style: none;
+  max-width: 62ch;
+  display: grid;
+  gap: 7px;
+}
+.notes li {
+  position: relative;
+  padding-left: 16px;
+  font-size: var(--t-body-s, 0.9375rem);
+  line-height: 1.6;
+  color: var(--biz-faint, #6f6f68);
+}
+.notes li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.72em;
+  width: 7px;
+  height: 1px;
+  background: var(--biz-line-strong, #c8c8bf);
+}
+
+/* ---------------- Narrow screens ---------------- */
+
+@media (max-width: 620px) {
+  /* Keep the flex slot so columns and labels stay aligned; just drop the ink. */
+  .colLabels span:nth-child(even) {
+    visibility: hidden;
+  }
+  .row,
+  .rowAxis {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+  .rowLabel {
+    text-align: left;
+  }
+  .rowLabelSpacer {
+    display: none;
+  }
+  .stats {
+    grid-template-columns: 1fr;
+    gap: 26px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .colBar,
+  .rowBar {
+    will-change: auto;
+  }
+}

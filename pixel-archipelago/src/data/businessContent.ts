@@ -12,6 +12,8 @@
  * the case-study view.
  */
 
+import type { BusinessChartId } from "./businessCharts";
+
 /* ------------------------------------------------------------------ *
  * 1 · Page copy
  * ------------------------------------------------------------------ */
@@ -111,11 +113,6 @@ export interface EvalMatrix {
   rows: EvalMatrixRow[];
 }
 
-export interface CaseImage {
-  src: string;
-  alt: string;
-}
-
 export interface CaseStudy {
   /** Line 2 of the metadata: "Individual academic project" etc. */
   context: string;
@@ -127,13 +124,13 @@ export interface CaseStudy {
   dataPeriod: string | null;
   /** Compact evidence line, e.g. "1,000 transactions · 3 cities". */
   proof: string;
-  /** Hero chart (a supported single finding), or null for the AI plan. */
-  hero: string | null;
-  heroAlt: string | null;
+  /** Hero exhibit, drawn natively from `businessCharts.ts`. null for the AI
+   *  plan, which proposes an evaluation and so has no measured exhibit. */
+  chart: BusinessChartId | null;
   /** Ordered write-up sections. */
   sections: CaseSection[];
-  /** Extra supporting exhibits shown after the sections. */
-  supporting?: CaseImage[];
+  /** Further exhibits shown after the sections. */
+  supportingCharts?: BusinessChartId[];
   /** AI project only: the proposed evaluation framework, rendered as a table. */
   matrix?: EvalMatrix;
   /** INTERNAL — Tableau-correction notes. Not rendered anywhere. */
@@ -166,7 +163,8 @@ export interface BusinessProject {
   caseStudy: CaseStudy;
 }
 
-const CHART = "/media/business";
+/* The four source exhibits stay in `public/media/business/` as the verified
+   record; the site now draws them natively from `businessCharts.ts`. */
 
 export const businessProjects: BusinessProject[] = [
   {
@@ -191,9 +189,8 @@ export const businessProjects: BusinessProject[] = [
       tools: ["Tableau"],
       dataPeriod: "1 January–30 March 2019",
       proof: "1,000 transactions · 3 cities",
-      hero: `${CHART}/supermarket-hourly-share.webp`,
-      heroAlt:
-        "Hourly shares of supermarket transaction value; 19:00 is highest at 12.3 percent.",
+      chart: "hourly-share",
+      supportingCharts: ["city-share"],
       sections: [
         {
           heading: "Overview",
@@ -228,12 +225,6 @@ export const businessProjects: BusinessProject[] = [
           body: "Framing a commercial question, exploring transaction patterns in Tableau, and distinguishing an actionable hypothesis from a proven result.",
         },
       ],
-      supporting: [
-        {
-          src: `${CHART}/supermarket-city-share.webp`,
-          alt: "Naypyitaw contributes 34.2 percent of observed transaction value, Yangon and Mandalay each approximately 32.9 percent.",
-        },
-      ],
       reviewNotes: [
         "Use the verified static charts; the original Tableau dashboard needs correction before embedding.",
         "Replace day-of-month aggregation with full dates.",
@@ -264,9 +255,7 @@ export const businessProjects: BusinessProject[] = [
       tools: ["Tableau"],
       dataPeriod: "January 2023 dataset, as named in the supplied file",
       proof: "20,671 records · 126 review exceptions",
-      hero: `${CHART}/evv-validation-summary.webp`,
-      heroAlt:
-        "Validation summary: 20,671 EVV records checked, 126 amount exceptions, or 0.61 percent.",
+      chart: "evv-validation",
       sections: [
         {
           heading: "Overview",
@@ -331,9 +320,7 @@ export const businessProjects: BusinessProject[] = [
       tools: ["Tableau"],
       dataPeriod: "2008",
       proof: "1.94M records · Historical 2008 sample",
-      hero: `${CHART}/airline-delay-causes.webp`,
-      heroAlt:
-        "Delay-minute totals by cause: late aircraft 31.56 million, carrier 23.93 million, national aviation system 18.74 million, weather 4.62 million, and security 0.11 million.",
+      chart: "delay-causes",
       sections: [
         {
           heading: "Overview",
@@ -399,8 +386,7 @@ export const businessProjects: BusinessProject[] = [
       tools: [],
       dataPeriod: null,
       proof: "QA co-lead · Metrics and test planning",
-      hero: null,
-      heroAlt: null,
+      chart: null,
       sections: [
         {
           heading: "Overview",
