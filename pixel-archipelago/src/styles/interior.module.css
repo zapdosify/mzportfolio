@@ -33,6 +33,15 @@
   align-items: center;
   margin-bottom: var(--space-24);
 }
+
+/* No sticky pin on the hero art, deliberately.
+   It was built and measured, and the hero is a centred two-column grid whose
+   halves are near enough the same height that there is nothing to pin
+   against: 77px of travel on a short-art page and none at all on a tall-art
+   one, bought at the price of top-aligning art that is currently centred.
+   The page already has its pinned moment — StoryScroll holds its spreads
+   with `position: sticky` — and its full-bleed parallax, in CategoryBanner.
+   Adding a third would be motion without a job. */
 .heroText { max-width: 44ch; }
 .breadcrumb {
   font-family: var(--font-mono);
