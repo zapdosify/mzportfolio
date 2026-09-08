@@ -15,32 +15,13 @@ import { scrollToInstant, smoothScrollTo } from "../../hooks/lenisInstance";
 import { useMagnetic } from "../../hooks/useMagnetic";
 import WordField from "./WordField";
 import Cover from "./Covers";
+import BadgeIcon from "./BadgeIcons";
 import SplitWords from "../motion/SplitWords";
 import BusinessCaseStudy from "./BusinessCaseStudy";
 import type { BusinessProject } from "../../data/businessContent";
 import styles from "./BusinessPortfolio.module.css";
 
 gsap.registerPlugin(ScrollTrigger);
-
-/** Abstract badge mark — drawn until an entry sets a real badge image. */
-function BadgeMark() {
-  return (
-    <svg viewBox="0 0 100 100" className={styles.badgeMark} aria-hidden="true" focusable="false">
-      <circle cx="50" cy="50" r="38" fill="none" stroke="currentColor" strokeWidth="0.9" opacity="0.35" />
-      <circle
-        cx="50"
-        cy="50"
-        r="28"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="0.9"
-        strokeDasharray="3 6"
-        opacity="0.3"
-      />
-      <circle cx="50" cy="50" r="4.5" fill="currentColor" opacity="0.22" />
-    </svg>
-  );
-}
 
 const Arrow = () => (
   <svg viewBox="0 0 24 12" className={styles.ctaArrow} aria-hidden="true" focusable="false">
@@ -500,7 +481,7 @@ export default function BusinessPortfolio() {
                         decoding="async"
                       />
                     ) : (
-                      <BadgeMark />
+                      <BadgeIcon kind={c.icon} className={styles.badgeMark} />
                     )}
                   </div>
                   <p

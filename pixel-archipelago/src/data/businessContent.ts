@@ -11,7 +11,7 @@
  * rows; the `caseStudy` block on each project carries the full write-up for
  * the case-study view.
  */
-
+import type { BadgeIconKind } from "../components/business/BadgeIcons";
 import type { BusinessChartId } from "./businessCharts";
 
 /* ------------------------------------------------------------------ *
@@ -481,8 +481,10 @@ export const businessProjects: BusinessProject[] = [
 
 export interface Credential {
   id: string;
-  /** Badge artwork, drawn at its original aspect ratio. */
+  /** Badge artwork, drawn at its original aspect ratio. Wins over `icon`. */
   image?: string;
+  /** Which subject mark to draw while there is no issuer artwork. */
+  icon?: BadgeIconKind;
   title: string;
   issuer: string;
   date: string;
@@ -496,6 +498,7 @@ export interface Credential {
 export const credentials: Credential[] = [
   {
     id: "data-visualization-with-r",
+    icon: "bars",
     title: "Data Visualization with R",
     issuer: "IBM",
     date: "Dec 2024",
@@ -503,6 +506,7 @@ export const credentials: Credential[] = [
   },
   {
     id: "data-analysis-with-r",
+    icon: "regression",
     title: "Data Analysis with R",
     issuer: "IBM",
     date: "Dec 2024",
@@ -510,6 +514,7 @@ export const credentials: Credential[] = [
   },
   {
     id: "sql-for-data-science-with-r",
+    icon: "database",
     title: "SQL for Data Science with R",
     issuer: "IBM",
     date: "Nov 2024",
@@ -517,6 +522,7 @@ export const credentials: Credential[] = [
   },
   {
     id: "intro-to-r-programming",
+    icon: "code",
     title: "Introduction to R Programming for Data Science",
     issuer: "IBM",
     date: "Nov 2024",
@@ -524,6 +530,7 @@ export const credentials: Credential[] = [
   },
   {
     id: "data-visualization-dashboard-essentials",
+    icon: "dashboard",
     title: "Data Visualization & Dashboard Essentials",
     issuer: "IBM",
     date: "Nov 2024",
@@ -531,6 +538,7 @@ export const credentials: Credential[] = [
   },
   {
     id: "data-visualization-excel-cognos",
+    icon: "gridChart",
     title: "Data Visualization and Dashboards with Excel and Cognos",
     issuer: "IBM",
     date: "Nov 2024",
@@ -538,6 +546,7 @@ export const credentials: Credential[] = [
   },
   {
     id: "excel-basics-for-data-analysis",
+    icon: "spreadsheet",
     title: "Excel Basics for Data Analysis",
     issuer: "IBM",
     date: "Nov 2024",
@@ -545,6 +554,7 @@ export const credentials: Credential[] = [
   },
   {
     id: "introduction-to-data-analytics",
+    icon: "magnifier",
     title: "Introduction to Data Analytics",
     issuer: "IBM",
     date: "Oct 2024",
@@ -552,6 +562,7 @@ export const credentials: Credential[] = [
   },
   {
     id: "citi-irb-social-behavioral-research",
+    icon: "shield",
     title: "IRB – Social and Behavioral Research (Group 2)",
     issuer: "CITI Program",
     date: "Oct 2022 – Oct 2026",
