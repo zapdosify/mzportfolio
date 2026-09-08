@@ -3,7 +3,8 @@ import { Link } from "react-router";
 import { contact, socials } from "../data/siteContent";
 import { categoryById } from "../data/categories";
 import { useWorldStore } from "../hooks/useWorldStore";
-import { useHeroReveal } from "../hooks/useHeroReveal";
+import { useInteriorMotion } from "../hooks/useInteriorMotion";
+import SplitWords from "../components/motion/SplitWords";
 import CategoryBanner from "../components/layout/CategoryBanner";
 import s from "../styles/interior.module.css";
 
@@ -11,7 +12,7 @@ export default function Contact() {
   const markExplored = useWorldStore((st) => st.markExplored);
   const setContactOpen = useWorldStore((st) => st.setContactOpen);
   const category = categoryById("contact");
-  const heroRef = useHeroReveal();
+  const { rootRef } = useInteriorMotion<HTMLDivElement>();
   useEffect(() => {
     markExplored("contact");
   }, [markExplored]);
@@ -20,14 +21,20 @@ export default function Contact() {
     <>
       {category && <CategoryBanner src={category.landmarkImage} />}
 
-      <div className={`container ${s.page} ${s.hasBanner}`}>
-      <header className={`${s.hero} ${s.heroBanner}`}>
-        <div className={s.heroText} ref={heroRef}>
-          <p className={s.breadcrumb}>WORLD / Contact</p>
-          <h1 className={s.title}>Contact</h1>
-          <p className={s.tagline}>{contact.heading}</p>
+      <div className={`container ${s.page} ${s.hasBanner}`} ref={rootRef}>
+      <header className={`${s.hero} ${s.heroBanner}`} data-hero="">
+        <div className={s.heroText}>
+          <p className={s.breadcrumb} data-hero-line="">WORLD / Contact</p>
+          <h1 className={s.title} data-hero-title="">
+            <SplitWords text="Contact" />
+          </h1>
+          <p className={s.tagline} data-hero-line="">{contact.heading}</p>
 
-          <div className={s.metaRow} style={{ flexDirection: "column", gap: "var(--space-4)" }}>
+          <div
+            className={s.metaRow}
+            style={{ flexDirection: "column", gap: "var(--space-4)" }}
+            data-hero-line=""
+          >
             <div className={s.metaItem}>
               <span className={s.metaLabel}>Email</span>
               <a className={s.metaValue} href={`mailto:${socials.email}`}>{socials.email}</a>
@@ -38,7 +45,7 @@ export default function Contact() {
             </div>
           </div>
 
-          <div className={s.related} style={{ marginTop: "var(--space-8)" }}>
+          <div className={s.related} style={{ marginTop: "var(--space-8)" }} data-hero-line="">
             <a href={socials.linkedin} target="_blank" rel="noopener noreferrer" className={s.chip}>LinkedIn ↗</a>
             <a href={socials.deviantart} target="_blank" rel="noopener noreferrer" className={s.chip}>DeviantArt ↗</a>
           </div>
@@ -46,10 +53,10 @@ export default function Contact() {
       </header>
 
       <div className={s.returnStrip}>
-        <button type="button" className={s.returnBtn} onClick={() => setContactOpen(true)}>
+        <button type="button" className={s.returnBtn} data-magnetic="" onClick={() => setContactOpen(true)}>
           Send a message →
         </button>
-        <Link to="/" className={s.returnBtn}>Return to World</Link>
+        <Link to="/" className={s.returnBtn} data-magnetic="">Return to World</Link>
       </div>
       </div>
     </>

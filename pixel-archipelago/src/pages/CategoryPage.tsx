@@ -3,8 +3,9 @@ import { Link, useParams } from "react-router";
 import { categoryById, categoryByRoute } from "../data/categories";
 import { projectsByCategory } from "../data/projects";
 import { useWorldStore } from "../hooks/useWorldStore";
-import { useHeroReveal } from "../hooks/useHeroReveal";
-import { useStaggerReveal } from "../hooks/useStaggerReveal";
+import { useInteriorMotion } from "../hooks/useInteriorMotion";
+import SplitWords from "../components/motion/SplitWords";
+import SectionHead from "../components/motion/SectionHead";
 import ProjectCard from "../components/project/ProjectCard";
 import CategoryBanner from "../components/layout/CategoryBanner";
 import NotFound from "./NotFound";
@@ -16,8 +17,11 @@ export default function CategoryPage() {
   const category = categoryById(categoryId ?? "") ?? categoryByRoute(`/${categoryId}`);
   const markExplored = useWorldStore((st) => st.markExplored);
   const setLastCategory = useWorldStore((st) => st.setLastCategory);
-  const heroRef = useHeroReveal([category?.id]);
-  const worksRef = useStaggerReveal<HTMLDivElement>([category?.id]);
+  /* No pointer tilt on the cards. ProjectCard already owns its own hover
+     transform in CSS (a 3px lift on a 0.16s transition); a GSAP tilt on the
+     same element makes two systems write `transform`, and the entrance
+     stagger gets stranded mid-tween between them. The authored hover stays. */
+  const { rootRef } = useInteriorMotion<HTMLDivElement>([category?.id]);
 
   useEffect(() => {
     if (category) {
@@ -45,14 +49,20 @@ export default function CategoryPage() {
       {/* Landmark art as a full-bleed parallax banner behind the page head */}
       <CategoryBanner src={category.landmarkImage} />
 
-      <div className={`container ${s.page} ${s.hasBanner}`}>
+      <div className={`container ${s.page} ${s.hasBanner}`} ref={rootRef}>
       {/* Hero */}
-      <header className={`${s.hero} ${s.heroBanner}`}>
-        <div className={s.heroText} ref={heroRef}>
-          <p className={s.breadcrumb}>WORLD / {category.title}</p>
-          <h1 className={s.title}>{category.title}</h1>
-          {category.tagline && <p className={s.tagline}>{category.tagline}</p>}
-          <div className={s.metaRow}>
+      <header className={`${s.hero} ${s.heroBanner}`} data-hero="">
+        <div className={s.heroText}>
+          <p className={s.breadcrumb} data-hero-line="">WORLD / {category.title}</p>
+          <h1 className={s.title} data-hero-title="">
+            <SplitWords text={category.title} />
+          </h1>
+          {category.tagline && (
+            <p className={s.tagline} data-hero-line="">
+              {category.tagline}
+            </p>
+          )}
+          <div className={s.metaRow} data-hero-line="">
             <div className={s.metaItem}>
               <span className={s.metaLabel}>Projects</span>
               <span className={s.metaValue}>{projects.length}</span>
@@ -67,14 +77,19 @@ export default function CategoryPage() {
 
       {/* Selected Works */}
       <section className={s.section} aria-labelledby="works-h">
-        <div className={s.sectionHead}>
-          <h2 id="works-h" className={s.sectionTitle}>Selected Works</h2>
-          <span className={s.sectionMeta}>{projects.length} project{projects.length === 1 ? "" : "s"}</span>
-        </div>
-        <p className={s.tagline} style={{ marginBottom: "var(--space-8)", maxWidth: "60ch" }}>
+        <SectionHead
+          id="works-h"
+          title="Selected Works"
+          meta={`${projects.length} project${projects.length === 1 ? "" : "s"}`}
+        />
+        <p
+          className={s.tagline}
+          style={{ marginBottom: "var(--space-8)", maxWidth: "60ch" }}
+          data-reveal=""
+        >
           {category.description}
         </p>
-        <div className={`${grid.gallery} ${grid.grid}`} ref={worksRef}>
+        <div className={`${grid.gallery} ${grid.grid}`} data-stagger="">
           {selected.map((p) => (
             <ProjectCard key={p.id} project={p} />
           ))}
@@ -84,10 +99,8 @@ export default function CategoryPage() {
       {/* Related + Return */}
       {category.relatedCategoryIds && category.relatedCategoryIds.length > 0 && (
         <section className={s.section} aria-labelledby="related-h">
-          <div className={s.sectionHead}>
-            <h2 id="related-h" className={s.sectionTitle}>Related Work</h2>
-          </div>
-          <div className={s.related}>
+          <SectionHead id="related-h" title="Related Work" />
+          <div className={s.related} data-stagger="">
             {category.relatedCategoryIds.map((rid) => {
               const rc = categoryById(rid);
               if (!rc) return null;
@@ -102,7 +115,7 @@ export default function CategoryPage() {
       )}
 
       <div className={s.returnStrip}>
-        <Link to="/" className={s.returnBtn}>← Return to World</Link>
+        <Link to="/" className={s.returnBtn} data-magnetic="">← Return to World</Link>
       </div>
       </div>
     </>

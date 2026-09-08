@@ -9,7 +9,9 @@ import StoryScroll from "../components/story/StoryScroll";
 import BookScroll from "../components/story/BookScroll";
 import ExhibitScroll from "../components/exhibit/ExhibitScroll";
 import { manifestoLinks } from "../data/manifestoBook";
-import { useHeroReveal } from "../hooks/useHeroReveal";
+import { useInteriorMotion } from "../hooks/useInteriorMotion";
+import SplitWords from "../components/motion/SplitWords";
+import SectionHead from "../components/motion/SectionHead";
 import NotFound from "./NotFound";
 import s from "../styles/interior.module.css";
 
@@ -17,7 +19,7 @@ export default function ProjectDetail() {
   const { categoryId, slug } = useParams();
   const project = projectBySlug(categoryId ?? "", slug ?? "");
   const category = categoryById(categoryId ?? "");
-  const heroRef = useHeroReveal([project?.id]);
+  const { rootRef } = useInteriorMotion<HTMLElement>([project?.id]);
 
   if (!project || !category) return <NotFound />;
 
@@ -31,21 +33,31 @@ export default function ProjectDetail() {
   if (project.tools?.length) meta.push({ label: "Tools", value: project.tools.join(" · ") });
 
   return (
-    <article className={`container ${s.page}`}>
-      <header className={s.hero} style={{ marginBottom: "var(--space-16)" }}>
-        <div className={s.heroText} ref={heroRef}>
-          <p className={s.breadcrumb}>
+    <article className={`container ${s.page}`} ref={rootRef}>
+      <header className={s.hero} style={{ marginBottom: "var(--space-16)" }} data-hero="">
+        <div className={s.heroText}>
+          <p className={s.breadcrumb} data-hero-line="">
             <Link to={category.route}>WORLD / {category.title}</Link> / {project.title}
           </p>
-          <h1 className={s.title}>{project.title}</h1>
-          {project.subtitle && <p className={s.tagline}>{project.subtitle}</p>}
+          <h1 className={s.title} data-hero-title="">
+            <SplitWords text={project.title} />
+          </h1>
+          {project.subtitle && (
+            <p className={s.tagline} data-hero-line="">
+              {project.subtitle}
+            </p>
+          )}
           {project.summary && (
-            <p className={s.tagline} style={{ fontSize: "var(--fs-16)", color: "var(--text-secondary)" }}>
+            <p
+              className={s.tagline}
+              style={{ fontSize: "var(--fs-16)", color: "var(--text-secondary)" }}
+              data-hero-line=""
+            >
               {project.summary}
             </p>
           )}
           {meta.length > 0 && (
-            <div className={s.metaRow}>
+            <div className={s.metaRow} data-hero-line="">
               {meta.map((m) => (
                 <div key={m.label} className={s.metaItem}>
                   <span className={s.metaLabel}>{m.label}</span>
@@ -58,12 +70,12 @@ export default function ProjectDetail() {
         {/* A looping title sequence takes the art slot when one exists;
             otherwise the still cover image does. */}
         {project.heroVideo ? (
-          <div className={`${s.heroArt} ${s.heroArtVideo}`}>
+          <div className={`${s.heroArt} ${s.heroArtVideo}`} data-hero-art="">
             <LoopVideo video={project.heroVideo} />
           </div>
         ) : (
           project.coverImage && (
-            <div className={s.heroArt}>
+            <div className={s.heroArt} data-hero-art="">
               <img src={project.coverImage} alt={`${project.title} cover`} />
             </div>
           )
@@ -83,10 +95,8 @@ export default function ProjectDetail() {
       {/* Body / write-up */}
       {project.body && project.body.length > 0 && (
         <section className={s.section} aria-labelledby="about-h">
-          <div className={s.sectionHead}>
-            <h2 id="about-h" className={s.sectionTitle}>Overview</h2>
-          </div>
-          <div className={s.prose}>
+          <SectionHead id="about-h" title="Overview" />
+          <div className={s.prose} data-reveal="">
             {project.body.map((p, i) => (
               <p key={i}>{p}</p>
             ))}
@@ -97,11 +107,8 @@ export default function ProjectDetail() {
       {/* Sub-projects (e.g. Exhibition Design) */}
       {project.subProjects?.map((sub, i) => (
         <section className={s.section} key={i} aria-label={sub.title}>
-          <div className={s.sectionHead}>
-            <h2 className={s.sectionTitle}>{sub.title}</h2>
-            <span className={s.sectionMeta}>{String(i + 1).padStart(2, "0")}</span>
-          </div>
-          <div className={s.prose}>
+          <SectionHead title={sub.title} meta={String(i + 1).padStart(2, "0")} />
+          <div className={s.prose} data-reveal="">
             {sub.body.map((p, j) => (
               <p key={j}>{p}</p>
             ))}
@@ -112,10 +119,8 @@ export default function ProjectDetail() {
       {/* Process */}
       {project.process && project.process.length > 0 && (
         <section className={s.section} aria-labelledby="process-h">
-          <div className={s.sectionHead}>
-            <h2 id="process-h" className={s.sectionTitle}>Process</h2>
-          </div>
-          <ol className={s.process}>
+          <SectionHead id="process-h" title="Process" />
+          <ol className={s.process} data-stagger="">
             {project.process.map((stage, i) => (
               <li key={i} className={s.processStep}>
                 <span className={s.processNum} aria-hidden="true" />
@@ -132,13 +137,12 @@ export default function ProjectDetail() {
       {/* Externally hosted films (YouTube, click-to-load) */}
       {project.embeds && project.embeds.length > 0 && (
         <section className={s.section} aria-labelledby="film-h">
-          <div className={s.sectionHead}>
-            <h2 id="film-h" className={s.sectionTitle}>Film</h2>
-            <span className={s.sectionMeta}>
-              {project.embeds.length} film{project.embeds.length === 1 ? "" : "s"}
-            </span>
-          </div>
-          <div className={s.embedStack}>
+          <SectionHead
+            id="film-h"
+            title="Film"
+            meta={`${project.embeds.length} film${project.embeds.length === 1 ? "" : "s"}`}
+          />
+          <div className={s.embedStack} data-stagger="">
             {project.embeds.map((e) => (
               <VideoEmbed key={e.id} embed={e} />
             ))}
@@ -149,14 +153,15 @@ export default function ProjectDetail() {
       {/* Progressive story (publication illustrations + the speech) */}
       {project.story && project.story.length > 0 && (
         <section className={s.section} aria-labelledby="story-h">
-          <div className={s.sectionHead}>
-            <h2 id="story-h" className={s.sectionTitle}>The Publication</h2>
-            <span className={s.sectionMeta}>
-              {project.storySpreads?.length
+          <SectionHead
+            id="story-h"
+            title="The Publication"
+            meta={
+              project.storySpreads?.length
                 ? `${project.storySpreads.length} spreads · ${project.story.length} chapters`
-                : `${project.story.length} chapters`}
-            </span>
-          </div>
+                : `${project.story.length} chapters`
+            }
+          />
           <StoryScroll beats={project.story} spreads={project.storySpreads} />
         </section>
       )}
@@ -164,10 +169,11 @@ export default function ProjectDetail() {
       {/* Videos */}
       {project.videos && project.videos.length > 0 && (
         <section className={s.section} aria-labelledby="video-h">
-          <div className={s.sectionHead}>
-            <h2 id="video-h" className={s.sectionTitle}>Motion</h2>
-            <span className={s.sectionMeta}>{project.videos.length} film{project.videos.length === 1 ? "" : "s"}</span>
-          </div>
+          <SectionHead
+            id="video-h"
+            title="Motion"
+            meta={`${project.videos.length} film${project.videos.length === 1 ? "" : "s"}`}
+          />
           <Gallery items={project.videos} variant="cinema" />
         </section>
       )}
@@ -176,10 +182,7 @@ export default function ProjectDetail() {
           artwork spreads and chapter loops are blocks inside it. */}
       {project.book && project.book.length > 0 && (
         <section className={s.section} aria-labelledby="book-h">
-          <div className={s.sectionHead}>
-            <h2 id="book-h" className={s.sectionTitle}>The Book</h2>
-            <span className={s.sectionMeta}>Read in full</span>
-          </div>
+          <SectionHead id="book-h" title="The Book" meta="Read in full" />
           <BookScroll blocks={project.book} links={manifestoLinks} />
         </section>
       )}
@@ -188,10 +191,7 @@ export default function ProjectDetail() {
           replaces the gallery — every asset is already a scene inside it. */}
       {project.exhibit && project.exhibit.length > 0 && (
         <section className={s.section} aria-labelledby="exhibit-h">
-          <div className={s.sectionHead}>
-            <h2 id="exhibit-h" className={s.sectionTitle}>The Exhibition</h2>
-            <span className={s.sectionMeta}>Walk through</span>
-          </div>
+          <SectionHead id="exhibit-h" title="The Exhibition" meta="Walk through" />
           <ExhibitScroll scenes={project.exhibit} />
         </section>
       )}
@@ -199,10 +199,11 @@ export default function ProjectDetail() {
       {/* Gallery */}
       {!project.book && !project.exhibit && project.gallery && project.gallery.length > 0 && (
         <section className={s.section} aria-labelledby="gallery-h">
-          <div className={s.sectionHead}>
-            <h2 id="gallery-h" className={s.sectionTitle}>Gallery</h2>
-            <span className={s.sectionMeta}>{project.gallery.length} images</span>
-          </div>
+          <SectionHead
+            id="gallery-h"
+            title="Gallery"
+            meta={`${project.gallery.length} images`}
+          />
           <Gallery
             items={project.gallery}
             variant={
@@ -215,10 +216,8 @@ export default function ProjectDetail() {
       {/* Credits */}
       {project.credits && project.credits.length > 0 && (
         <section className={s.section} aria-labelledby="credits-h">
-          <div className={s.sectionHead}>
-            <h2 id="credits-h" className={s.sectionTitle}>Credits</h2>
-          </div>
-          <div className={s.prose}>
+          <SectionHead id="credits-h" title="Credits" />
+          <div className={s.prose} data-reveal="">
             {project.credits.map((c, i) => (
               <p key={i}>{c}</p>
             ))}
@@ -229,10 +228,8 @@ export default function ProjectDetail() {
       {/* External links */}
       {project.externalLinks && project.externalLinks.length > 0 && (
         <section className={s.section} aria-labelledby="links-h">
-          <div className={s.sectionHead}>
-            <h2 id="links-h" className={s.sectionTitle}>Links</h2>
-          </div>
-          <div className={s.related}>
+          <SectionHead id="links-h" title="Links" />
+          <div className={s.related} data-stagger="">
             {project.externalLinks.map((l, i) =>
               l.href ? (
                 <a key={i} href={l.href} target="_blank" rel="noopener noreferrer" className={s.chip}>
@@ -251,10 +248,8 @@ export default function ProjectDetail() {
       {/* Related projects */}
       {project.relatedProjectIds && project.relatedProjectIds.length > 0 && (
         <section className={s.section} aria-labelledby="related-h">
-          <div className={s.sectionHead}>
-            <h2 id="related-h" className={s.sectionTitle}>Related Projects</h2>
-          </div>
-          <div className={s.related}>
+          <SectionHead id="related-h" title="Related Projects" />
+          <div className={s.related} data-stagger="">
             {project.relatedProjectIds.map((rid) => {
               const rp = projectById(rid);
               if (!rp) return null;
@@ -269,8 +264,8 @@ export default function ProjectDetail() {
       )}
 
       <div className={s.returnStrip}>
-        <Link to={category.route} className={s.returnBtn}>← Back to {category.title}</Link>
-        <Link to="/" className={s.returnBtn}>Return to World</Link>
+        <Link to={category.route} className={s.returnBtn} data-magnetic="">← Back to {category.title}</Link>
+        <Link to="/" className={s.returnBtn} data-magnetic="">Return to World</Link>
       </div>
     </article>
   );

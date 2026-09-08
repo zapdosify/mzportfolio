@@ -7,8 +7,11 @@ gsap.registerPlugin(ScrollTrigger);
 
 /**
  * Staggered entrance for grid/list items: as the container scrolls into
- * view, its direct children rise 24px and fade in, 60ms apart — the same
- * "rise from the void" gesture as useHeroReveal, at grid rhythm.
+ * view, its direct children rise 24px and fade in, 60ms apart.
+ *
+ * Still used by Gallery and BookScroll, which manage their own containers.
+ * The interior *pages* get the same gesture from `useInteriorMotion`'s
+ * `[data-stagger]`; this is the standalone form for components.
  *
  * Attach the returned ref to the grid/list element (children = the items).
  * Honours prefers-reduced-motion (items simply stay visible). Pass `deps`

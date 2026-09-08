@@ -25,6 +25,11 @@ export default function Gallery({
   const gridRef = useStaggerReveal<HTMLUListElement>([items[0]?.src]);
   const cinemaRef = useStaggerReveal<HTMLDivElement>([items[0]?.src]);
 
+  /* No pointer tilt here either. `.tile` already has an authored hover in
+     CSS — a 2px lift with the thumbnail scaling to 1.03 inside it — and a
+     GSAP tilt on the same elements would be a second system writing
+     `transform` over the top of it. */
+
   if (!items.length) return null;
 
   // Videos keep their inline players; only images open in the lightbox.

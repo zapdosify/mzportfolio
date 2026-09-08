@@ -289,6 +289,10 @@
   margin-left: auto;
   border: 1px solid var(--border-dark);
   border-radius: var(--radius);
+  /* Clips the entrance push-in: the portrait settles back from 1.14 as the
+     frame wipes open, and without this it would overrun the rounded border.
+     No effect at rest — the image already fills the frame exactly. */
+  overflow: hidden;
   background: var(--surface-dark);
   display: grid;
   place-items: center;

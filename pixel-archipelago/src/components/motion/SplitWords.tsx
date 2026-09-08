@@ -14,6 +14,9 @@ import styles from "./SplitWords.module.css";
  * Nothing is animated by this component. It only prepares the marks; the
  * caller animates `[data-word]`, and the CSS resting state is the finished
  * state, so if that animation never runs the line simply reads normally.
+ *
+ * Shared by both worlds — the business portfolio's headings and the design
+ * portfolio's interior pages — so the two use one kinetic-type grammar.
  */
 export default function SplitWords({
   text,

@@ -15,7 +15,7 @@ import { scrollToInstant, smoothScrollTo } from "../../hooks/lenisInstance";
 import { useMagnetic } from "../../hooks/useMagnetic";
 import WordField from "./WordField";
 import Cover from "./Covers";
-import SplitWords from "./SplitWords";
+import SplitWords from "../motion/SplitWords";
 import BusinessCaseStudy from "./BusinessCaseStudy";
 import type { BusinessProject } from "../../data/businessContent";
 import styles from "./BusinessPortfolio.module.css";
