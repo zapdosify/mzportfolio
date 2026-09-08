@@ -1,6 +1,8 @@
 import { useEffect, useRef } from "react";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import type { BusinessProject } from "../../data/businessContent";
 import { businessCharts } from "../../data/businessCharts";
+import { scrollToInstant } from "../../hooks/lenisInstance";
 import BusinessChart from "./BusinessChart";
 import styles from "./BusinessCaseStudy.module.css";
 
@@ -26,10 +28,26 @@ export default function BusinessCaseStudy({ project, siblings, onClose, onOpen }
   const c = project.caseStudy;
   const headingRef = useRef<HTMLHeadingElement>(null);
 
-  // Land at the top of the study and move focus into it.
+  // Land at the top of the study and move focus into it. The jump goes
+  // through Lenis, which would otherwise carry the old offset back on its
+  // next frame and drop the reader mid-page.
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: "instant" as ScrollBehavior });
+    scrollToInstant(0);
     headingRef.current?.focus();
+
+    /* This view replaces the whole homepage, so the document height changes
+       by thousands of pixels. The chart triggers inside it are created
+       against the OLD height and would sit at progress 0 forever — bars at
+       zero, counters frozen on "0". Re-measure once this layout has settled.
+       Two frames: one for the DOM, one for the style/layout pass. */
+    let second = 0;
+    const first = requestAnimationFrame(() => {
+      second = requestAnimationFrame(() => ScrollTrigger.refresh());
+    });
+    return () => {
+      cancelAnimationFrame(first);
+      cancelAnimationFrame(second);
+    };
   }, [project.slug]);
 
   // Esc closes.

@@ -1,4 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { identity, socials, about } from "../../data/siteContent";
 import {
   businessCopy,
@@ -8,11 +10,17 @@ import {
 } from "../../data/businessContent";
 import { useWorldStore } from "../../hooks/useWorldStore";
 import { useModeStore } from "../../hooks/useModeStore";
+import { useLenis } from "../../hooks/useLenis";
+import { scrollToInstant, smoothScrollTo } from "../../hooks/lenisInstance";
+import { useMagnetic } from "../../hooks/useMagnetic";
 import WordField from "./WordField";
 import Cover from "./Covers";
+import SplitWords from "./SplitWords";
 import BusinessCaseStudy from "./BusinessCaseStudy";
 import type { BusinessProject } from "../../data/businessContent";
 import styles from "./BusinessPortfolio.module.css";
+
+gsap.registerPlugin(ScrollTrigger);
 
 /** Abstract badge mark — drawn until an entry sets a real badge image. */
 function BadgeMark() {
@@ -75,17 +83,21 @@ function ProjectFields({ p }: { p: BusinessProject }) {
 function ProjectCover({ p, feature }: { p: BusinessProject; feature?: boolean }) {
   return (
     <div className={`${styles.cover} ${feature ? styles.coverFeature : ""}`}>
-      {p.image ? (
-        <img
-          src={p.image}
-          alt=""
-          className={styles.coverImg}
-          loading="lazy"
-          decoding="async"
-        />
-      ) : (
-        <Cover kind={p.cover} className={styles.coverSvg} />
-      )}
+      {/* The art is oversized inside a clipped frame so it can drift against
+          the scroll without ever exposing an edge. */}
+      <div className={styles.coverInner} data-parallax="">
+        {p.image ? (
+          <img
+            src={p.image}
+            alt=""
+            className={styles.coverImg}
+            loading="lazy"
+            decoding="async"
+          />
+        ) : (
+          <Cover kind={p.cover} className={styles.coverSvg} />
+        )}
+      </div>
       <span className={styles.coverIndex} aria-hidden="true">
         {p.index}
       </span>
@@ -141,6 +153,13 @@ export default function BusinessPortfolio() {
   const projectsRef = useRef<HTMLElement>(null);
   const rootRef = useRef<HTMLDivElement>(null);
 
+  /* The site's only smooth-scroll engine, alive exactly as long as business
+     mode is. It covers the case-study view too — that is the same document
+     scroll, so handing it back to the browser mid-mode would be felt. */
+  useLenis(mode === "business", reducedMotion);
+
+  const ctaRef = useMagnetic<HTMLAnchorElement>(reducedMotion);
+
   /* Case-study reader. Business mode is not routed, so this is a state view
      shown in place of the homepage. A history entry is pushed (URL kept
      identical) so the browser Back button closes it, and the homepage
@@ -181,9 +200,7 @@ export default function BusinessPortfolio() {
         (history.state && (history.state as { bizCase?: string }).bizCase) || null;
       setOpenSlug(slug);
       if (!slug) {
-        requestAnimationFrame(() =>
-          window.scrollTo({ top: returnScroll.current, behavior: "instant" as ScrollBehavior }),
-        );
+        requestAnimationFrame(() => scrollToInstant(returnScroll.current));
       }
     };
     // A reload with a study open keeps its history entry; restore that view so
@@ -211,46 +228,114 @@ export default function BusinessPortfolio() {
   const toProjects = useCallback(
     (e: React.MouseEvent) => {
       e.preventDefault();
-      projectsRef.current?.scrollIntoView({
-        behavior: reducedMotion ? "auto" : "smooth",
-        block: "start",
-      });
+      // Routed through Lenis: a native smooth scroll and the engine's own
+      // loop would otherwise animate the same document at once.
+      if (projectsRef.current) smoothScrollTo(projectsRef.current, reducedMotion);
     },
     [reducedMotion],
   );
 
-  /* Restrained entrance: sections rise a little as they arrive. One observer,
-     no library, and it simply does not run under reduced motion.
-     Re-runs when the case-study view closes, because the homepage sections
-     remount fresh (opacity 0) with nothing observing them — on that return
-     they are simply shown, not re-animated. */
+  /* Choreography.
+     Every tween is a `from`, so the DOM's resting state IS the finished page
+     — if this effect never runs the site still reads, just without motion.
+     The entrance is skipped on the return trip from a case study (the
+     sections are already in place and replaying them reads as a glitch),
+     but the parallax is not: it is a continuous effect, not an entrance. */
   useEffect(() => {
     const root = rootRef.current;
-    // Case study open: its content has no [data-reveal] to watch.
-    if (!root || openSlug) return;
-    const items = Array.from(root.querySelectorAll<HTMLElement>("[data-reveal]"));
-    // Reveal outright on the return trip, under reduced motion, or with no
-    // IntersectionObserver — anything but the first, scroll-driven entrance.
-    if (
-      hasOpenedCase.current ||
-      reducedMotion ||
-      !("IntersectionObserver" in window)
-    ) {
-      items.forEach((el) => el.classList.add(styles.revealed));
-      return;
-    }
-    const io = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (!entry.isIntersecting) continue;
-          entry.target.classList.add(styles.revealed);
-          io.unobserve(entry.target);
-        }
-      },
-      { rootMargin: "0px 0px -12% 0px", threshold: 0.08 },
-    );
-    items.forEach((el) => io.observe(el));
-    return () => io.disconnect();
+    if (!root || openSlug || reducedMotion) return;
+    const skipEntrance = hasOpenedCase.current;
+
+    const ctx = gsap.context(() => {
+      if (!skipEntrance) {
+        /* The hero is one composed sequence rather than five independent
+           tweens, so the beats land in a deliberate order. Nothing here
+           gates readability — the text and CTA are usable throughout. */
+        gsap
+          .timeline({ defaults: { ease: "power3.out" } })
+          .from("[data-hero-rule]", { scaleX: 0, duration: 0.6 })
+          .from("[data-hero-eyebrow]", { opacity: 0, y: 12, duration: 0.5 }, "-=0.42")
+          .from(
+            "[data-hero-title] [data-word]",
+            { yPercent: 110, duration: 0.82, stagger: 0.055 },
+            "-=0.28",
+          )
+          .from(
+            "[data-hero-lede] > p",
+            { opacity: 0, y: 18, duration: 0.6, stagger: 0.1 },
+            "-=0.5",
+          )
+          .from("[data-hero-cta]", { opacity: 0, y: 14, duration: 0.5 }, "-=0.36");
+
+        gsap.utils.toArray<HTMLElement>("[data-reveal]").forEach((el) => {
+          const words = el.querySelectorAll<HTMLElement>("[data-word]");
+          const tl = gsap.timeline({
+            defaults: { ease: "power3.out" },
+            scrollTrigger: { trigger: el, start: "top 86%", once: true },
+          });
+          if (words.length) {
+            // Lift the words out of their masks; the block itself only fades,
+            // so the two gestures read as one arrival rather than two.
+            tl.from(el, { opacity: 0, duration: 0.45 }).from(
+              words,
+              { yPercent: 110, duration: 0.72, stagger: 0.04 },
+              0,
+            );
+          } else {
+            tl.from(el, { opacity: 0, y: 22, duration: 0.72 });
+          }
+        });
+      }
+
+      /* Covers drift against the scroll. Bounded to ±6% and scrubbed, so it
+         tracks the wheel exactly instead of easing along behind it. */
+      gsap.utils.toArray<HTMLElement>("[data-parallax]").forEach((el) => {
+        gsap.fromTo(
+          el,
+          { yPercent: -6 },
+          {
+            yPercent: 6,
+            ease: "none",
+            scrollTrigger: {
+              trigger: el,
+              start: "top bottom",
+              end: "bottom top",
+              scrub: true,
+            },
+          },
+        );
+      });
+
+      /* Reading progress for a page that is one long scroll. */
+      gsap.fromTo(
+        "[data-progress]",
+        { scaleX: 0 },
+        {
+          scaleX: 1,
+          ease: "none",
+          scrollTrigger: { start: 0, end: "max", scrub: 0.3 },
+        },
+      );
+    }, root);
+
+    // The case-study view changes the document height by thousands of pixels;
+    // triggers measured against the old height would all fire at the wrong
+    // place. Re-measure once layout has settled.
+    const raf = requestAnimationFrame(() => ScrollTrigger.refresh());
+
+    // Webfont swap reflows every heading on the page, which moves each
+    // trigger's start. Without this a reveal can be armed for a position the
+    // element no longer occupies, and its text never arrives.
+    let cancelled = false;
+    document.fonts?.ready.then(() => {
+      if (!cancelled) ScrollTrigger.refresh();
+    });
+
+    return () => {
+      cancelled = true;
+      cancelAnimationFrame(raf);
+      ctx.revert();
+    };
   }, [reducedMotion, openSlug]);
 
   return (
@@ -262,6 +347,14 @@ export default function BusinessPortfolio() {
         <span className={styles.bizName}>{identity.name}</span>
         <span className={styles.bizRole}>{businessCopy.subtitle}</span>
       </header>
+
+      {/* Reading progress. Decorative — the scrollbar remains the real
+          affordance — so it is hidden from assistive technology. */}
+      {!reducedMotion && (
+        <div className={styles.progressTrack} aria-hidden="true">
+          <span className={styles.progressBar} data-progress="" />
+        </div>
+      )}
 
       {openProject ? (
         <main id="main" tabIndex={-1} className={styles.main}>
@@ -280,18 +373,28 @@ export default function BusinessPortfolio() {
 
           <div className={`${styles.shell} ${styles.heroShell}`}>
             <div className={styles.heroText}>
-              <p className={styles.eyebrow}>
-                <span className={styles.eyebrowRule} aria-hidden="true" />
+              <p className={styles.eyebrow} data-hero-eyebrow="">
+                <span
+                  className={styles.eyebrowRule}
+                  aria-hidden="true"
+                  data-hero-rule=""
+                />
                 {businessCopy.hero.eyebrow}
               </p>
-              <h1 id="biz-hero-title" className={styles.headline}>
-                {businessCopy.hero.headline}
+              <h1 id="biz-hero-title" className={styles.headline} data-hero-title="">
+                <SplitWords text={businessCopy.hero.headline} />
               </h1>
-              <div className={styles.lede}>
+              <div className={styles.lede} data-hero-lede="">
                 <p>{businessCopy.hero.intro}</p>
                 <p>{businessCopy.hero.intro2}</p>
               </div>
-              <a href="#selected-projects" className={styles.cta} onClick={toProjects}>
+              <a
+                href="#selected-projects"
+                className={styles.cta}
+                onClick={toProjects}
+                ref={ctaRef}
+                data-hero-cta=""
+              >
                 {businessCopy.hero.cta}
                 <Arrow />
               </a>
@@ -334,7 +437,7 @@ export default function BusinessPortfolio() {
                 {businessCopy.projects.eyebrow}
               </p>
               <h2 id="biz-projects-title" className={styles.sectionTitle}>
-                {businessCopy.projects.heading}
+                <SplitWords text={businessCopy.projects.heading} />
               </h2>
               <p className={styles.sectionNote}>{businessCopy.projects.note}</p>
             </div>
@@ -375,7 +478,7 @@ export default function BusinessPortfolio() {
                   {businessCopy.learning.eyebrow}
                 </p>
                 <h2 id="biz-learning-title" className={styles.sectionTitle}>
-                  {businessCopy.learning.heading}
+                  <SplitWords text={businessCopy.learning.heading} />
                 </h2>
               </div>
               <p className={styles.learnIntro}>{businessCopy.learning.intro}</p>
@@ -442,7 +545,7 @@ export default function BusinessPortfolio() {
                 {businessCopy.closing.eyebrow}
               </p>
               <h2 id="biz-closing-title" className={styles.statement}>
-                {businessCopy.closing.statement}
+                <SplitWords text={businessCopy.closing.statement} />
               </h2>
               <p className={styles.closingBody}>{businessCopy.closing.body}</p>
             </div>

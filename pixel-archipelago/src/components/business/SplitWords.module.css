@@ -1,0 +1,26 @@
+/* Per-word masks for the kinetic headings.
+   `overflow: clip` rather than `hidden` so the mask never becomes a scroll
+   container — `hidden` on an inline-block can make the browser treat it as
+   one and quietly steal focus scrolling from the page. */
+.mask {
+  display: inline-block;
+  overflow: clip;
+  /* Descenders (g, y, p) would be shaved off by a tight clip box. */
+  padding-bottom: 0.12em;
+  margin-bottom: -0.12em;
+  vertical-align: bottom;
+}
+
+.word {
+  display: inline-block;
+  will-change: transform;
+}
+
+/* The finished state is the resting state — the words sit in place with no
+   JavaScript, and GSAP only ever animates *from* somewhere into this. */
+@media (prefers-reduced-motion: reduce) {
+  .word {
+    will-change: auto;
+    transform: none !important;
+  }
+}

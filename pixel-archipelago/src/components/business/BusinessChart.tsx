@@ -144,25 +144,37 @@ function Stats({ spec, reduced }: { spec: StatPanel; reduced: boolean }) {
     const nodes = Array.from(el.querySelectorAll<HTMLElement>("[data-stat]"));
     if (!nodes.length) return;
 
+    /* The count is started BY the trigger rather than attached to it. A tween
+       bound directly to a ScrollTrigger writes its start value into the DOM
+       the moment it is built, so every panel below the fold would read "0"
+       until it was scrolled to — and would stay at "0" for good if the
+       trigger never fired. Started this way, the published figure is what
+       stands until the animation actually begins. */
     const ctx = gsap.context(() => {
-      nodes.forEach((node, i) => {
-        const target = Number(node.dataset.value);
-        const fmt = makeFormatter(node.dataset.display ?? String(target));
-        const proxy = { n: 0 };
-        gsap.to(proxy, {
-          n: target,
-          duration: 1.1,
-          delay: i * 0.08,
-          ease: "power2.out",
-          onUpdate: () => {
-            node.textContent = fmt(proxy.n);
-          },
-          // Land exactly on the published string — never a rounded tween value.
-          onComplete: () => {
-            node.textContent = node.dataset.display ?? fmt(target);
-          },
-          scrollTrigger: { trigger: el, start: "top 82%", once: true },
-        });
+      ScrollTrigger.create({
+        trigger: el,
+        start: "top 82%",
+        once: true,
+        onEnter: () => {
+          nodes.forEach((node, i) => {
+            const target = Number(node.dataset.value);
+            const fmt = makeFormatter(node.dataset.display ?? String(target));
+            const proxy = { n: 0 };
+            gsap.to(proxy, {
+              n: target,
+              duration: 1.1,
+              delay: i * 0.08,
+              ease: "power2.out",
+              onUpdate: () => {
+                node.textContent = fmt(proxy.n);
+              },
+              // Land exactly on the published string, never a rounded tween value.
+              onComplete: () => {
+                node.textContent = node.dataset.display ?? fmt(target);
+              },
+            });
+          });
+        },
       });
     }, el);
     return () => ctx.revert();
@@ -201,20 +213,30 @@ export default function BusinessChart({ spec }: { spec: ChartSpec }) {
     if (!bars.length) return;
 
     const axis = spec.kind === "columns" ? "scaleY" : "scaleX";
+    const values = el.querySelectorAll<HTMLElement>("[data-barval]");
+
+    /* Same rule as the counters: the draw is started by the trigger, not
+       bound to it, so a chart that is never scrolled to — or whose trigger
+       mismeasures — is a finished chart rather than an empty frame. */
     const ctx = gsap.context(() => {
-      gsap.from(bars, {
-        [axis]: 0,
-        duration: 0.72,
-        ease: "power3.out",
-        stagger: 0.05,
-        scrollTrigger: { trigger: el, start: "top 82%", once: true },
-      });
-      gsap.from(el.querySelectorAll<HTMLElement>("[data-barval]"), {
-        opacity: 0,
-        duration: 0.4,
-        delay: 0.34,
-        stagger: 0.05,
-        scrollTrigger: { trigger: el, start: "top 82%", once: true },
+      ScrollTrigger.create({
+        trigger: el,
+        start: "top 82%",
+        once: true,
+        onEnter: () => {
+          gsap.from(bars, {
+            [axis]: 0,
+            duration: 0.72,
+            ease: "power3.out",
+            stagger: 0.05,
+          });
+          gsap.from(values, {
+            opacity: 0,
+            duration: 0.4,
+            delay: 0.34,
+            stagger: 0.05,
+          });
+        },
       });
     }, el);
     return () => ctx.revert();

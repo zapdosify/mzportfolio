@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { scrollToInstant } from "./lenisInstance";
 
 /**
  * Portfolio mode — the two worlds this site holds.
@@ -90,9 +91,10 @@ export const useModeStore = create<ModeState>()((set, get) => {
 
       const restoreScroll = () => {
         // Wait a frame so the incoming tree has laid out before we scroll it.
-        requestAnimationFrame(() =>
-          window.scrollTo({ top: scrollMemory[next] ?? 0, behavior: "instant" as ScrollBehavior }),
-        );
+        // Routed through the smooth-scroll helper: when business mode is the
+        // incoming half, Lenis owns the scroll position and a raw
+        // `window.scrollTo` is undone on its next frame.
+        requestAnimationFrame(() => scrollToInstant(scrollMemory[next] ?? 0));
       };
 
       if (prefersReduced()) {

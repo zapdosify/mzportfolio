@@ -81,17 +81,31 @@
   to { transform: translate3d(0, -10px, 0); }
 }
 
-/* ---------- Scroll entrance ---------- */
-.page [data-reveal] {
-  opacity: 0;
-  transform: translateY(18px);
-  transition:
-    opacity 720ms var(--ease-out),
-    transform 720ms var(--ease-out);
+/* ---------- Scroll entrance ----------
+   There is deliberately no hidden resting state here. Every [data-reveal]
+   block sits at its finished position in CSS and GSAP animates *from*
+   transparent into it, so a failed chunk, a blocked script, or reduced
+   motion all leave a complete, readable page instead of a blank one. */
+
+/* ---------- Reading progress ----------
+   A hairline, the width of the page, above everything else. It reports
+   position; it is not a control, and the scrollbar remains the affordance. */
+.progressTrack {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  z-index: 60;
+  pointer-events: none;
 }
-.page [data-reveal].revealed {
-  opacity: 1;
-  transform: none;
+.progressBar {
+  display: block;
+  height: 100%;
+  width: 100%;
+  background: var(--biz-accent);
+  transform: scaleX(0);
+  transform-origin: left center;
 }
 
 /* ---------- Header ----------
@@ -161,6 +175,8 @@
   width: 34px;
   height: 1px;
   background: var(--biz-line-strong);
+  /* The hero rule draws itself outward from the margin. */
+  transform-origin: left center;
 }
 
 .ctaArrow {
@@ -333,6 +349,13 @@
 }
 .coverFeature {
   aspect-ratio: 16 / 11;
+}
+/* Overscanned top and bottom so a ±6% drift never pulls an edge into frame.
+   `.cover` clips, so the extra height is only ever seen as movement. */
+.coverInner {
+  position: absolute;
+  inset: -7% 0;
+  will-change: transform;
 }
 .coverSvg,
 .coverImg {
@@ -704,11 +727,6 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .page [data-reveal] {
-    opacity: 1;
-    transform: none;
-    transition: none;
-  }
   .enterUp,
   .leaveUp {
     animation: none;
