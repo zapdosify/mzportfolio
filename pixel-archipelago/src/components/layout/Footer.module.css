@@ -41,3 +41,24 @@
 .linkBtn:hover {
   color: var(--white);
 }
+
+/* ---------- Phone ---------- */
+/* The links are 19px of text — fine to click, too small to thumb. Give the
+   row real height and space the items so neighbouring targets don't touch.
+   Desktop keeps its tight baseline row. */
+@media (max-width: 640px) {
+  .inner {
+    gap: var(--space-4);
+  }
+  .links {
+    gap: var(--space-2);
+    margin-inline: calc(var(--space-3) * -1);
+  }
+  .links a,
+  .linkBtn {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--tap);
+    padding-inline: var(--space-3);
+  }
+}

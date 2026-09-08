@@ -22,7 +22,7 @@
   width: 100%;
   max-width: var(--maxw);
   margin: 0 auto;
-  padding-inline: var(--space-6);
+  padding-inline: var(--gutter);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -94,11 +94,64 @@
   }
 }
 
+/* ---------- Phone ---------- */
+/* Identity + Return + Index have to share one row that the centred mode
+   switch has already taken the middle out of. Rather than let them wrap
+   into each other (they did), each element gives up what it can afford:
+   the role line, then the words around the labels. */
 @media (max-width: 640px) {
   .nav {
-    gap: var(--space-3);
+    gap: var(--space-2);
   }
   .role {
     display: none;
+  }
+  .name {
+    font-size: var(--fs-12);
+    white-space: nowrap;
+  }
+  .actionLong {
+    display: none;
+  }
+  /* The row is short enough to be tappable, not just clickable. */
+  .action {
+    display: inline-flex;
+    align-items: center;
+    /* inline-flex drops whitespace-only text nodes, so the space between
+       the glyph and the word has to be a gap */
+    gap: 0.45em;
+    min-height: var(--tap);
+    padding-inline: var(--space-3);
+  }
+
+  /* The backdrop's soft bottom edge is tuned for a 60px desktop header. On
+     a phone the switch band pushes this row ~52px lower, into the part of
+     the gradient that has already faded out — so scrolled content was
+     showing straight through the header text. Hold the cover further down. */
+  .header {
+    background: linear-gradient(
+      to bottom,
+      rgba(5, 5, 5, 0.96) 0%,
+      rgba(5, 5, 5, 0.92) 72%,
+      rgba(5, 5, 5, 0) 100%
+    );
+    -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 80%, transparent 100%);
+    mask-image: linear-gradient(to bottom, #000 0%, #000 80%, transparent 100%);
+  }
+}
+
+@media (max-width: 430px) {
+  .name {
+    font-size: 0.6875rem;
+    letter-spacing: 0.06em;
+  }
+  /* Index becomes its glyph; the button keeps a square tap target. */
+  .actionWord {
+    display: none;
+  }
+  .action {
+    padding-inline: var(--space-2);
+    min-width: var(--tap);
+    justify-content: center;
   }
 }

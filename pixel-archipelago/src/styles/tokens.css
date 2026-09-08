@@ -43,6 +43,31 @@
   --space-16: 64px;
   --space-24: 96px;
 
+  /* ------------------------------------------------------------------ *
+   * Breakpoints — the canonical scale. CSS cannot hold these in custom
+   * properties (media queries can't read them), so they live here as the
+   * written contract and every `@media` in the codebase should use one:
+   *
+   *   1180px  wide desktop — the only min-width in the codebase
+   *    900px  tablet / small laptop: multi-column layouts collapse
+   *    640px  phone: the interior header compacts, the landing's plates
+   *           become a chip grid, two-up grids start going single
+   *    430px  phone (the common 390-430 tier): labels shorten to icons,
+   *           gutters and headers tighten
+   *    360px  compact phone (320-360): the tightest gutters
+   *
+   * Legacy values still in the tree — 560 (ContactDialog, ModeSwitch),
+   * 620/860/1000 (business page), 760 (landing world map, --switch-clear)
+   * — predate this scale. They are load-bearing where they sit; migrate
+   * one only with a reason, not for tidiness.
+   * ------------------------------------------------------------------ */
+
+  /* Page gutter. One token so the header, the .container and the interior
+     pages breathe together instead of drifting apart at small widths. */
+  --gutter: var(--space-6);
+  /* Minimum comfortable touch target. */
+  --tap: 44px;
+
   /* Structure */
   --border: 1px solid var(--border-dark);
   --border-hover: 1px solid var(--border-active);
@@ -89,4 +114,22 @@
 
 @media (max-width: 760px) {
   :root { --switch-clear: 42px; }
+}
+
+/* ---------- Phone tiers ---------- */
+/* Only gutters and the header band move here. Type keeps scaling through
+   its own clamp()s so nothing steps down abruptly at a breakpoint. */
+@media (max-width: 640px) {
+  :root { --gutter: 20px; }
+}
+
+@media (max-width: 430px) {
+  :root {
+    --gutter: 18px;
+    --header-h: 52px;
+  }
+}
+
+@media (max-width: 360px) {
+  :root { --gutter: 14px; }
 }

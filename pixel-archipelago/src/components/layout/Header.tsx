@@ -21,9 +21,13 @@ export default function Header() {
         </Link>
 
         <nav className={styles.nav} aria-label="Primary">
+          {/* Below 640px the label sheds "Return to" and reads "← World";
+              below 430px Index sheds its word and is the glyph alone. Both
+              keep their full names for assistive tech via aria-label. */}
           {!isLanding && (
-            <Link to="/" className={styles.action}>
-              <span aria-hidden="true">←</span> Return to World
+            <Link to="/" className={styles.action} aria-label="Return to world">
+              <span aria-hidden="true">←</span>{" "}
+              <span className={styles.actionLong}>Return to </span>World
             </Link>
           )}
           {category && (
@@ -35,8 +39,10 @@ export default function Header() {
             type="button"
             className={styles.action}
             onClick={() => setIndexOpen(true)}
+            aria-label="Open index"
           >
-            Index <span aria-hidden="true">☰</span>
+            <span className={styles.actionWord}>Index </span>
+            <span aria-hidden="true">☰</span>
           </button>
         </nav>
       </div>

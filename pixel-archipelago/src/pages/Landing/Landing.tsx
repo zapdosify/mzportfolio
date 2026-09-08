@@ -348,14 +348,26 @@ export default function Landing() {
           <h1 className={styles.name}>{identity.name}</h1>
           <p className={styles.role}>Design Portfolio</p>
           <span className={styles.rule} aria-hidden="true" />
+          {/* "Move to Explore" is an instruction for a cursor. Below 640px
+              there is no orb to move and the plates are a chip grid, so the
+              line names what a thumb actually does. Both are decorative
+              (aria-hidden); the real instructions live in .srNav's label. */}
           <p className={styles.explore} aria-hidden="true">
-            <span className={styles.exploreMark}>⊹</span> Move to Explore
+            <span className={styles.exploreMark}>⊹</span>
+            <span className={styles.explorePointer}>Move to Explore</span>
+            <span className={styles.exploreTouch}>Tap to Explore</span>
           </p>
         </div>
 
         {/* Index (top-right) */}
-        <button type="button" className={styles.indexBtn} onClick={() => setIndexOpen(true)}>
-          Index <span aria-hidden="true" className={styles.indexGlyph}>☰</span>
+        <button
+          type="button"
+          className={styles.indexBtn}
+          onClick={() => setIndexOpen(true)}
+          aria-label="Open index"
+        >
+          <span className={styles.indexWord}>Index </span>
+          <span aria-hidden="true" className={styles.indexGlyph}>☰</span>
         </button>
 
         {/* World map (bottom-left) */}

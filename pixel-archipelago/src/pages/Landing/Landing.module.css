@@ -376,18 +376,19 @@
 .hud { position: absolute; inset: 0; z-index: 7; pointer-events: none; }
 .hud button, .hud a { pointer-events: auto; }
 
-.titleBlock { position: absolute; top: calc(var(--space-6) + var(--switch-clear, 0px)); left: var(--space-6); }
+.titleBlock { position: absolute; top: calc(var(--space-6) + var(--switch-clear, 0px)); left: var(--gutter); }
 .name { font-family: var(--font-mono); font-size: clamp(1.1rem, 2vw, 1.6rem); font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-primary); }
 .role { font-family: var(--font-mono); font-size: clamp(0.7rem, 1vw, 0.85rem); letter-spacing: 0.22em; text-transform: uppercase; color: var(--text-muted); margin-top: 2px; }
 .rule { display: block; width: 190px; max-width: 40vw; height: 1px; background: var(--border-active); margin: var(--space-4) 0; }
 .explore { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-secondary); display: flex; align-items: center; gap: var(--space-2); }
 .exploreMark { color: var(--white); animation: twinkle 2.6s ease-in-out infinite; }
+.exploreTouch { display: none; }
 @keyframes twinkle { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
 
 .indexBtn {
   position: absolute;
   top: calc(var(--space-6) + var(--switch-clear, 0px));
-  right: var(--space-6);
+  right: var(--gutter);
   display: inline-flex;
   align-items: center;
   gap: var(--space-3);
@@ -580,6 +581,26 @@
   .worldMap { display: none; }
 }
 
+/* ---------- Compact phones ---------- */
+@media (max-width: 430px) {
+  /* Index sheds its word, which buys the name the width it needs to stay
+     on one line. */
+  .indexWord { display: none; }
+  .indexBtn { padding-inline: var(--space-3); min-width: var(--tap); justify-content: center; }
+  .titleBlock { right: 76px; }
+  .name { letter-spacing: 0.04em; }
+}
+
+@media (max-width: 360px) {
+  /* Small enough that the name fits on one line beside the Index glyph —
+     two lines pushed the explore label down onto the art. */
+  .name { font-size: 0.78rem; }
+  .role { font-size: 0.6rem; letter-spacing: 0.18em; }
+  /* the hairline is pure decoration and it costs 33px of vertical room */
+  .rule { display: none; }
+  .role { margin-bottom: var(--space-3); }
+}
+
 /* ---------- Small screens: plates become a chip grid ---------- */
 /* 13 nameplates cannot sit on a ~375px stage without occluding each other
    and the art. Below 640px the archipelago stays as the visual hero and the
@@ -591,13 +612,60 @@
   /* leave room for the name to wrap instead of running under INDEX */
   .titleBlock { right: 128px; }
 
+  /* The chip nav stops being an overlay and becomes a real row.
+     It used to be `position: absolute; bottom: …` against .world, which
+     works only while the chips happen to fit in the gap under a letterboxed
+     stage. They don't on a short phone: at 320x568 the six wrapped rows
+     climbed straight over the archipelago. As a grid row the two can never
+     collide, and the stage takes exactly the height that's left. */
+  .world {
+    grid-template-rows: auto auto;
+    justify-items: center;
+    /* Rather than pool all the slack above the art, spread it evenly:
+       title / art / chips end up as three considered bands instead of a
+       letterboxed image floating in a void. */
+    align-content: space-evenly;
+    row-gap: var(--space-4);
+    padding-top: calc(var(--switch-clear, 0px) + clamp(104px, 16vh, 128px));
+    padding-bottom: var(--space-6);
+  }
+  /* .stage keeps its own width-led sizing. Giving it height:100% here made
+     `height` definite, which silently disables `aspect-ratio` — the box went
+     to 390x382 (1.02) instead of 1.777 and only `object-fit: contain` kept
+     the art from stretching. It bought nothing either: the stage is capped
+     at 100% width on a portrait phone, so it cannot grow into the extra
+     height anyway. */
+
+  /* No orb to walk to a plate, so the walk-up prompt has nothing to say —
+     and it is `position: fixed` at the exact height the chips now occupy. */
+  .enterPrompt { display: none; }
+
+  .explorePointer { display: none; }
+  .exploreTouch { display: inline; }
+
   .srNav {
+    position: static;
+    transform: none;
     opacity: 1;
     pointer-events: auto;
-    bottom: var(--space-8);
-    width: 94vw;
+    width: 100%;
+    padding-inline: var(--gutter);
   }
   .srNav ol { gap: var(--space-2); max-width: none; }
+
+  /* The HUD title is the other half of the fit problem: at 320px the name
+     wrapped into the Index button and pushed the explore line down onto the
+     art. Compact the block rather than letting it grow. */
+  .titleBlock { right: 112px; }
+  .name { font-size: clamp(0.95rem, 4.4vw, 1.35rem); }
+  .rule { margin: var(--space-3) 0; }
+
+  /* On a short phone (320x568 is the worst case) title + art + 13 chips
+     genuinely exceed the viewport. Let the page scroll instead of clipping
+     the last row of destinations off the bottom. The stage takes over the
+     clipping job so the layers' -32px parallax bleed still can't escape. */
+  .world { overflow: visible; }
+  .stage { overflow: hidden; }
   .srNav a {
     display: inline-flex;
     align-items: center;
