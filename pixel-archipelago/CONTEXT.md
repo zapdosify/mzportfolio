@@ -3,8 +3,11 @@
 Everything below is **on `main`** (the perf branch was merged; the business work
 was committed straight to `main`). Working tree clean, `npm run build` green.
 
-Last updated at `0a40459`. Runtime deps: `react`, `react-dom`, `react-router`,
-`zustand`, `gsap`, and **`lenis`** (added in § 3).
+Last updated at `d5ebfea`. Runtime deps: `react`, `react-dom`, `react-router`,
+`zustand`, `gsap`, and **`lenis`** (added in § 3, extended to the design side in § 4).
+
+Both portfolios now share one motion vocabulary: `components/motion/` (`SplitWords`,
+`SectionHead`) and `hooks/` (`useLenis`, `lenisInstance`, `useMagnetic`, `useTilt`).
 
 ---
 
@@ -37,9 +40,9 @@ Merge commit `691ef66` brought in branch `perf/optimize-assets-and-code`:
   imports at all** (its `Lenis` import is type-only). Keep it that way. Check with:
   `grep -oE 'from"\./[A-Za-z0-9._-]+\.js"' dist/assets/index-*.js | sort -u` — after a
   build the entry chunk should list only `react-vendor` and `rolldown-runtime`.
-- Entry chunk is **57.48 KB gzip** as of `0a40459`. The "51 KB" in the CP2 row above is
-  the figure at `9840b63`, before the business case-study content landed — it is history,
-  not the current baseline.
+- Entry chunk is **57.53 KB gzip** as of `d5ebfea` — unchanged by both motion passes,
+  which is the point. The "51 KB" in the CP2 row above is the figure at `9840b63`, before
+  the business case-study content landed — it is history, not the current baseline.
 - `Colored_Archipelago.webp` is a **fully opaque** frame (black sky included). Any
   layer drawing it over the scene must be masked by `islands.webp`'s alpha (see
   `.colorReveal` / `.colorBurst` / `.colorBase` in `Landing.module.css`) or it
@@ -152,10 +155,12 @@ animate on `transform` only (`scaleX`/`scaleY`), so a page of charts never thras
 
 ### Motion system
 
-- **Lenis is the site's one smooth-scroll engine**, scoped to business mode and destroyed
-  on exit (`useLenis.ts`). A document-wide instance would fight `ExhibitScroll`,
-  `StoryScroll`, `BookScroll` and `OrbLayer` on the design side. Verified clean across
-  repeated mode switches.
+- **Lenis is the site's one smooth-scroll engine.** It runs in business mode
+  (`BusinessPortfolio`) and on the design side's interior pages (§ 4), and is destroyed
+  when either leaves. Verified clean across repeated mode switches.
+  *(This entry originally said a document-wide instance "would fight" the design side's
+  scroll components. That was a defensive assumption, not a measurement — § 4 tested it
+  and it is false.)*
 - **Every programmatic scroll in business mode must go through `scrollToInstant` /
   `smoothScrollTo`** (`lenisInstance.ts`). Lenis runs its own rAF loop, so a bare
   `window.scrollTo` is overwritten on the next frame and the page drifts back. This is why
@@ -184,3 +189,64 @@ animate on `transform` only (`scaleX`/`scaleY`), so a page of charts never thras
   whitespace and screen readers get word soup.
 - The magnetic CTA (`useMagnetic`) engages only for `(pointer: fine)`, is clamped to 14px,
   and releases on leave/blur/visibilitychange. It is purely additive.
+
+---
+
+## 4 · Design portfolio — interior motion pass
+
+| commit | what |
+|---|---|
+| `8f2f772` | `useInteriorMotion`, `useTilt`, `SectionHead`; `SplitWords` moved to `components/motion`; all four interior pages migrated; `useHeroReveal` deleted |
+| `d5ebfea` | hero-art sticky pin built, measured, and removed |
+
+Brief was the same as § 3 — cinematic motion, existing design untouched. Layout, colour,
+type and content are unchanged; the only visual edit is `overflow: hidden` on `.portrait`
+so the entrance push-in cannot overrun its rounded border.
+
+### Where the motion lives, and why
+
+`useInteriorMotion` is one shared choreography for CategoryPage, ProjectDetail, About and
+Contact: a composed hero sequence, kinetic headings, scroll reveals, staggered children,
+bounded hero-art parallax, and magnetic return controls.
+
+**Targets are opted in by data attribute, never by class name** — `[data-hero]`,
+`[data-hero-line]`, `[data-hero-title]`, `[data-hero-art]`, `[data-reveal]`,
+`[data-reveal-title]`, `[data-stagger]`, `[data-magnetic]`. ProjectDetail embeds
+ExhibitScroll, StoryScroll and BookScroll, each already running its own reveal; a broad
+`.section p` selector would put two systems on one opacity. Anything unattributed is left
+alone by design.
+
+**Scoped to the interior pages on purpose.** The landing is a single fixed screen
+(`overflow: hidden`, `scrollHeight === viewport`) that never scrolls, and it is in the
+eager entry chunk — mounting the engine app-wide would pull GSAP into first paint and
+break the § 1 rule. Interior pages are lazy and already imported GSAP, so they cost
+nothing extra. Entry chunk is unchanged at 57.53 kB gzip; the cost sits in
+ProjectDetail (10.70 → 10.91 kB gzip) and its three smaller siblings.
+
+### Interior-pass gotchas
+
+- ⚠️ **Never animate `transform` on an element that already has a CSS `transition` on
+  it.** `.card` (ProjectCard) and `.tile` (Gallery) both own their transform through an
+  authored hover — a 3px/2px lift on a 0.16s transition. Putting a GSAP `y` tween on the
+  same element strands the entrance part-finished: opacity arrives at 1 and the rise
+  freezes at `translate(0px, 24px)`, permanently. Two fixes are in place and both matter:
+  the entrance tweens carry `clearProps: "transform,opacity"` so GSAP hands the property
+  back on completion, and **there is no pointer tilt on cards or tiles** — their CSS hover
+  already is the micro-interaction. `useTilt` is applied only to `[data-hero-art]`, which
+  has no hover state, and whose *inner* image carries the parallax (different element, so
+  never the same property).
+- **Lenis and the bespoke scroll components coexist — this was tested, not assumed.**
+  ExhibitScroll drives its plate parallax from a native `window` scroll listener; Lenis
+  moves real document scroll, so the listener still fires. Confirmed live: `--plate-y`
+  changes across scroll positions and scenes keep revealing. Same for CategoryBanner.
+- **Route changes are fine.** react-router's `ScrollRestoration` and Lenis do not fight;
+  navigating project → category → project lands at scroll 0 each time with the engine
+  still attached.
+- **No hero pin.** See the note in `interior.module.css` above `.hero` — it was built,
+  measured at 77px of travel, and removed. StoryScroll (`position: sticky`) and
+  CategoryBanner (scroll parallax) already provide those two moments.
+- **There are no charts on the design side.** The brief asked for animated charts; the
+  data is prose only (`projects.ts` has body/process/gallery/story/book/exhibit and no
+  numeric series). Nothing was invented to satisfy it.
+- `useStaggerReveal` survives for Gallery and BookScroll, which own their containers.
+  `useHeroReveal` is gone — `useInteriorMotion` replaced every use.
