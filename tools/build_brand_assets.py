@@ -38,15 +38,22 @@ apple.alpha_composite(inset, (10, 10))
 apple.convert("RGB").save(OUT / "apple-touch-icon.png")
 
 # --- link preview ---------------------------------------------------------
+# JPEG, not PNG: lossless would be 637 kB against 154 kB here, and while
+# that clears LinkedIn's 5 MB cap, WhatsApp quietly drops previews over
+# ~300 kB. q95 rather than q90 because pixel art is precisely what JPEG
+# ringing damages — hard 1px edges — and the extra 50 kB is cheap.
+# Named og-card.jpg, not og-image.jpg: LinkedIn cached a negative verdict
+# against the old URL while it was briefly 404ing behind the CDN, and a
+# per-URL cache is only beatable with a URL it has never seen.
 # Master is 1731x909 (1.904) — the 1200x630 card ratio (1.905), so a straight
 # resize costs nothing.
 Image.open(SRC / "Link Preview.png").convert("RGB").resize(
     (1200, 630), Image.LANCZOS
-).save(OUT / "og-image.jpg", quality=90, optimize=True, progressive=True)
+).save(OUT / "og-card.jpg", quality=95, optimize=True, progressive=True)
 
 for f in sorted(OUT.glob("favicon*")) + [
     OUT / "apple-touch-icon.png",
-    OUT / "og-image.jpg",
+    OUT / "og-card.jpg",
 ]:
     if f.exists():
         print(f"{f.name:24} {f.stat().st_size / 1024:7.1f} KB")
