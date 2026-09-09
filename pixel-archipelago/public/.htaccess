@@ -46,7 +46,7 @@
   # rewriting the payload. Scoped deliberately to the share card and the
   # icons — the ~250 MB of project media under /media/ still gets optimized,
   # since no crawler has to parse those.
-  <FilesMatch "^(og-card\.jpg|apple-touch-icon\.png|favicon.*\.(png|ico))$">
+  <FilesMatch "^(landing\.jpg|apple-touch-icon\.png|favicon.*\.(png|ico))$">
     Header set Cache-Control "public, max-age=604800, no-transform"
   </FilesMatch>
 </IfModule>

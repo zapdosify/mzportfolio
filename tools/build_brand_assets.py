@@ -38,6 +38,11 @@ apple.alpha_composite(inset, (10, 10))
 apple.convert("RGB").save(OUT / "apple-touch-icon.png")
 
 # --- link preview ---------------------------------------------------------
+# BASELINE JPEG, never progressive. A progressive card (SOF2) is parsed
+# fine by browsers but LinkedIn's image pipeline reports "No image
+# found" for it — that cost a full debugging round here. Pillow writes
+# progressive only when asked, so this must stay explicit.
+#
 # JPEG, not PNG: lossless would be 637 kB against 154 kB here, and while
 # that clears LinkedIn's 5 MB cap, WhatsApp quietly drops previews over
 # ~300 kB. q95 rather than q90 because pixel art is precisely what JPEG
@@ -49,11 +54,17 @@ apple.convert("RGB").save(OUT / "apple-touch-icon.png")
 # resize costs nothing.
 Image.open(SRC / "Link Preview.png").convert("RGB").resize(
     (1200, 630), Image.LANCZOS
-).save(OUT / "og-card.jpg", quality=95, optimize=True, progressive=True)
+).save(
+    OUT / "landing.jpg",
+    quality=95,
+    optimize=True,
+    progressive=False,  # see note above — must stay baseline
+    subsampling=2,  # 4:2:0, the most widely handled
+)
 
 for f in sorted(OUT.glob("favicon*")) + [
     OUT / "apple-touch-icon.png",
-    OUT / "og-card.jpg",
+    OUT / "landing.jpg",
 ]:
     if f.exists():
         print(f"{f.name:24} {f.stat().st_size / 1024:7.1f} KB")
