@@ -310,6 +310,18 @@
   .orbEmit, .orbEmit2 { display: none; }
 }
 
+/* ---------- Island hit-areas ---------- */
+/* Same wrapper/child pointer-events split as .plates just below: the
+   full-inset wrapper stays click-through so gaps between boxes (and the
+   centre orb) are unaffected, and only each hand-placed box is a target. Sits
+   below the plates (z-index 4) and the centre orb (5) so both stay clickable
+   even where a box's edge runs under either — plain rectangles over
+   irregular pixel art can't help but overlap a neighbour's box slightly. No
+   visible affordance: it's a mouse/touch convenience over what the picture
+   already reads as, not a new piece of UI. */
+.islandHits { position: absolute; inset: 0; z-index: 3; pointer-events: none; }
+.islandHit { position: absolute; pointer-events: auto; touch-action: manipulation; }
+
 /* ---------- Nameplates ---------- */
 /* The ul spans the whole layer; making only the plates themselves hit-testable
    keeps the gaps (incl. the centre orb) clickable. */
@@ -650,7 +662,8 @@
   .colorBase,
   .colorReveal,
   .colorBurst,
-  .centerOrb {
+  .centerOrb,
+  .islandHits {
     display: none;
   }
   .bg { object-fit: cover; }

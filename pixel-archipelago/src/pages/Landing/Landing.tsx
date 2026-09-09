@@ -36,6 +36,39 @@ const PLATE_Y: Record<string, number> = {
   "t-mobile": 76.1, "about": 76.9, "contact": 94.4,
 };
 
+// Clickable hit-area over each island's GRAPHIC (not just its nameplate),
+// as [x0, y0, x1, y1] % of the 1672×941 stage — same frame as PLATE_X/Y.
+// Users were clicking the pixel-art building itself and nothing happened;
+// this makes the whole island act like its nameplate.
+//
+// The islands can't be split into separate clickable elements — they're one
+// flattened composite (islands.webp) with bridges/walkways deliberately
+// connecting every neighbour (see §4's "hard-won decisions"), so there's no
+// per-island DOM node to attach a click to. These boxes are a hand-placed
+// approximation instead: measured against islands.webp's alpha channel with
+// tools/measure_island_boxes.py (grows a window outward from each nameplate
+// until it stops clipping content), then eyeballed against a debug render
+// where automated growth ran away through a bridge into a neighbour. Rerun
+// that script and re-check the render if the art or PLATE_X/Y ever change.
+//
+// A little overlap between adjacent boxes is fine — it only lands on a
+// shared walkway/gap, never on two islands' actual artwork at once.
+const ISLAND_HIT: Record<string, [number, number, number, number]> = {
+  "app-design": [39, 1, 59, 29],
+  "website-design": [18, 8, 40, 29],
+  "visual-artwork": [55, 8, 77, 29],
+  "manifesto-design": [73, 1, 93, 33],
+  "exhibition-design": [9, 28, 30, 50],
+  "poster-design": [28, 28, 47, 50],
+  "animation": [49, 28, 68, 50],
+  "documentary": [66, 30, 87, 53],
+  "renders": [13, 50, 34, 72],
+  "3d-lettering": [26, 50, 45, 72],
+  "t-mobile": [53, 52, 72, 75],
+  "about": [67, 53, 89, 76],
+  "contact": [36, 66, 63, 93],
+};
+
 // Parallax depth: background barely moves, world layer moves a little more.
 const F_BG = 0.16;
 const F_WORLD = 0.5;
@@ -329,6 +362,34 @@ export default function Landing() {
             <span className={styles.orbGlow} aria-hidden="true" />
             <span className={styles.orbCore} aria-hidden="true" />
           </button>
+
+          {/* Clickable region over each island's own graphic — see
+              ISLAND_HIT above. `aria-hidden`: the nameplate `<Link>` below
+              is the one accessible/keyboard destination for this category,
+              so these divs are a mouse/touch convenience layered on top of
+              it, not a second route to the same place for assistive tech. */}
+          <div className={styles.islandHits} aria-hidden="true">
+            {categories.map((c) => {
+              const box = ISLAND_HIT[c.id];
+              if (!box) return null;
+              const [x0, y0, x1, y1] = box;
+              return (
+                <div
+                  key={c.id}
+                  className={styles.islandHit}
+                  style={{
+                    left: `${x0}%`,
+                    top: `${y0}%`,
+                    width: `${x1 - x0}%`,
+                    height: `${y1 - y0}%`,
+                  }}
+                  onMouseEnter={() => setHoverId(c.id)}
+                  onMouseLeave={() => setHoverId(null)}
+                  onClick={() => go(c.route)}
+                />
+              );
+            })}
+          </div>
 
           <ul className={styles.plates}>
             {categories.map((c, i) => {

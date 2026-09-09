@@ -26,9 +26,12 @@ Verified at that commit, not assumed:
 | entry chunk | 57.53 kB gzip — unchanged across both motion passes |
 | eager critical path | `index` + `react-vendor` + `rolldown-runtime`, **no gsap** |
 
-⚠️ **There is no git remote. 72 commits exist only on this machine** — the whole project
-history, both portfolios and every asset. `git remote -v` is empty and nothing has ever
-been pushed. Setting up a remote is the highest-value thing to do before more work lands.
+✅ **Backed up.** `origin` → github.com/zapdosify/mzportfolio, `main` pushed and tracking.
+Raw source media (`videos/`, `images/`, `Website Redesign Assets/`, `Individual Elements/`
+at the project root — never used by the deployed site) was stripped from history first,
+since one file exceeded GitHub's 100MB hard limit; `.git` went 1.7GB → 778MB. Those
+folders are still on disk, just gitignored. Commit hashes from before that rewrite (e.g.
+the `e783919`/`72 commits` this section used to cite) no longer exist — don't chase them.
 
 ### Picking up from here
 
@@ -426,3 +429,69 @@ Verified at 320/375/390/430: no horizontal overflow, no truncated labels,
 rows full-width with consistent 58px height. At 768 and 1440 the
 archipelago, plates, orb canvas, `cursor: none` and the hidden `srNav` are
 all exactly as they were.
+
+---
+
+## 6 · Landing: the island graphic is now clickable, not just its nameplate
+
+A live-user pain point: people were clicking the pixel-art building itself
+(the picture) rather than the small nameplate chip below it, and nothing
+happened. Fixed by adding a mouse/touch hit-area over each island's own
+artwork, in `Landing.tsx` (`ISLAND_HIT`) + `Landing.module.css`
+(`.islandHits`/`.islandHit`). Desktop/tablet only (≥640px) — see below.
+
+### Why this couldn't just be "make the island clickable"
+
+The islands are one flattened composite (`islands.webp`), not separate
+per-island elements — deliberately, per §4's "hard-won decisions": bridges
+and walkways connect every neighbour, and per-island sprites lost them once
+before. There's no DOM node per island to attach a click handler to.
+
+Tried automated segmentation first and it doesn't work here: a naive
+alpha-channel flood-fill finds one giant connected blob (everything the
+bridges touch) plus a few isolated scraps — confirmed the composite really
+is one continuous shape, not thirteen separate ones. A local-window growth
+algorithm (start a small box at each nameplate, grow outward until it stops
+clipping opaque content) does better but still runs away through a bridge
+or staircase cable into a neighbour if left unsupervised, because a cable
+*is* "opaque content near the edge," same as the island itself.
+
+**The actual method**: `tools/measure_island_boxes.py` runs that growth
+pass and renders a debug overlay; the output is then hand-corrected against
+the render where a box visibly swallowed a neighbour. The values hardcoded
+into `ISLAND_HIT` are that corrected result — the script is a calibration
+aid to rerun if the art or `PLATE_X`/`PLATE_Y` ever change, not a generator
+whose output can be trusted unchecked.
+
+### How it's wired
+
+- One wrapper (`.islandHits`, `pointer-events: none`, like `.plates`) holds
+  13 absolutely-positioned boxes (`.islandHit`, `pointer-events: auto`) —
+  same split as the existing nameplate pattern, so gaps between boxes and
+  the centre orb stay click-through.
+- `z-index: 3` — below the nameplates (4) and centre orb (5), so both stay
+  clickable even where a box's edge runs under either.
+- Hovering a box sets `hoverId` exactly like hovering its nameplate does:
+  the plate highlights and the bottom `enterPrompt` bar appears. Clicking
+  calls the same `go(c.route)` the nameplate's own click handler uses —
+  same warp transition, same everything. Verified live: hovering and
+  clicking a picture (not its label) behaves identically to the nameplate
+  for `website-design`, `contact`, `renders`, and `3d-lettering` (the last
+  two chosen because their boxes have the widest overlap with each other,
+  to confirm the boundary doesn't send a click to the wrong category).
+- `aria-hidden="true"` on the whole group. The nameplate `<Link>` remains
+  the one accessible/keyboard destination for each category; these divs are
+  a mouse/touch convenience layered over what the picture already reads as,
+  not a second route to the same place for assistive tech.
+- Hidden below 640px (`.islandHits { display: none }`, same rule as
+  `.islandsImg`/`.centerOrb` etc. in §5) — the archipelago art itself is
+  hidden there, so there is nothing to click on and no reason to carry
+  invisible hit-boxes over the mobile vertical index.
+- A little box-to-box overlap is fine and expected — plain rectangles over
+  irregular pixel art can't help it — as long as it lands on a shared
+  walkway/gap and never on two islands' actual artwork at once. Checked
+  visually against the debug render before committing to the values.
+
+tsc, lint (5 pre-existing warnings) and build all green; entry chunk
+57.91 → 58.13 kB gzip (the new data + JSX), still only `react-vendor` and
+`rolldown-runtime`.
