@@ -495,3 +495,52 @@ whose output can be trusted unchecked.
 tsc, lint (5 pre-existing warnings) and build all green; entry chunk
 57.91 → 58.13 kB gzip (the new data + JSX), still only `react-vendor` and
 `rolldown-runtime`.
+
+## 7 · Favicon + link-preview card — 9 September 2026
+
+The site had shipped with the scaffold's placeholder `favicon.svg` and no
+`og:image` at all, so every shared link rendered as a bare text card.
+
+Both masters live outside the repo, in `~/Desktop/Mobile Game Concept/`
+(`Favicon.png`, 1254² RGBA orb; `Link Preview.png`, 1731×909 MZN monogram
+card). Everything the site serves is **derived** — regenerate with:
+
+```bash
+py tools/build_brand_assets.py
+```
+
+That script (at the project root, not in `pixel-archipelago/`) writes into
+`public/`: `favicon.ico` (16/32/48), `favicon-16/32/192.png`,
+`apple-touch-icon.png`, `og-image.jpg`. Don't hand-edit those files.
+
+### Why the script does what it does
+
+- **The favicon is cropped before it's scaled.** The master's orb sits inside
+  a very wide, very faint glow halo — a full-frame alpha `getbbox()` returns
+  almost the whole 1254² canvas, which would shrink the actual mark to a
+  couple of pixels at 16px. So it thresholds alpha at `> 12` to find the
+  *visible* art (908×873), squares that on its centre, and pads ~6%. The
+  16px result still reads as an orb-in-a-ring; checked as a 4× NEAREST
+  contact sheet, not assumed.
+- **`apple-touch-icon.png` bakes in `#050505`** (the same value as
+  `<meta name="theme-color">`) and insets the art by 10px. iOS composites a
+  transparent touch icon onto white, which would blow out this artwork.
+- **`og-image.jpg` is a straight resize.** The master is 1.904:1 and the card
+  standard is 1200×630 = 1.905:1, so there's nothing to crop. JPEG q90
+  progressive lands at ~103 kB, well inside the ~300 kB most scrapers fetch.
+- **`favicon-512.png` was deliberately dropped.** There's no web manifest to
+  reference it and 287 kB of unused PNG isn't worth shipping. Add it back
+  (`for size in (...)`) if a manifest ever lands.
+
+### The absolute-URL dependency
+
+`og:image` / `og:url` / `twitter:image` are hardcoded to
+`https://mznportfolio.com/…`. Scrapers won't resolve a root-relative
+`og:image`, so these can't be path-only. Verified the domain is live and
+serving this build (`curl` → 200, correct `<title>`). **If the site ever moves
+or gains a canonical domain, these four `index.html` lines must move with
+it** — nothing else in the codebase knows the site's own URL.
+
+`favicon.svg` was deleted rather than left in place; nothing referenced it.
+Build green; the icon/card files are static `public/` copies, so no chunk
+changed.
