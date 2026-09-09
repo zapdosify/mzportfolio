@@ -35,6 +35,22 @@
   </FilesMatch>
 </IfModule>
 
+<IfModule mod_headers.c>
+  # Hostinger's CDN transcodes images to WebP for any client whose Accept
+  # header permits it, at the same .jpg/.png URL and with no Vary: Accept.
+  # LinkedIn's crawler sends `Accept: image/webp`, gets WebP back, and
+  # reports "no image found" — its previews don't support the format. That
+  # is what broke the link card; it was never a stale LinkedIn cache.
+  #
+  # `no-transform` is the RFC 9111 directive forbidding an intermediary from
+  # rewriting the payload. Scoped deliberately to the share card and the
+  # icons — the ~250 MB of project media under /media/ still gets optimized,
+  # since no crawler has to parse those.
+  <FilesMatch "^(og-image\.jpg|apple-touch-icon\.png|favicon.*\.(png|ico))$">
+    Header set Cache-Control "public, max-age=604800, no-transform"
+  </FilesMatch>
+</IfModule>
+
 <IfModule mod_expires.c>
   ExpiresActive On
   ExpiresByType image/jpeg "access plus 7 days"
