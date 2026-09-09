@@ -110,6 +110,13 @@
     font-size: var(--fs-12);
     white-space: nowrap;
   }
+  /* With .role hidden the identity link collapses to one 12px line. It is
+     the home link on every interior page — give it a thumb's worth of box
+     without moving the text off its baseline. */
+  .identity {
+    justify-content: center;
+    min-height: var(--tap);
+  }
   .actionLong {
     display: none;
   }

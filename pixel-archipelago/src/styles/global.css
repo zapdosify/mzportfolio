@@ -108,6 +108,15 @@ h1, h2, h3, h4, h5, h6 {
 .skip-link:focus {
   top: var(--space-4);
 }
+/* It is only reachable by keyboard, but a keyboard user on a tablet may
+   well finish the gesture with a finger. */
+@media (max-width: 640px) {
+  .skip-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--tap);
+  }
+}
 
 .container {
   width: 100%;

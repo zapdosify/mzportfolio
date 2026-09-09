@@ -439,6 +439,26 @@
      of wildly different heights sitting next to each other. Read them one at
      a time instead. */
   .process { grid-template-columns: 1fr; }
+
+  /* Touch targets. These are all correctly sized *type* — the problem is
+     only the height of the box around it, so each grows without the drawing
+     changing. Breadcrumb links are inline in a sentence, so they get the
+     hit area rather than a taller line. */
+  .chip,
+  .returnBtn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: var(--tap);
+  }
+  .breadcrumb a {
+    position: relative;
+  }
+  .breadcrumb a::after {
+    content: "";
+    position: absolute;
+    inset: -14px -6px;
+  }
 }
 
 @media (max-width: 430px) {

@@ -12,8 +12,10 @@ Runtime deps: `react`, `react-dom`, `react-router`, `zustand`, `gsap`, and **`le
 
 ## 0 · State at the last pause — 8 September 2026
 
-Paused at `e783919`, mid-project but at a clean stopping point. Verified at that commit,
-not assumed:
+Section 5 (the mobile pass) is the most recent work. The table below is the
+verification from the *earlier* pause at `e783919`; section 5 carries its own.
+
+Verified at that commit, not assumed:
 
 | check | result |
 |---|---|
@@ -285,3 +287,94 @@ ProjectDetail (10.70 → 10.91 kB gzip) and its three smaller siblings.
   numeric series). Nothing was invented to satisfy it.
 - `useStaggerReveal` survives for Gallery and BookScroll, which own their containers.
   `useHeroReveal` is gone — `useInteriorMotion` replaced every use.
+
+---
+
+## 5 · Mobile optimization pass
+
+| commit | what |
+|---|---|
+| `3eaa8f4` | breakpoint scale + `--gutter`/`--tap` tokens; header, footer, landing |
+| `59a0eb4` | content modules: cards, galleries, process, matrix, WordField |
+| (this)   | remaining touch targets, landing clearances, sweep fixes |
+
+Brief was to make both portfolios feel designed for a phone rather than
+shrunk onto one, without touching the desktop design. **Every rule added is
+inside a phone-tier media query**, and `--gutter` resolves to `--space-6` —
+its previous hard-coded value — above 640px. Verified unchanged at 1440:
+gutter 24px, header 60px/112px, 4-column card grid, plates shown, srNav
+hidden, full "← Return to World", role and breadcrumb visible.
+
+### The breakpoint scale (documented in `tokens.css`)
+
+`1180 / 900 / 640 / 430 / 360`. Before this there were eight ad-hoc values
+and **nothing at all below 560px**, so 320, 375, 390 and 430 all rendered
+identically. The two `620px` tiers migrated onto 640. `760` (landing world
+map, `--switch-clear`), `560` (ContactDialog, ModeSwitch), `860`/`1000`
+(business page) are load-bearing where they sit and are named in the token
+file as legacy — migrate one only with a reason, not for tidiness.
+
+### What was actually broken, and why
+
+- **The landing at 320×568 put the chip nav on top of the archipelago.**
+  `.srNav` was `position: absolute; bottom:` against `.world`, which only
+  works while 13 chips fit in the gap under a letterboxed stage. It is a
+  real grid row now, so they cannot collide; slack is spread with
+  `align-content: space-evenly` (title / art / chips read as three bands);
+  the page scrolls when the chips genuinely don't fit, with `.stage` taking
+  over clipping so the layers' −32px parallax bleed still can't escape.
+- ⚠️ **Do not give `.stage` a `height` on mobile.** The first attempt set
+  `height: 100%` to let the art grow. That makes `height` definite, which
+  silently disables `aspect-ratio`: the box went to 390×382 (1.02) instead
+  of 1.777 and only `object-fit: contain` kept the art from stretching. It
+  buys nothing anyway — the stage is capped at 100% width on a portrait
+  phone, so it cannot use the extra height.
+- **The interior header collapsed below 640px** — the name wrapped into
+  "Return to World", which wrapped into Index. Each element now sheds what
+  it can afford: the role line, then "Return to", then the word "Index".
+  Both keep full `aria-label`s.
+- **The header backdrop was letting scrolled content through its own text.**
+  Its soft bottom edge is tuned for a 60px desktop header; the mode-switch
+  band pushes the row ~52px lower on a phone, into the faded part. The cover
+  now holds to 80% below 640px.
+- **Two-up grids.** At 390px the phone rule left project cards 165px wide
+  (titles over three lines) and artwork tiles 124px tall. One column gives
+  both ~350px. Same for the process stepper, which was two 169px columns of
+  ~24 characters.
+- **The business evaluation matrix** is 620px of three prose columns — a
+  sideways scroll nested in a vertical one, severing every sentence. Each
+  row is a labelled block below 640px. ⚠️ `display: block` drops a table out
+  of the accessibility tree, so `role="table|row|rowheader|cell"` is
+  declared explicitly and the column headings ride on `data-label`.
+- **The WordField** was still too loud at 0.5 on a phone: its near tier sets
+  at ~37px, so a word crossing a paragraph read as a competing line of text.
+  Desktop masks the field away from the copy; a phone cannot, so it gives up
+  presence instead (0.26, near tiers capped).
+- **"Move to Explore" is an instruction for a cursor.** On touch it reads
+  "Tap to Explore" (both decorative/aria-hidden; the real instructions are
+  in `.srNav`'s label). The walk-up enter prompt is hidden — no orb to walk,
+  and it was `position: fixed` at exactly the chips' height.
+- **Touch targets.** Footer social links were 19px, the header identity link
+  12px, breadcrumb links 15px, chips/résumé button 37–41px. All 44px now
+  (inline breadcrumb links get an inset hit area rather than a taller line).
+
+### Verified
+
+320×568, 375×667, 390×844, 430×932, 768×1024, 1440×900 — landing, category,
+project detail, the book/story/exhibit renderers, About, Contact, Index
+menu, Lightbox, contact dialog, business home and all four case studies.
+Zero horizontal document overflow at every width. Only sub-44px control left
+is the mode switch's inner button (38px) inside a **46px pill** — the
+existing, deliberate geometry.
+
+Two things that look like bugs and are not: `CategoryBanner`'s inner layer
+overhangs the viewport by ~16px (intentional `scale(1.08)` parallax room,
+clipped by `overflow: hidden`), and the landing art appears to stop short of
+the right edge at 768 (the artwork's own starfield fading —
+`elementFromPoint` confirms the stage reaches the edge).
+
+Not changed, deliberately: the landing art is not cropped to a taller aspect
+on portrait phones. It would make the islands bigger, but the colour layers
+(`.colorBase` / `.colorReveal` / `.colorBurst`) are masked by
+`islands.webp`'s alpha at the stage's own aspect, and re-fitting them is a
+real risk to the one thing on the page that must not break.

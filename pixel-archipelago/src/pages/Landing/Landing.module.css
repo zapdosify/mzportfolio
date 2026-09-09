@@ -626,7 +626,7 @@
        letterboxed image floating in a void. */
     align-content: space-evenly;
     row-gap: var(--space-4);
-    padding-top: calc(var(--switch-clear, 0px) + clamp(104px, 16vh, 128px));
+    padding-top: calc(var(--switch-clear, 0px) + clamp(116px, 17vh, 132px));
     padding-bottom: var(--space-6);
   }
   /* .stage keeps its own width-led sizing. Giving it height:100% here made
