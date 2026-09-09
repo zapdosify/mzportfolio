@@ -1,0 +1,44 @@
+# Hostinger (Apache/LiteSpeed) server config. This repo also carries
+# `vercel.json` and `public/_redirects`, which do the same job on Vercel and
+# Netlify respectively — both are inert here, which is why deep links were
+# 404ing on the live site.
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+
+  # 1. Anything that exists on disk — /assets/*, /media/*, og-image.jpg,
+  #    the favicons — is served as itself.
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^ - [L]
+
+  # 2. A missing *file* stays a 404 rather than silently becoming the app
+  #    shell. Without this, a dropped og-image.jpg would answer 200 with
+  #    HTML and a scraper would just report "image unavailable" with no clue
+  #    why. Only real routes should fall through to React Router.
+  RewriteRule \.(js|mjs|css|map|png|jpe?g|gif|svg|webp|avif|ico|mp4|webm|woff2?|ttf|otf|docx|pdf|txt|xml|json)$ - [R=404,L]
+
+  # 3. Everything else is a client-side route (/about, /design/<project>, …).
+  #    Serve the shell with a 200 so both visitors and link-preview crawlers
+  #    get real HTML with real meta tags.
+  RewriteRule ^ /index.html [L]
+</IfModule>
+
+<IfModule mod_headers.c>
+  # index.html carries the og: tags and the hashed asset names, so a stale
+  # cached copy means both a stale link preview and a stale build. Always
+  # revalidate it. The hashed files it points at are content-addressed and
+  # safe to cache forever.
+  <FilesMatch "^index\.html$">
+    Header set Cache-Control "public, max-age=0, must-revalidate"
+  </FilesMatch>
+</IfModule>
+
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType image/jpeg "access plus 7 days"
+  ExpiresByType image/png "access plus 7 days"
+  ExpiresByType image/webp "access plus 7 days"
+  ExpiresByType video/mp4 "access plus 7 days"
+</IfModule>
