@@ -10,3 +10,11 @@
   pointer-events: none;
   cursor: none; /* the orb itself is the cursor */
 }
+
+/* The orb IS the cursor. Below 640px the landing has no cursor to follow and
+   no archipelago to point at — the destinations are a vertical index — so the
+   canvas has nothing to say and would otherwise sit there glowing at whatever
+   position it was last given. */
+@media (max-width: 640px) {
+  .canvas { display: none; }
+}

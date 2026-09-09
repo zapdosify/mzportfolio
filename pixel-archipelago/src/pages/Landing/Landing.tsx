@@ -1,4 +1,13 @@
-import { Suspense, lazy, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  Suspense,
+  lazy,
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { Link, useNavigate } from "react-router";
 import { categories, categoryById } from "../../data/categories";
 import { identity } from "../../data/siteContent";
@@ -47,6 +56,7 @@ export default function Landing() {
   const navigate = useNavigate();
   const stageRef = useRef<HTMLDivElement>(null);
   const revealRef = useRef<HTMLImageElement>(null);
+  const navListRef = useRef<HTMLOListElement>(null);
   const [leaving, setLeaving] = useState(false);
   const leavingRef = useRef(false); // guards against double navigation
   // Full-island colour burst fired by clicking the centre orb.
@@ -85,6 +95,52 @@ export default function Landing() {
   // Tracked separately from the phase: the overlay has to stay mounted through
   // its own crossfade after the landing has already been released.
   const [introMounted, setIntroMounted] = useState(introFirstRun);
+
+  /* ------------------------------------------------------------------ *
+   * Mobile index scroll-reveal
+   *
+   * Below 640px the archipelago steps aside and the 13 destinations become
+   * a vertical index (see Landing.module.css). Each row fades and lifts in
+   * as it arrives.
+   *
+   * IntersectionObserver, not GSAP, on purpose: Landing is the eager entry
+   * chunk, and importing GSAP here would drag its 44 KB onto the critical
+   * path of the site's first paint. See the perf rule in CONTEXT §1.
+   *
+   * The rows are armed HERE rather than in CSS, so their resting state is
+   * the finished one: no JS, no observer, or an early bail all leave a
+   * complete, readable index instead of a blank column.
+   * ------------------------------------------------------------------ */
+  useLayoutEffect(() => {
+    const list = navListRef.current;
+    if (!list || typeof IntersectionObserver === "undefined") return;
+    if (!window.matchMedia("(max-width: 640px)").matches) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    const rows = Array.from(list.children) as HTMLElement[];
+    // Arm before paint, so a row is never seen in place and then hidden.
+    for (const row of rows) row.dataset.navReveal = "";
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        // Rows already on screen at load arrive together, so stagger within
+        // the batch. A row scrolled to on its own is a batch of one and gets
+        // no delay — the stagger is a grouping cue, not a queue to sit in.
+        let i = 0;
+        for (const entry of entries) {
+          if (!entry.isIntersecting) continue;
+          const row = entry.target as HTMLElement;
+          row.style.transitionDelay = `${Math.min(i, 7) * 55}ms`;
+          row.dataset.navReveal = "in";
+          io.unobserve(row);
+          i += 1;
+        }
+      },
+      { threshold: 0.15, rootMargin: "0px 0px -8% 0px" },
+    );
+    for (const row of rows) io.observe(row);
+    return () => io.disconnect();
+  }, []);
 
   // Marked as soon as it starts, so navigating away mid-intro doesn't replay it.
   useEffect(() => {
@@ -427,7 +483,7 @@ export default function Landing() {
       {/* Accessible destination list (keyboard-reachable) */}
       <nav className={styles.srNav} aria-label="All destinations">
         <h2 className="sr-only">Portfolio destinations</h2>
-        <ol>
+        <ol ref={navListRef}>
           {categories.map((c) => (
             <li key={c.id}>
               <Link

@@ -601,87 +601,150 @@
   .role { margin-bottom: var(--space-3); }
 }
 
-/* ---------- Small screens: plates become a chip grid ---------- */
-/* 13 nameplates cannot sit on a ~375px stage without occluding each other
-   and the art. Below 640px the archipelago stays as the visual hero and the
-   (already keyboard-accessible) srNav becomes the visible navigation — a
-   wrapped grid of plate-styled chips beneath the stage. */
+/* ---------- Phones: the landing becomes a vertical index ---------- */
+/* The archipelago is a 1672x941 composition. Letterboxed onto a portrait
+   phone it can only ever be a ~200px-tall stamp — too small to read as the
+   explorable world it is on desktop, and it pushed the actual navigation
+   below the fold. So on phones the art steps aside: the void it sits in
+   stays as a fixed starfield backdrop, and the 13 destinations become a
+   full-width vertical index scrolling over it.
+
+   Desktop is untouched — everything here is inside this query. */
 @media (max-width: 640px) {
   .plates { display: none; }
   .legend { display: none; }
-  /* leave room for the name to wrap instead of running under INDEX */
-  .titleBlock { right: 128px; }
-
-  /* The chip nav stops being an overlay and becomes a real row.
-     It used to be `position: absolute; bottom: …` against .world, which
-     works only while the chips happen to fit in the gap under a letterboxed
-     stage. They don't on a short phone: at 320x568 the six wrapped rows
-     climbed straight over the archipelago. As a grid row the two can never
-     collide, and the stage takes exactly the height that's left. */
-  .world {
-    grid-template-rows: auto auto;
-    justify-items: center;
-    /* Rather than pool all the slack above the art, spread it evenly:
-       title / art / chips end up as three considered bands instead of a
-       letterboxed image floating in a void. */
-    align-content: space-evenly;
-    row-gap: var(--space-4);
-    padding-top: calc(var(--switch-clear, 0px) + clamp(116px, 17vh, 132px));
-    padding-bottom: var(--space-6);
-  }
-  /* .stage keeps its own width-led sizing. Giving it height:100% here made
-     `height` definite, which silently disables `aspect-ratio` — the box went
-     to 390x382 (1.02) instead of 1.777 and only `object-fit: contain` kept
-     the art from stretching. It bought nothing either: the stage is capped
-     at 100% width on a portrait phone, so it cannot grow into the extra
-     height anyway. */
-
-  /* No orb to walk to a plate, so the walk-up prompt has nothing to say —
-     and it is `position: fixed` at the exact height the chips now occupy. */
   .enterPrompt { display: none; }
+
+  /* One flowing column: title, explore label, then the index. */
+  .world {
+    display: block;
+    overflow: visible;
+    /* the orb was the cursor; with it gone, give the pointer back */
+    cursor: auto;
+    padding-top: calc(var(--switch-clear, 0px) + clamp(112px, 16vh, 128px));
+    padding-bottom: var(--space-16);
+  }
+  .world a,
+  .world button { cursor: pointer; }
+
+  /* The stage stops being a laid-out element and becomes the backdrop:
+     viewport-fixed, so the index scrolls over an unmoving starfield. */
+  .stage {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    margin: 0;
+    aspect-ratio: auto;
+    overflow: hidden;
+    z-index: 0;
+    pointer-events: none;
+  }
+  /* Only the void survives. `.bg` is the starfield; everything else is the
+     archipelago itself or lighting that belongs to it.
+     NOTE: .centerOrb is display:none deliberately — Intro's measureOrb()
+     falls back to the viewport centre on a zero-width rect, which is
+     exactly where the galaxy should collapse on a phone. */
+  .islandsImg,
+  .colorBase,
+  .colorReveal,
+  .colorBurst,
+  .centerOrb {
+    display: none;
+  }
+  .bg { object-fit: cover; }
 
   .explorePointer { display: none; }
   .exploreTouch { display: inline; }
 
+  /* ---- the index ---- */
   .srNav {
-    position: static;
+    /* The base rule centres it with `left: 50%` + a -50% translate. Both
+       have to be undone, not just the transform, or `left` shoves the
+       whole column half a viewport to the right. */
+    position: relative;
+    left: auto;
+    right: auto;
+    bottom: auto;
     transform: none;
+    z-index: 1;
     opacity: 1;
     pointer-events: auto;
     width: 100%;
+    margin-top: clamp(24px, 5vh, 44px);
     padding-inline: var(--gutter);
   }
-  .srNav ol { gap: var(--space-2); max-width: none; }
-
-  /* The HUD title is the other half of the fit problem: at 320px the name
-     wrapped into the Index button and pushed the explore line down onto the
-     art. Compact the block rather than letting it grow. */
-  .titleBlock { right: 112px; }
-  .name { font-size: clamp(0.95rem, 4.4vw, 1.35rem); }
-  .rule { margin: var(--space-3) 0; }
-
-  /* On a short phone (320x568 is the worst case) title + art + 13 chips
-     genuinely exceed the viewport. Let the page scroll instead of clipping
-     the last row of destinations off the bottom. The stage takes over the
-     clipping job so the layers' -32px parallax bleed still can't escape. */
-  .world { overflow: visible; }
-  .stage { overflow: hidden; }
+  .srNav ol {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 10px;
+    max-width: none;
+  }
+  .srNav li { min-width: 0; }
   .srNav a {
-    display: inline-flex;
+    display: flex;
     align-items: center;
-    min-height: 44px; /* comfortable touch target */
-    padding: 7px 12px;
+    width: 100%;
+    min-height: 58px;
+    padding: 0 var(--space-4);
     touch-action: manipulation;
-    background: #070707;
+    background: rgba(7, 7, 7, 0.82);
+    backdrop-filter: blur(2px);
     border: 1px solid var(--border-dark);
     border-radius: 3px;
-    font-size: 0.6rem;
-    letter-spacing: 0.1em;
+    font-size: 0.66rem;
+    letter-spacing: 0.14em;
     color: var(--text-secondary);
+    /* the labels are short, but never let one break the row */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: border-color var(--dur-fast) var(--ease-out),
+      color var(--dur-fast) var(--ease-out),
+      background-color var(--dur-fast) var(--ease-out);
   }
-  .srNav a:active,
+  /* Touch has no hover, so the pressed and focused states carry the whole
+     affordance. */
+  .srNav a:active {
+    border-color: var(--white);
+    color: var(--white);
+    background: rgba(20, 20, 20, 0.92);
+  }
   .srNav a:focus-visible {
     border-color: var(--white);
     color: var(--white);
+  }
+
+  /* ---- scroll reveal ---- */
+  /* Armed by JS, never by CSS: the resting state is the FINISHED state, so
+     no JS (or a failed observer) leaves a complete, readable index rather
+     than a blank column. Landing.tsx adds data-nav-reveal="" to arm each
+     row and flips it to "in". Same rule as the business page's
+     [data-reveal]. */
+  .srNav li[data-nav-reveal] {
+    opacity: 0;
+    transform: translateY(14px);
+    transition: opacity 620ms var(--ease-out), transform 620ms var(--ease-out);
+  }
+  .srNav li[data-nav-reveal="in"] {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* The HUD title shares the row with the Index button. */
+  .titleBlock { right: 112px; }
+  .name { font-size: clamp(0.95rem, 4.4vw, 1.35rem); }
+  .rule { margin: var(--space-3) 0; }
+}
+
+/* Motion is opt-in. The reveal is never armed under reduced motion (the
+   effect bails), but pin the finished state here too so a mid-session
+   preference change can't strand a row part-way through its transition. */
+@media (max-width: 640px) and (prefers-reduced-motion: reduce) {
+  .srNav li[data-nav-reveal] {
+    opacity: 1;
+    transform: none;
+    transition: none;
   }
 }

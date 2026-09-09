@@ -378,3 +378,51 @@ on portrait phones. It would make the islands bigger, but the colour layers
 (`.colorBase` / `.colorReveal` / `.colorBurst`) are masked by
 `islands.webp`'s alpha at the stage's own aspect, and re-fitting them is a
 real risk to the one thing on the page that must not break.
+
+### Follow-up: the landing became a vertical index below 640px
+
+The owner's call, and it supersedes the "keep the archipelago as the visual
+hero" reasoning above. Letterboxed onto a portrait phone the 1672×941
+composition can only be a ~200px stamp — too small to read as an explorable
+world, and it pushed the navigation below the fold. So on phones:
+
+- **The archipelago is hidden** (`.islandsImg`, `.colorBase`,
+  `.colorReveal`, `.colorBurst`, `.centerOrb`). Only `.bg` — the starfield
+  void — survives, and `.stage` becomes `position: fixed; inset: 0` so the
+  index scrolls over an unmoving backdrop. That also retires the cropping
+  question above: there is no art left to crop.
+- **The 13 destinations are a full-width vertical index** — one row each,
+  58px tall, 10px apart, left-aligned, same border/type/colour as the
+  plates. `:active` and `:focus-visible` carry the affordance; there is no
+  hover on touch.
+- ⚠️ **`.srNav`'s base rule centres it with `left: 50%` + a −50% translate.**
+  Undoing only the transform shoves the column half a viewport right. Reset
+  `left`/`right`/`bottom` too.
+- **`.centerOrb` is `display: none` and that is safe.** Intro's
+  `measureOrb()` falls back to the viewport centre on a zero-width rect,
+  which is exactly where the galaxy should collapse on a phone. Verified:
+  `--ox/--oy` = (195, 422) at 390×844. Do not "fix" this by keeping the orb
+  visible.
+- **`OrbLayer`'s canvas is hidden below 640px** (its own module). The orb is
+  the cursor; with no cursor and no art to point at it just sat there
+  glowing at its last position.
+- `.world` gets `cursor: auto` back — `cursor: none` with no orb left a
+  narrow desktop window with no pointer at all.
+
+**The reveal is `IntersectionObserver`, not GSAP, and must stay that way.**
+Landing is the eager entry chunk; importing GSAP here drags its 44 KB onto
+the critical path (CONTEXT §1). Rows fade + lift 14px over 620ms, staggered
+55ms within each batch — a row scrolled to alone is a batch of one and gets
+no delay. Entry chunk 57.71 → 57.91 kB, still importing only `react-vendor`
+and `rolldown-runtime` with zero gsap internals.
+
+⚠️ **The rows are armed in JS (`data-nav-reveal`), never in CSS.** Resting
+state is the *finished* state, so reduced motion, no JS, or an early bail
+all leave a complete readable index rather than a blank column — the same
+rule as the business page's `[data-reveal]`. Verified by disarming all 13
+rows at runtime: 0 hidden, opacity 1, transform none.
+
+Verified at 320/375/390/430: no horizontal overflow, no truncated labels,
+rows full-width with consistent 58px height. At 768 and 1440 the
+archipelago, plates, orb canvas, `cursor: none` and the hidden `srNav` are
+all exactly as they were.
