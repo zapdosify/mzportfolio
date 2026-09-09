@@ -544,3 +544,52 @@ it** — nothing else in the codebase knows the site's own URL.
 `favicon.svg` was deleted rather than left in place; nothing referenced it.
 Build green; the icon/card files are static `public/` copies, so no chunk
 changed.
+
+### §7 addendum — what actually broke the LinkedIn card
+
+The notes above were written before the card worked. Three causes were
+found in sequence; **only the third was the real one**, so don't read the
+first two as the fix.
+
+1. **CDN WebP transcoding.** Hostinger's CDN converts images to WebP for any
+   client whose `Accept` header allows it, at the same `.jpg` URL and with no
+   `Vary: Accept`. LinkedIn's crawler sends `Accept: image/webp`, so it got
+   WebP, which its previews don't support. Real bug, fixed two ways:
+   `no-transform` in `.htaccess` (the CDN does honour it) **and** hPanel →
+   Performance → CDN → Manage → Website optimisation → *WebP image
+   compression* turned **off**. *Smart image optimisation* is still on; it
+   was verified not to alter the card's dimensions. Not the cause, though —
+   the card still failed after this.
+2. **A cached 404.** `/og-image.jpg` was probed before it existed, and the
+   CDN held that negative response for minutes. Renaming defeats a per-URL
+   cache — but a URL LinkedIn had never seen failed identically, which
+   killed this theory.
+3. **The real cause: the card was a progressive JPEG.** `build_brand_assets.py`
+   wrote it with `progressive=True` for web performance. Browsers decode
+   that fine; LinkedIn's image pipeline reports "No image found". Rewriting
+   it baseline (`SOF0`) fixed it immediately — Post Inspector ingested the
+   image onto `media.licdn.com`. **The build script must keep
+   `progressive=False`**; Pillow only writes progressive when asked, so a
+   future edit could silently reintroduce this.
+
+Ruled out along the way, so nobody re-treads it: markup (raw served bytes
+are valid UTF-8, no BOM, well-formed `og:image`), `robots.txt` (404, hence
+permissive), CDN traffic blocking (no IP or country rules), cold-cache fetch
+timing (identical warm), and CDN security level (left at Medium — the page
+fetch always succeeded, so LinkedIn was never being challenged).
+
+Two operational notes:
+
+- **Share the page URL, not the image URL.** Pasting
+  `mznportfolio.com/landing.jpg` into a post makes LinkedIn render a generic
+  "Web Link" card *of an image file*. The og: tags exist so that pasting
+  `https://www.mznportfolio.com` builds the real card. This confusion is
+  what the `landing.jpg` filename came from (`og-image` → `og-card` →
+  `landing`, renamed on the assumption the name would be public; it isn't).
+- **LinkedIn caches per exact URL string**, and trailing-slash variants are
+  separate keys. Both `…com` and `…com/` were warmed via Post Inspector. Its
+  share composer only re-fetches when the link is removed and re-pasted.
+
+Card is baseline JPEG q95, 4:2:0, 1200×630, ~161 kB. Deliberately not PNG:
+lossless is 637 kB, which clears LinkedIn's 5 MB cap but exceeds the ~300 kB
+above which WhatsApp drops previews.
