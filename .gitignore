@@ -30,3 +30,12 @@ __pycache__/
 *.pyc
 .venv/
 venv/
+
+# Raw/source media — not used by the deployed site (which is self-contained
+# in pixel-archipelago/public/). Kept locally, not in git: some files here
+# exceed GitHub's 100MB hard limit. Stripped from history 2026-09-08.
+/videos/
+/images/
+/Website Redesign Assets/
+/Website Assets/
+/Individual Elements/
