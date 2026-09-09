@@ -44,8 +44,13 @@
 .field.mobile {
   /* On a phone the copy runs the full width, so the column can only sit
      behind it — which means it has to be quieter still, and has to dissolve
-     at the side edges instead of being cut off by them. */
-  opacity: 0.5;
+     at the side edges instead of being cut off by them.
+
+     0.5 was still too loud: the near tier sets at ~37px, so a word crossing
+     a paragraph read as a second, competing line of text rather than as
+     depth. On desktop the field is masked away from the copy entirely; on a
+     phone it cannot be, so it gives up presence instead. */
+  opacity: 0.26;
   -webkit-mask-image:
     linear-gradient(to bottom, transparent 0%, #000 16%, #000 76%, transparent 100%),
     linear-gradient(to right, transparent 0%, #000 13%, #000 87%, transparent 100%);
@@ -86,4 +91,11 @@
   font-size: clamp(1.4rem, 3.1vw, 2.9rem);
   font-weight: 300;
   letter-spacing: -0.015em;
+}
+
+/* Keep the near tier under the body size it sits behind, so depth never
+   reads as emphasis on a narrow screen. */
+@media (max-width: 640px) {
+  .field.mobile .t2 { font-size: clamp(1.1rem, 5vw, 1.6rem); }
+  .field.mobile .t1 { font-size: clamp(0.8rem, 3vw, 1.1rem); }
 }

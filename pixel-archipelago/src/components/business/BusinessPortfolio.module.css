@@ -685,7 +685,7 @@
   }
 }
 
-@media (max-width: 620px) {
+@media (max-width: 640px) {
   .hero {
     min-height: 92svh;
     padding-top: clamp(132px, 22vh, 180px);
@@ -706,6 +706,8 @@
   .pause {
     right: auto;
     left: var(--biz-gutter);
+    min-height: var(--tap);
+    padding-inline: 16px;
   }
 
   /* Hairline-underlined text links are the right look and the wrong touch

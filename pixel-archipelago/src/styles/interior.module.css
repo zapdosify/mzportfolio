@@ -424,3 +424,25 @@
   .portrait { max-width: 300px; margin: 0 auto; }
   .aboutCols { grid-template-columns: 1fr; gap: var(--space-8); }
 }
+
+/* ---------- Phone ---------- */
+@media (max-width: 640px) {
+  /* 96px between sections is a desktop interval. On a phone it reads as the
+     page having ended; two thirds of it keeps the same rhythm at the scale
+     the screen is actually being read at. */
+  .section { margin-bottom: var(--space-16); }
+  .hero { margin-bottom: var(--space-16); }
+  .page { padding-bottom: var(--space-12); }
+
+  /* The steps are a sequence, and `minmax(160px, 1fr)` degrades to two 169px
+     columns here — ~24 characters a line, titles over three lines, and cards
+     of wildly different heights sitting next to each other. Read them one at
+     a time instead. */
+  .process { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 430px) {
+  /* --fs-48 is a fixed 3rem; at 390px "EXHIBITION DESIGN" overhangs the
+     column. Let the largest headings scale with the viewport again. */
+  .title { font-size: clamp(2rem, 11vw, 3rem); }
+}

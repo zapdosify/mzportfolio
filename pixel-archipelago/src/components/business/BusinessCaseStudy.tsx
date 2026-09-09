@@ -109,21 +109,29 @@ export default function BusinessCaseStudy({ project, siblings, onClose, onOpen }
           <section className={styles.matrixWrap}>
             <h2>{c.matrix.title}</h2>
             <p className={styles.matrixStatus}>{c.matrix.status}</p>
+            {/* Below 640px the CSS restacks each row into a labelled block —
+                three columns of prose in a 350px viewport is a sideways
+                scroll that cuts sentences mid-word. `display: block` drops
+                a table out of the accessibility tree, so the roles are
+                declared explicitly to survive it, and the column headings
+                are carried on data-label for the stacked view to print. */}
             <div className={styles.tableScroll}>
-              <table className={styles.matrix}>
+              <table className={styles.matrix} role="table">
                 <thead>
-                  <tr>
-                    <th scope="col">Requirement</th>
-                    <th scope="col">Evaluation approach</th>
-                    <th scope="col">Proposed acceptance condition</th>
+                  <tr role="row">
+                    <th scope="col" role="columnheader">Requirement</th>
+                    <th scope="col" role="columnheader">Evaluation approach</th>
+                    <th scope="col" role="columnheader">Proposed acceptance condition</th>
                   </tr>
                 </thead>
                 <tbody>
                   {c.matrix.rows.map((r) => (
-                    <tr key={r.requirement}>
-                      <th scope="row">{r.requirement}</th>
-                      <td>{r.approach}</td>
-                      <td>{r.condition}</td>
+                    <tr key={r.requirement} role="row">
+                      <th scope="row" role="rowheader">{r.requirement}</th>
+                      <td role="cell" data-label="Evaluation approach">{r.approach}</td>
+                      <td role="cell" data-label="Proposed acceptance condition">
+                        {r.condition}
+                      </td>
                     </tr>
                   ))}
                 </tbody>

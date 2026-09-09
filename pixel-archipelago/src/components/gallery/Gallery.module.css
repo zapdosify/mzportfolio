@@ -140,9 +140,19 @@
 
 .videoCell { list-style: none; }
 
+/* One column on phones, not two.
+   Two-up is what the desktop grid degrades into, not what a phone wants: at
+   390px it left project cards 165px wide (titles broke over three lines) and
+   artwork tiles 124px tall, which is too small to look at work in — and
+   looking at the work is the entire point of these pages. One column gives
+   the same tiles ~350px and costs only scrolling, which phones are for.
+   `.boards` is already one-per-row by design and `.cinema` follows below. */
 @media (max-width: 640px) {
   .grid,
-  .posters { grid-template-columns: repeat(2, 1fr); gap: var(--space-3); }
+  .posters {
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+  }
   .cinema { grid-template-columns: 1fr; }
 }
 

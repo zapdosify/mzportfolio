@@ -310,7 +310,7 @@
 
 /* ---------------- Narrow screens ---------------- */
 
-@media (max-width: 620px) {
+@media (max-width: 640px) {
   /* Keep the flex slot so columns and labels stay aligned; just drop the ink. */
   .colLabels span:nth-child(even) {
     visibility: hidden;
