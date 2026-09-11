@@ -6,10 +6,30 @@
   place-items: center;
   overflow: hidden;
   background: var(--black);
-  cursor: none; /* the orb is the sole pointer across the scene */
 }
-.world a,
-.world button { cursor: none; }
+
+/* The orb is the pointer for the SCENE, and the scene is `.stage` — a fixed
+   1672:941 box centred in the world. On any viewport taller than that ratio
+   the stage is letterboxed, and the HUD chrome sitting in those bands (the
+   index button, top-right) is somewhere the orb can never follow: it is
+   clamped inside the stage.
+
+   `cursor: none` used to be set on `.world`, i.e. everywhere — which left
+   that chrome pointable but unaimable. The index button worked; you simply
+   could not see what you were aiming at, across an 81px gap at 1195×910.
+   So the hidden cursor is scoped to the region the orb actually covers, and
+   the real pointer comes back over the rest. It is the same trade the phone
+   layout already makes at the bottom of this file, made in space rather
+   than at a breakpoint. */
+.stage { cursor: none; }
+.stage a,
+.stage button { cursor: none; }
+
+/* Outside the scene the real pointer is in charge, so controls look like
+   controls again. */
+.hud button,
+.hud a,
+.srNav a { cursor: pointer; }
 
 /* Fixed-aspect stage (matches the 1672×941 art). --mx/--my drive parallax. */
 .stage {
@@ -631,11 +651,12 @@
   .world {
     display: block;
     overflow: visible;
-    /* the orb was the cursor; with it gone, give the pointer back */
-    cursor: auto;
     padding-top: calc(var(--switch-clear, 0px) + clamp(112px, 16vh, 128px));
     padding-bottom: var(--space-16);
   }
+  /* There is no orb at this width, so the scene stops hiding the pointer
+     too — a narrow desktop window is still driven by a mouse. */
+  .stage { cursor: auto; }
   .world a,
   .world button { cursor: pointer; }
 
