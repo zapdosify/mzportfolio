@@ -32,9 +32,22 @@ interface ModeState {
   target: PortfolioMode;
   /** true for the length of the crossfade */
   switching: boolean;
+  /**
+   * The mode mounted *underneath* the live one while the switch is being
+   * dragged, so the destination portfolio is revealed continuously instead of
+   * appearing on release. Null whenever no drag is in flight — the second
+   * portfolio is not mounted at rest.
+   */
+  preview: PortfolioMode | null;
   setMode: (m: PortfolioMode) => void;
   _commit: (m: PortfolioMode) => void;
   _settle: () => void;
+  /** Mount `m` underneath. Called once, when a drag passes its slop. */
+  beginPreview: (m: PortfolioMode) => void;
+  /** Drop it again — the drag came back short of the threshold. */
+  cancelPreview: () => void;
+  /** The drag crossed: `m` is already covering the viewport, so swap now. */
+  commitPreview: (m: PortfolioMode) => void;
 }
 
 /** First-time visitors always start in Design (the signature experience).
@@ -52,6 +65,17 @@ function initialMode(): PortfolioMode {
 
 /* Kept outside React so they survive every re-render. */
 const scrollMemory: Record<PortfolioMode, number> = { design: 0, business: 0 };
+
+/** Where a mode was left. The drag reveal needs it twice: to show the hidden
+ *  portfolio at the position it will actually land on, and to put the document
+ *  there on the frame the swap happens. */
+export const rememberedScroll = (m: PortfolioMode) => scrollMemory[m] ?? 0;
+
+/** The switch always lands on a portfolio's homepage, so a route change to it
+ *  invalidates whatever scroll that mode had remembered. */
+export const forgetScroll = (m: PortfolioMode) => {
+  scrollMemory[m] = 0;
+};
 let swapTimer: number | null = null;
 let settleTimer: number | null = null;
 
@@ -68,9 +92,42 @@ export const useModeStore = create<ModeState>()((set, get) => {
     mode: start,
     target: start,
     switching: false,
+    preview: null,
 
     _commit: (m) => set({ mode: m }),
     _settle: () => set({ switching: false }),
+
+    beginPreview: (m) => {
+      const { target, preview, switching } = get();
+      if (switching || m === target || preview === m) return;
+      set({ preview: m });
+    },
+
+    cancelPreview: () => {
+      if (get().preview) set({ preview: null });
+    },
+
+    commitPreview: (next) => {
+      const { target } = get();
+      // The outgoing mode is still the one owning the document scroll.
+      scrollMemory[target] = window.scrollY;
+
+      if (swapTimer) window.clearTimeout(swapTimer);
+      if (settleTimer) window.clearTimeout(settleTimer);
+      swapTimer = null;
+      settleTimer = null;
+
+      try {
+        localStorage.setItem(STORAGE_KEY, next);
+      } catch {
+        /* private mode — the switch still works, it just won't be remembered */
+      }
+
+      // No crossfade: the drag has already performed the transition, and the
+      // destination is covering the viewport at full opacity. Anything else
+      // here would be a second transition on top of the one the visitor made.
+      set({ mode: next, target: next, preview: null, switching: false });
+    },
 
     setMode: (next) => {
       const { target } = get();
@@ -98,14 +155,14 @@ export const useModeStore = create<ModeState>()((set, get) => {
       };
 
       if (prefersReduced()) {
-        set({ target: next, mode: next, switching: false });
+        set({ target: next, mode: next, switching: false, preview: null });
         restoreScroll();
         return;
       }
 
       // `target` moves now (the chrome starts interpolating immediately);
       // `mode` follows once the outgoing content has faded.
-      set({ target: next, switching: true });
+      set({ target: next, switching: true, preview: null });
       swapTimer = window.setTimeout(() => {
         get()._commit(next);
         restoreScroll();

@@ -121,6 +121,11 @@ export default function BusinessPortfolio() {
   const mode = useModeStore((s) => s.mode);
   const target = useModeStore((s) => s.target);
   const switching = useModeStore((s) => s.switching);
+  /* This page mounts in two situations: as the live portfolio, and — while
+     the switch is being dragged — underneath the design world, inside a
+     fixed panel that a seam uncovers. `live` separates the two. */
+  const revealing = useModeStore((s) => s.preview) === "business";
+  const live = mode === "business";
 
   const reducedMotion = useMemo(
     () =>
@@ -155,6 +160,13 @@ export default function BusinessPortfolio() {
      Once a study has been opened, the homepage sections remount on the way
      back and are simply shown, not re-animated. */
   const hasOpenedCase = useRef(false);
+
+  /* Same idea for the drag: a page the visitor has already wiped into view
+     must not then play its arrival. */
+  const wasRevealed = useRef(false);
+  useEffect(() => {
+    if (revealing) wasRevealed.current = true;
+  }, [revealing]);
 
   const openCase = useCallback((slug: string) => {
     hasOpenedCase.current = true;
@@ -224,8 +236,8 @@ export default function BusinessPortfolio() {
      but the parallax is not: it is a continuous effect, not an entrance. */
   useEffect(() => {
     const root = rootRef.current;
-    if (!root || openSlug || reducedMotion) return;
-    const skipEntrance = hasOpenedCase.current;
+    if (!root || !live || openSlug || reducedMotion) return;
+    const skipEntrance = hasOpenedCase.current || wasRevealed.current;
 
     const ctx = gsap.context(() => {
       if (!skipEntrance) {
@@ -317,7 +329,7 @@ export default function BusinessPortfolio() {
       cancelAnimationFrame(raf);
       ctx.revert();
     };
-  }, [reducedMotion, openSlug]);
+  }, [live, reducedMotion, openSlug]);
 
   return (
     <div ref={rootRef} className={styles.page}>
@@ -338,7 +350,7 @@ export default function BusinessPortfolio() {
       )}
 
       {openProject ? (
-        <main id="main" tabIndex={-1} className={styles.main}>
+        <main id={live ? "main" : undefined} tabIndex={-1} className={styles.main}>
           <BusinessCaseStudy
             project={openProject}
             siblings={businessProjects}
@@ -347,7 +359,7 @@ export default function BusinessPortfolio() {
           />
         </main>
       ) : (
-      <main id="main" tabIndex={-1} className={`${styles.main} ${shift}`}>
+      <main id={live ? "main" : undefined} tabIndex={-1} className={`${styles.main} ${shift}`}>
         {/* ---------------- Hero ---------------- */}
         <section className={styles.hero} aria-labelledby="biz-hero-title">
           <WordField terms={fieldTerms} reducedMotion={reducedMotion} paused={fieldPaused} />
