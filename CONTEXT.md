@@ -1078,6 +1078,20 @@ orb's position, which islands you had explored — all of it survives a trip to 
 back, because nothing about the router or the world store is disturbed. A shareable
 `/business` URL was not asked for and would have cost that.
 
+> **⚠️ Amended 2026-09-10 (`806787a`).** The paragraph above still holds for
+> *business* mode — it has no URL of its own — but the round trip no longer
+> lands you back on the interior design page you left. The switch now always
+> means a portfolio's **homepage**, so leaving an interior page through it
+> rewrites the URL to `/` in place: `replace` + `preventScrollReset`, done
+> while the design world is off screen, so no history entry is added and
+> nothing on screen moves. The world store, the orb, the explored islands and
+> the per-mode scroll memory are all still untouched by a mode change.
+>
+> The switch also stopped deciding on release: both portfolios are mounted
+> during a drag and a seam follows your finger between them. Full write-up in
+> **§ 8 of `pixel-archipelago/CONTEXT.md`**, which is the maintained handoff —
+> this root file is a dated record of the 2026-09-06 build.
+
 - **First-time visitors always start in Design.** The chosen mode is persisted to
   `localStorage["mzn-portfolio-mode"]`, so a returning visitor resumes where they left —
   **but only at `/`**. A deep link into a design page always shows that design page.

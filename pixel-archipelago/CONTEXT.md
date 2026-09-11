@@ -12,8 +12,9 @@ Runtime deps: `react`, `react-dom`, `react-router`, `zustand`, `gsap`, and **`le
 
 ## 0 · State at the last pause — 8 September 2026
 
-Section 5 (the mobile pass) is the most recent work. The table below is the
-verification from the *earlier* pause at `e783919`; section 5 carries its own.
+**Section 8 (the portfolio switch's drag reveal) is the most recent work.** The
+table below is the verification from the *earlier* pause at `e783919`; sections
+5, 7 and 8 each carry their own.
 
 Verified at that commit, not assumed:
 
@@ -118,8 +119,13 @@ conversational, belongs in `businessCopy`.
 ### How it's wired
 
 - **Business mode is deliberately NOT routed** — it's a `useModeStore` state
-  overlay rendered by `RootLayout`; the URL never changes (see the comment in
-  `useModeStore.ts`).
+  overlay rendered by `RootLayout`, and the business half of the site has no URL
+  of its own (see the comment in `useModeStore.ts`).
+  ⚠️ **The design half does move now.** Since § 8 the switch's Design side always
+  means the design *homepage*, so leaving an interior page through the switch
+  rewrites the URL to `/` — in place (`replace` + `preventScrollReset`), while
+  the design world is off screen, so no history entry is added and nothing on
+  screen moves. Nothing else in either mode touches the router.
 - The **case-study reader is a state view** inside `BusinessPortfolio`, shown in
   place of the homepage `<main>` when `openSlug` is set. It `history.pushState`s
   with the URL kept identical, so browser **Back** and **Esc** close it and the
@@ -593,3 +599,141 @@ Two operational notes:
 Card is baseline JPEG q95, 4:2:0, 1200×630, ~161 kB. Deliberately not PNG:
 lossless is 637 kB, which clears LinkedIn's 5 MB cap but exceeds the ~300 kB
 above which WhatsApp drops previews.
+
+---
+
+## 8 · The portfolio switch reveals while you drag — 10 September 2026
+
+| commit | what |
+|---|---|
+| `806787a` | The switch stops deciding on release. Both portfolios are mounted for the length of the gesture and a seam pinned to the drag position moves between them, the destination arriving behind a sheet of liquid glass that thins as the drag advances. Click, tap and the arrow keys play the same reveal on the clock instead of the crossfade. |
+
+Half a drag is now half of each page. Pause at 40% and you are looking at both
+portfolios at once, with the boundary where your finger left it.
+
+### How it's wired
+
+- **`components/mode/modePos.ts` (new)** owns the gesture as ONE number,
+  published as `--mode-pos` on `<html>` — 0 is Design, 1 is Business Analytics,
+  the same scale the pill always used. It is written straight from the pointer
+  and **never through React**: the pill, the seam and the glass all read that
+  one variable from CSS, so they cannot drift apart by a frame and following
+  the finger costs no re-renders at all. The file also holds the two easings
+  (solved from CSS cubic-beziers, since GSAP is not in the eager chunk and the
+  switch is) and the rAF tween.
+- **`useModeStore` gained `preview`** — the mode mounted *underneath* the live
+  one while a drag runs — plus `beginPreview` / `cancelPreview` /
+  `commitPreview`. `commitPreview` swaps with no crossfade and no `switching`:
+  the drag has already performed the transition, and a second one on top of the
+  visitor's own gesture is exactly what this was replacing.
+- **`RootLayout` renders both layers** whenever `preview` is set, each with a
+  stable `key` and the same shape throughout, so the layer being revealed
+  becomes the live one **without React remounting anything**. That is the whole
+  trick behind a swap with no blank frame and no replayed entrance. The revealed
+  layer is a fixed, `inert`, viewport-sized panel carrying its own scroller,
+  seeded to the position that mode was left at, and the document takes that
+  position over in a `useLayoutEffect` on the frame of the swap.
+- **The live page underneath is left completely alone** — no clip, no
+  transform, nothing that would re-anchor its fixed chrome or leave its scroll
+  needing correction. Only the arriving layer moves.
+- **One seam, at `x = --mode-pos * 100vw`**, with Business to its left and
+  Design to its right. That is the same geometry read from either direction,
+  which is why the return trip is the identical gesture reversed rather than a
+  second implementation.
+- **Two timings, deliberately different.** A released drag keeps the switch's
+  original 460ms `--ease-out` — it still has the visitor's hand behind it. A
+  slide under its own power (click, tap, arrow key) starts from rest, so it
+  runs 920ms on `cubic-bezier(0.38, 0.06, 0.62, 0.94)` and is **paced by
+  distance**, so a change of mind half way back does not drag on. The glide
+  curve was chosen numerically rather than by eye: its fastest moment is ~1.5x
+  its average against ~3x for the settle curve, which is the whole difference
+  between a sheet being drawn across and a snap.
+- **The glass is pure CSS**, in `global.css` after the `.mode-reveal` rules and
+  interpolated from `--mode-pos` through `--mode-reveal-p` (direction-normalised
+  so 0 always means "just appearing") and `--mg` (how much glass is left).
+  `::after` is the pane — `backdrop-filter: blur() saturate() brightness()`, an
+  rgba tint, a 1px border on the leading edge, negative-spread inset glows —
+  sized to the revealed band only so the browser never blurs a backdrop that is
+  then thrown away. `::before` is the specular catch riding the seam, halved by
+  the clip so what shows is light gathering *into* the glass. Every value
+  reaches exact identity at full reveal: no blur, tint, shadow or residue.
+- **The switch always lands on a portfolio's homepage now.** See the ⚠️ in § 2:
+  the Design half means `/`, rewritten in place at the moment the reveal starts.
+
+### Gotchas, each of which cost real time
+
+- **Never put `filter` inside `.mode-reveal`.** The reference this glass came
+  from leans on `filter: blur() drop-shadow() brightness()` for its gloss.
+  Using it inverted the **entire** revealed page — light text on black.
+  `.mode-reveal` carries a `clip-path` and is therefore a *backdrop root*, and
+  a filtered element anywhere inside one makes Chrome build that root's
+  backdrop image without its opaque background. The softness lives in the
+  gradient ramp instead: an eleven-stop gradient IS an analytic blur, and it
+  costs nothing per frame.
+- **Pointer capture retargets the click.** `setPointerCapture` on the track is
+  what lets a drag keep tracking outside the pill, but it also retargets the
+  following `mouseup`/`click` to the track, so a label's own `onClick` never
+  fires — press "Business Analytics" and nothing happens. A tap must therefore
+  be resolved on `pointerup`, from `fracFromX` (which half the pointer came up
+  over), exactly as the switch always did before this work briefly changed it.
+  Any click arriving within 700ms of that is its own tail and is ignored;
+  keyboard and assistive-tech activation arrive with no pointer behind them and
+  are always honoured.
+- **The live layer needs `isolation: isolate`** while something is revealed over
+  it, or its own fixed chrome escapes upward — the business reading-progress bar
+  sits at z-index 60 and the reveal panel at 44. `isolation` was chosen over
+  anything else that makes a stacking context because it does **not** also make
+  a containing block for `position: fixed`.
+- **Still exactly ONE smooth-scroll engine.** `BusinessPortfolio` calls
+  `useLenis(mode === "business")`, so a business page mounted as a *reveal*
+  starts no engine. This is also why the design side only ever reveals the
+  **landing**: any interior design page pulls in `useInteriorMotion`, which
+  calls `useLenis(true, …)` unconditionally, and business mode's engine is
+  still running underneath it. Verified at every point in both directions —
+  `html.classList` carries `lenis` in business mode and nothing in design mode,
+  including mid-reveal.
+- **Business choreography waits for `live`.** Its GSAP context is built only
+  once `mode === "business"`; measuring ScrollTriggers from inside the fixed
+  reveal panel arms every one of them against the wrong page's scroll, and the
+  sections then never arrive. A page already wiped into view skips its entrance
+  (`wasRevealed` ref — same idea as `hasOpenedCase` in § 2).
+- **The landing's first-run galaxy intro** raises `html[data-intro]`, which
+  hides the switch. A design reveal is therefore only allowed once
+  `sessionStorage["pa:intro-seen"]` is set — otherwise a drag would raise the
+  curtain over the control being dragged. Same fallback to the old crossfade if
+  the business chunk has not landed yet, though a drag that starts before it
+  arrives picks the reveal up mid-gesture the moment it does.
+- **Two `<main>`s for the length of a drag**, so the revealed one drops its
+  `id="main"` until it is live.
+- **`RootLayout`'s route-crossfade effect** must record the path while a design
+  reveal is mounted, or the commit that follows looks like a route change and
+  fades the page the visitor just wiped in.
+
+### Verified, not assumed
+
+Driven in a real browser, both directions, desktop and mobile (375×812):
+
+| check | result |
+|---|---|
+| partial drag → release | returns to the origin, scroll intact, no history entry |
+| full drag → release | swaps; document height and scroll both correct |
+| slow (30-step) / fast / repeated drags | reveal node never recreated (`recreated: 0`) |
+| grabbing the pill mid-slide | takes over at the pointer |
+| reversing a slide mid-flight | 414ms measured against 408ms predicted by the distance pacing |
+| glass interpolation | 12.35px blur at 5% revealed → 6.5px at 50% → exactly 0 at 100% |
+| frame pacing, glass on vs off | median 13.3ms both; p95 13.6 vs 13.5 — no measurable cost |
+| powered slide pacing | 2·8·12·14·17·15·15·9·6·1 % of distance per 100ms |
+| switcher from an index page | `/renders` → `/` on click; a drag back reveals the landing, not the category page |
+| a drag ending over a label | no click fires, no navigation |
+| Lenis instances | exactly one at every point in both directions |
+| `tsc` / `lint` / `build` | green; 5 pre-existing `router.tsx` warnings only |
+| bundle | entry 167.67 → 168.01 kB (+190 B gzip), CSS 37.03 → 39.15 kB (+410 B gzip), business chunk unchanged |
+
+**Not verified:** `prefers-reduced-motion` under real OS emulation — the rule
+was confirmed present in the built stylesheet and its exact declaration tested
+by injection, but the media query itself was never flipped. Enter/Space on the
+switch could not be driven either (the automation's synthetic key events do not
+activate *any* native button on the page); it was tested through `.click()`,
+which is what the browser dispatches for it. And **Safari is untested** — the
+glass leans on `backdrop-filter`, which Safari supports, but the backdrop-root
+behaviour in the first gotcha was only ever reproduced in Chrome.
