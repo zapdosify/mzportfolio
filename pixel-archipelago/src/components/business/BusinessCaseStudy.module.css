@@ -1,8 +1,9 @@
 /* ------------------------------------------------------------------ *
  * Business Analytics — case-study reader.
  *
- * Same art direction as BusinessPortfolio: paper, ink, hairlines, no
- * boxes or shadows, generous margins, prose narrower than the charts.
+ * Same art direction as BusinessPortfolio: the faintly teal ground, light
+ * ink, hairlines, no boxes or shadows, generous margins, prose narrower
+ * than the charts.
  * The `--biz-*` tokens are inherited from the enclosing `.page`.
  * ------------------------------------------------------------------ */
 
@@ -50,7 +51,7 @@
 }
 .nav:hover,
 .nav:focus-visible {
-  color: var(--biz-ink);
+  color: var(--biz-cyan);
 }
 .nav svg {
   width: 22px;
@@ -71,7 +72,7 @@
   font-weight: 600;
   letter-spacing: 0.26em;
   text-transform: uppercase;
-  color: var(--biz-faint);
+  color: var(--biz-teal);
 }
 .title {
   margin-top: 14px;
@@ -128,6 +129,7 @@
   width: 100%;
   height: auto;
   border: 1px solid var(--biz-line);
+  border-radius: 3px;
   background: var(--biz-panel);
 }
 .figure figcaption {
@@ -152,7 +154,7 @@
   font-weight: 600;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: var(--biz-faint);
+  color: var(--biz-teal);
 }
 .section p {
   margin-top: 12px;

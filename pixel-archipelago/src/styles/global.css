@@ -163,7 +163,7 @@ body {
   transition: background-color 620ms linear;
 }
 html[data-mode="business"] body {
-  background: #f7f7f3;
+  background: #071417;
 }
 
 /* Business mode is one continuous page, so in-page anchors glide. */
@@ -237,7 +237,7 @@ html[data-mode="business"] {
 
 /* Unset means "not revealed yet", which is why the two defaults differ. */
 .mode-reveal[data-reveal-mode="business"] {
-  background: #f7f7f3;
+  background: #071417;
   clip-path: inset(0 calc(100% - var(--mode-pos, 0) * 100%) 0 0);
 }
 .mode-reveal[data-reveal-mode="design"] {
@@ -258,10 +258,12 @@ html[data-mode="business"] {
    means "just appearing" and 1 "fills the viewport". `--mg` is how much
    glass is left, so it runs the other way and reaches exactly 0 — no blur,
    no tint, no highlight, nothing to clean up. */
+/* Both worlds are dark, so both lift through the pane rather than one of
+   them sitting back behind it. Business is the shade lighter of the two,
+   so it needs a shade less. */
 .mode-reveal[data-reveal-mode="business"] {
   --mode-reveal-p: var(--mode-pos, 0);
-  /* Paper seen through glass sits back a little; the dark world lifts. */
-  --glass-lift: -4%;
+  --glass-lift: 9%;
 }
 .mode-reveal[data-reveal-mode="design"] {
   --mode-reveal-p: calc(1 - var(--mode-pos, 1));
@@ -365,22 +367,24 @@ html[data-mode="business"] {
     rgb(255 255 255 / 0) 100%
   );
 }
-/* On paper a white line would be invisible, so the edge reads the way a real
-   pane reads on a white surface: a faint shade either side of a bright core. */
+/* The same specular catch as the dark world — the surface it is gathering
+   on is dark now too — with the faintest teal in the falloff, so the edge
+   belongs to the page it is uncovering. The ramp, the stops and the timing
+   are untouched: only what the light is made of has changed. */
 .mode-reveal[data-reveal-mode="business"]::before {
   background: linear-gradient(
     90deg,
-    rgb(17 17 16 / 0) 0%,
-    rgb(17 17 16 / 0.018) 28%,
-    rgb(17 17 16 / 0.045) 41%,
-    rgb(17 17 16 / 0.05) 46%,
-    rgb(255 255 255 / 0.16) 48.6%,
-    rgb(255 255 255 / 0.4) 50%,
-    rgb(255 255 255 / 0.16) 51.4%,
-    rgb(17 17 16 / 0.05) 54%,
-    rgb(17 17 16 / 0.045) 59%,
-    rgb(17 17 16 / 0.018) 72%,
-    rgb(17 17 16 / 0) 100%
+    rgb(34 211 238 / 0) 0%,
+    rgb(34 211 238 / 0.02) 26%,
+    rgb(34 211 238 / 0.05) 38%,
+    rgb(190 250 255 / 0.09) 45%,
+    rgb(226 253 255 / 0.16) 48.4%,
+    rgb(255 255 255 / 0.22) 50%,
+    rgb(226 253 255 / 0.16) 51.6%,
+    rgb(190 250 255 / 0.09) 55%,
+    rgb(34 211 238 / 0.05) 62%,
+    rgb(34 211 238 / 0.02) 74%,
+    rgb(34 211 238 / 0) 100%
   );
 }
 
@@ -410,11 +414,12 @@ html[data-intro] .mode-dock {
 }
 
 /* The global focus ring and the skip link are both white — correct on the
-   archipelago, invisible on paper. Repaint them for the light world. */
+   archipelago, and correct against the business ground too, but the accent
+   is what the rest of that world uses to say "this one". */
 html[data-mode="business"] :focus-visible {
-  outline-color: #111110;
+  outline-color: #22d3ee;
 }
 html[data-mode="business"] .skip-link {
-  background: #111110;
-  color: #f8f8f5;
+  background: #22d3ee;
+  color: #04171a;
 }

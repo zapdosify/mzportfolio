@@ -1,7 +1,9 @@
 /* ------------------------------------------------------------------ *
- * Native business charts — the paper system's rules applied to data.
+ * Native business charts — the Teal Insight system's rules applied to data.
  *
- * Hairlines instead of boxes, no chart furniture, one accent and no more.
+ * Hairlines instead of boxes, no chart furniture. The measured series the
+ * exhibit is actually about takes cyan; everything supporting it is drawn
+ * in the deep teal, present but plainly de-emphasised.
  * Every resting state here is the FINAL state: GSAP only ever animates
  * *from* somewhere into these values, so a chart with no JS, a failed
  * chunk, or reduced motion is still a correct, readable chart.
@@ -21,14 +23,14 @@
   font-weight: 600;
   letter-spacing: -0.015em;
   line-height: 1.22;
-  color: var(--biz-ink, #0f0f0e);
+  color: var(--biz-ink, #f4f7f6);
   text-wrap: balance;
 }
 .subtitle {
   margin: 10px 0 0;
   font-size: var(--t-body-s, 0.9375rem);
   line-height: 1.6;
-  color: var(--biz-faint, #6f6f68);
+  color: var(--biz-faint, #7a9297);
 }
 
 .plotArea {
@@ -52,7 +54,7 @@
   letter-spacing: 0.14em;
   text-transform: uppercase;
   line-height: 1.4;
-  color: var(--biz-faint, #6f6f68);
+  color: var(--biz-faint, #7a9297);
 }
 
 .colPlot {
@@ -82,17 +84,17 @@
   text-align: right;
   font-size: var(--t-micro, 0.6875rem);
   font-variant-numeric: tabular-nums;
-  color: var(--biz-faint, #6f6f68);
+  color: var(--biz-faint, #7a9297);
   transform: translateY(0.5px);
 }
 .gridLine {
   flex: 1 1 auto;
   height: 1px;
-  background: var(--biz-line, #e2e2da);
+  background: var(--biz-line, rgba(34, 211, 238, 0.14));
 }
 /* The baseline is the only line that earns full weight. */
 .gridRow:first-child .gridLine {
-  background: var(--biz-line-strong, #c8c8bf);
+  background: var(--biz-line-strong, rgba(34, 211, 238, 0.3));
 }
 
 .cols {
@@ -113,12 +115,12 @@
 }
 .colBar {
   width: 100%;
-  background: var(--biz-line-strong, #c8c8bf);
+  background: var(--biz-teal-deep, #0f766e);
   transform-origin: bottom center;
   will-change: transform;
 }
 .colBar.accent {
-  background: var(--biz-accent, #0f6b66);
+  background: var(--biz-cyan, #22d3ee);
 }
 .colValue {
   position: absolute;
@@ -128,7 +130,7 @@
   font-weight: 600;
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
-  color: var(--biz-accent, #0f6b66);
+  color: var(--biz-cyan, #22d3ee);
 }
 
 .colLabels {
@@ -142,7 +144,7 @@
   text-align: center;
   font-size: var(--t-micro, 0.6875rem);
   font-variant-numeric: tabular-nums;
-  color: var(--biz-muted, #5e5e57);
+  color: var(--biz-muted, #a6b8bc);
 }
 
 .catAxis {
@@ -153,7 +155,7 @@
   font-weight: 600;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--biz-faint, #6f6f68);
+  color: var(--biz-faint, #7a9297);
 }
 
 /* ---------------- Rows ---------------- */
@@ -180,7 +182,7 @@
   text-align: right;
   font-size: var(--t-small, 0.8125rem);
   line-height: 1.35;
-  color: var(--biz-muted, #5e5e57);
+  color: var(--biz-muted, #a6b8bc);
 }
 .rowTrack {
   position: relative;
@@ -190,12 +192,12 @@
 }
 .rowBar {
   height: 100%;
-  background: var(--biz-line-strong, #c8c8bf);
+  background: var(--biz-teal-deep, #0f766e);
   transform-origin: left center;
   will-change: transform;
 }
 .rowBar.accent {
-  background: var(--biz-accent, #0f6b66);
+  background: var(--biz-cyan, #22d3ee);
 }
 .rowValue {
   position: absolute;
@@ -206,7 +208,7 @@
   font-weight: 600;
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
-  color: var(--biz-ink-soft, #2c2c28);
+  color: var(--biz-ink-soft, #d3e0e1);
 }
 
 .rowAxis {
@@ -223,7 +225,7 @@
   position: relative;
   height: 14px;
   margin-right: 62px;
-  border-top: 1px solid var(--biz-line-strong, #c8c8bf);
+  border-top: 1px solid var(--biz-line-strong, rgba(34, 211, 238, 0.3));
 }
 .rowTick {
   position: absolute;
@@ -231,7 +233,7 @@
   translate: -50% 0;
   font-size: var(--t-micro, 0.6875rem);
   font-variant-numeric: tabular-nums;
-  color: var(--biz-faint, #6f6f68);
+  color: var(--biz-faint, #7a9297);
 }
 
 /* ---------------- Stats ---------------- */
@@ -240,8 +242,8 @@
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: clamp(20px, 3vw, 48px);
-  border-top: 1px solid var(--biz-line, #e2e2da);
-  border-bottom: 1px solid var(--biz-line, #e2e2da);
+  border-top: 1px solid var(--biz-line, rgba(34, 211, 238, 0.14));
+  border-bottom: 1px solid var(--biz-line, rgba(34, 211, 238, 0.14));
   padding: clamp(28px, 3.4vw, 44px) 0;
 }
 .stat {
@@ -255,21 +257,21 @@
   letter-spacing: -0.03em;
   line-height: 1;
   font-variant-numeric: tabular-nums;
-  color: var(--biz-accent, #0f6b66);
+  color: var(--biz-cyan, #22d3ee);
 }
 .statLabel {
   font-size: var(--t-label, 0.75rem);
   font-weight: 600;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--biz-faint, #6f6f68);
+  color: var(--biz-faint, #7a9297);
 }
 
 .method {
   margin: clamp(24px, 3vw, 36px) 0 0;
   font-size: var(--t-body, 1rem);
   line-height: 1.65;
-  color: var(--biz-ink-soft, #2c2c28);
+  color: var(--biz-ink-soft, #d3e0e1);
 }
 
 /* ---------------- Caption & notes ---------------- */
@@ -281,7 +283,7 @@
   max-width: 62ch;
   font-size: var(--t-body-s, 0.9375rem);
   line-height: 1.66;
-  color: var(--biz-muted, #5e5e57);
+  color: var(--biz-muted, #a6b8bc);
 }
 .notes {
   margin: 12px 0 0;
@@ -296,7 +298,7 @@
   padding-left: 16px;
   font-size: var(--t-body-s, 0.9375rem);
   line-height: 1.6;
-  color: var(--biz-faint, #6f6f68);
+  color: var(--biz-faint, #7a9297);
 }
 .notes li::before {
   content: "";
@@ -305,7 +307,7 @@
   top: 0.72em;
   width: 7px;
   height: 1px;
-  background: var(--biz-line-strong, #c8c8bf);
+  background: var(--biz-line-strong, rgba(34, 211, 238, 0.3));
 }
 
 /* ---------------- Narrow screens ---------------- */

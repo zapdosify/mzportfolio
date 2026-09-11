@@ -29,41 +29,23 @@ const Arrow = () => (
   </svg>
 );
 
-/** The four labelled fields shown on every project card. */
-function ProjectFields({ p }: { p: BusinessProject }) {
-  return (
-    <dl className={styles.fields}>
-      <div className={styles.field}>
-        <dt>Business question</dt>
-        <dd className={styles.ph}>{p.question}</dd>
-      </div>
-      <div className={styles.field}>
-        <dt>Summary</dt>
-        <dd className={styles.ph}>{p.summary}</dd>
-      </div>
-      <div className={styles.field}>
-        <dt>Methods &amp; tools</dt>
-        <dd>
-          <span className={styles.chips}>
-            {p.methods.map((m) => (
-              <span key={m} className={styles.chip}>
-                {m}
-              </span>
-            ))}
-          </span>
-        </dd>
-      </div>
-      <div className={styles.field}>
-        <dt>Key insight</dt>
-        <dd className={styles.ph}>{p.outcome}</dd>
-      </div>
-    </dl>
-  );
-}
+/** The ↗ on a project card: "this opens". */
+const OpenArrow = () => (
+  <svg viewBox="0 0 16 16" className={styles.openIcon} aria-hidden="true" focusable="false">
+    <path
+      d="M4.6 11.4 11.4 4.6M5.7 4.6h5.7v5.7"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
 
-function ProjectCover({ p, feature }: { p: BusinessProject; feature?: boolean }) {
+function ProjectCover({ p }: { p: BusinessProject }) {
   return (
-    <div className={`${styles.cover} ${feature ? styles.coverFeature : ""}`}>
+    <div className={styles.cardCover}>
       {/* The art is oversized inside a clipped frame so it can drift against
           the scroll without ever exposing an edge. */}
       <div className={styles.coverInner} data-parallax="">
@@ -71,12 +53,12 @@ function ProjectCover({ p, feature }: { p: BusinessProject; feature?: boolean })
           <img
             src={p.image}
             alt=""
-            className={styles.coverImg}
+            className={`${styles.coverArt} ${styles.coverImg}`}
             loading="lazy"
             decoding="async"
           />
         ) : (
-          <Cover kind={p.cover} className={styles.coverSvg} />
+          <Cover kind={p.cover} className={styles.coverArt} />
         )}
       </div>
       <span className={styles.coverIndex} aria-hidden="true">
@@ -86,32 +68,40 @@ function ProjectCover({ p, feature }: { p: BusinessProject; feature?: boolean })
   );
 }
 
-function CaseLink({
+/* The card's one control. Its stretched ::after covers the whole card, so
+   the entire card is clickable while the accessible name, the keyboard
+   target and the focus ring all remain this single element's. */
+function CardOpen({
   p,
   onOpen,
 }: {
   p: BusinessProject;
   onOpen: (slug: string) => void;
 }) {
+  const label = `Read the case study: ${p.title}`;
+
   if (p.caseStudy?.sections.length) {
     return (
-      <button type="button" className={styles.caseLink} onClick={() => onOpen(p.slug)}>
-        Read the case study
-        <Arrow />
+      <button
+        type="button"
+        className={styles.cardOpen}
+        aria-label={label}
+        onClick={() => onOpen(p.slug)}
+      >
+        <OpenArrow />
       </button>
     );
   }
   if (p.href) {
     return (
-      <a className={styles.caseLink} href={p.href}>
-        Read the case study
-        <Arrow />
+      <a className={styles.cardOpen} href={p.href} aria-label={label}>
+        <OpenArrow />
       </a>
     );
   }
   return (
-    <span className={styles.caseLinkOff} aria-disabled="true">
-      Details coming soon
+    <span className={styles.cardOpenOff} aria-hidden="true">
+      <OpenArrow />
     </span>
   );
 }
@@ -278,6 +268,24 @@ export default function BusinessPortfolio() {
             tl.from(el, { opacity: 0, y: 22, duration: 0.72 });
           }
         });
+
+        /* The project row arrives card by card rather than as one block.
+           `clearProps` is the important part: a `from` tween otherwise
+           leaves `transform: translate(0,0)` inline on each card, and an
+           inline transform would silently beat the CSS hover lift for the
+           rest of the visit. */
+        const cards = gsap.utils.toArray<HTMLElement>("[data-project-card]");
+        if (cards.length) {
+          gsap.from(cards, {
+            opacity: 0,
+            y: 26,
+            duration: 0.7,
+            stagger: 0.08,
+            ease: "power3.out",
+            clearProps: "transform",
+            scrollTrigger: { trigger: cards[0].parentElement, start: "top 88%", once: true },
+          });
+        }
       }
 
       /* Covers drift against the scroll. Bounded to ±6% and scrubbed, so it
@@ -435,28 +443,35 @@ export default function BusinessPortfolio() {
               <p className={styles.sectionNote}>{businessCopy.projects.note}</p>
             </div>
 
-            {/* One project below the next, separated by a hairline. The
-                first is given more weight through its column split, its cover
-                ratio and its title size — not by breaking the rhythm. */}
-            <div className={styles.projectList}>
-              {businessProjects.map((p, i) => (
-                <article
-                  key={p.id}
-                  className={`${styles.row} ${i === 0 ? styles.rowFeature : ""}`}
-                  data-reveal=""
-                >
-                  <ProjectCover p={p} feature={i === 0} />
-                  <div className={styles.rowBody}>
-                    {p.status && <span className={styles.status}>{p.status}</span>}
-                    <h3 className={i === 0 ? styles.featureTitle : styles.cardTitle}>
-                      {p.title}
-                    </h3>
-                    <p className={styles.standfirst}>{p.standfirst}</p>
-                    <ProjectFields p={p} />
-                    <CaseLink p={p} onOpen={openCase} />
-                  </div>
-                </article>
-              ))}
+            {/* Four equal cards across one row: the cover, the title, the
+                standfirst, the methods, and one unmistakable way in. The
+                question, the evidence and the key insight are all in the
+                case study the card opens. */}
+            <div className={styles.projectGrid}>
+              {businessProjects.map((p) => {
+                const openable = Boolean(p.caseStudy?.sections.length || p.href);
+                return (
+                  <article key={p.id} className={styles.card} data-project-card="">
+                    <ProjectCover p={p} />
+                    <div className={styles.cardBody}>
+                      {p.status && <span className={styles.status}>{p.status}</span>}
+                      <div className={styles.cardTop}>
+                        <h3 className={styles.cardTitle}>{p.title}</h3>
+                        <CardOpen p={p} onOpen={openCase} />
+                      </div>
+                      <p className={styles.cardText}>{p.standfirst}</p>
+                      {!openable && <p className={styles.cardSoon}>Details coming soon</p>}
+                      <span className={styles.chips}>
+                        {p.methods.map((m) => (
+                          <span key={m} className={styles.chip}>
+                            {m}
+                          </span>
+                        ))}
+                      </span>
+                    </div>
+                  </article>
+                );
+              })}
             </div>
           </div>
         </section>

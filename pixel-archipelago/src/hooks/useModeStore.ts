@@ -5,7 +5,7 @@ import { scrollToInstant } from "./lenisInstance";
  * Portfolio mode — the two worlds this site holds.
  *
  * `design` is the existing Pixel Archipelago (routed, dark, explorable).
- * `business` is a single continuous landing page (light, editorial).
+ * `business` is a single continuous landing page (dark teal, editorial).
  *
  * Deliberately NOT a route. Everything about the design portfolio —
  * which page you were on, how far you had scrolled, the orb's position,

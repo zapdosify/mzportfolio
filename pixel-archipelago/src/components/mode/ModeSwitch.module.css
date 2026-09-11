@@ -42,13 +42,17 @@
     border-color 620ms linear;
 }
 
-/* Business (light world): the same pill, inverted. */
+/* Business: the same pill, in that world's accent. Both portfolios are
+   dark now, so the two states are told apart by hue rather than by
+   inversion — which is also what the 620ms colour interpolation between
+   them now reads as. Scoped to [data-mode="business"], so the design
+   world's pill above is untouched. */
 .track[data-mode="business"] {
-  --sw-ink: #111110;
-  --sw-paper: #f8f8f5;
-  --sw-idle: #76766e;
-  --sw-line: rgba(17, 17, 16, 0.16);
-  --sw-bg: rgba(255, 255, 255, 0.72);
+  --sw-ink: #22d3ee;
+  --sw-paper: #04171a;
+  --sw-idle: #7a9297;
+  --sw-line: rgba(34, 211, 238, 0.26);
+  --sw-bg: rgba(7, 20, 23, 0.66);
 }
 
 .indicator {

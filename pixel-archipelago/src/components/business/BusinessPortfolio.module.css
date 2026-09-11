@@ -1,37 +1,63 @@
 /* ------------------------------------------------------------------ *
- * Business Analytics portfolio — a light, editorial counterweight to the
- * dark archipelago. Every rule here is scoped inside `.page`, so nothing
- * in this file can reach the design portfolio.
+ * Business Analytics portfolio — "Teal Insight".
  *
- * Art direction: soft white paper, near-black ink, hairlines instead of
- * boxes, generous margins, and asymmetry that is measured rather than
- * accidental. No shadows, no glass, no rounded cards, no chart furniture.
+ * Every rule here is scoped inside `.page`, so nothing in this file can
+ * reach the design portfolio.
+ *
+ * Art direction: a ground that is a faintly teal black rather than a
+ * neutral one, so the accents sit IN the page instead of being pasted on
+ * top of it. Hairlines instead of boxes, generous margins, measured
+ * asymmetry. Colour is structural, not decorative:
+ *
+ *   --biz-teal-deep  borders, deep fills, de-emphasised data
+ *   --biz-teal       the primary accent — eyebrows, icons, rules
+ *   --biz-cyan       reserved for things you can act on, and for the one
+ *                    measured figure each exhibit is actually about
+ *   --biz-sky        occasional secondary
+ *
+ * Body copy stays neutral. The project card is the only place allowed a
+ * surface; everything else remains a hairline.
  * ------------------------------------------------------------------ */
 
 .page {
-  /* Palette */
-  --biz-bg: #f7f7f3;
-  --biz-panel: #fdfdfb;
-  --biz-ink: #0f0f0e;
-  --biz-ink-soft: #2c2c28;
-  --biz-muted: #5e5e57;
-  /* 4.71:1 on the paper — the old #93938c was 2.88:1 and it carried
-     every eyebrow, faint value, note and badge line on the page. */
-  --biz-faint: #6f6f68;
-  --biz-line: #e2e2da;
-  --biz-line-strong: #c8c8bf;
-  /* The single accent. Carried over from the author's own chart exhibits so
-     the rebuilt charts stay continuous with the verified originals; one cool
-     signal against warm neutrals, used for data emphasis and nothing else.
-     7.02:1 on the paper. */
-  --biz-accent: #0f6b66;
+  /* ---- Ground and surfaces ---- */
+  --biz-bg: #071417;
+  --biz-panel: #0b1d21;
+  --biz-elevated: #10262b;
+
+  /* ---- Type ---- */
+  --biz-ink: #f4f7f6;
+  --biz-ink-soft: #d3e0e1;
+  --biz-muted: #a6b8bc; /* 9.1:1 on the ground */
+  /* Carries every eyebrow value, note, badge line and axis label, so it
+     has to clear AA on its own: 5.7:1. */
+  --biz-faint: #7a9297;
+
+  /* ---- Lines ---- */
+  --biz-line: rgba(34, 211, 238, 0.14);
+  --biz-line-strong: rgba(34, 211, 238, 0.3);
+
+  /* ---- The accent family, in order of loudness ---- */
+  --biz-teal-deep: #0f766e; /* 3.4:1 — structure and de-emphasised data only */
+  --biz-teal: #14b8a6; /* 7.5:1 */
+  --biz-cyan: #22d3ee; /* 10.4:1 */
+  --biz-sky: #0ea5e9; /* 6.8:1 */
+  /* The charts and the older rules in this file read `--biz-accent`. It is
+     the primary data series, which the brief sets to cyan. */
+  --biz-accent: var(--biz-cyan);
+  --biz-glow: rgba(34, 211, 238, 0.12);
+
+  /* ---- Project card ---- */
+  --card-bg: var(--biz-panel);
+  --card-border: rgba(34, 211, 238, 0.14);
+  --biz-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
 
   --biz-font: "Montserrat", "Segoe UI", -apple-system, BlinkMacSystemFont, sans-serif;
   /* Type scale. Six steps, nothing between them. The old set had fourteen
      near-duplicate values and bottomed out at 8.5px. */
   --t-micro: 0.6875rem; /* 11px — uppercase tracked labels */
   --t-label: 0.75rem;   /* 12px — eyebrows, link labels, chips */
-  --t-small: 0.8125rem; /* 13px — badge meta */
+  --t-small: 0.8125rem; /* 13px — badge meta, card copy */
   --t-body-s: 0.9375rem;/* 15px — secondary notes */
   --t-body: 1rem;       /* 16px — reading text */
   --t-body-l: 1.0625rem;/* 17px — closing paragraph */
@@ -89,7 +115,8 @@
 
 /* ---------- Reading progress ----------
    A hairline, the width of the page, above everything else. It reports
-   position; it is not a control, and the scrollbar remains the affordance. */
+   position; it is not a control, and the scrollbar remains the affordance.
+   The one place the whole accent family is shown at once. */
 .progressTrack {
   position: fixed;
   top: 0;
@@ -103,7 +130,13 @@
   display: block;
   height: 100%;
   width: 100%;
-  background: var(--biz-accent);
+  background: linear-gradient(
+    90deg,
+    var(--biz-teal-deep) 0%,
+    var(--biz-teal) 44%,
+    var(--biz-cyan) 78%,
+    var(--biz-sky) 100%
+  );
   transform: scaleX(0);
   transform-origin: left center;
 }
@@ -123,16 +156,14 @@
   line-height: 1.1;
   padding: calc(var(--space-6) + var(--switch-clear, 0px)) var(--space-6) 56px;
   pointer-events: none;
-  /* Fully opaque across the band the type occupies, then ~50px of runway to
-     dissolve in. A dark page can rely on a soft scrim because contrast
-     collapses quickly; ink on paper does not, so on this side the masthead
-     needs a real edge and a long enough tail to hide it. */
+  /* Opaque across the band the type occupies, then ~50px of runway to
+     dissolve in, so the masthead never cuts a hard edge across the page. */
   background: linear-gradient(
     to bottom,
     var(--biz-bg) 0%,
     var(--biz-bg) 58%,
-    rgba(247, 247, 243, 0.86) 76%,
-    rgba(247, 247, 243, 0) 100%
+    rgba(7, 20, 23, 0.86) 76%,
+    rgba(7, 20, 23, 0) 100%
   );
   backdrop-filter: blur(12px);
   -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 62%, transparent 100%);
@@ -167,14 +198,14 @@
   font-weight: 600;
   letter-spacing: 0.24em;
   text-transform: uppercase;
-  color: var(--biz-faint);
+  color: var(--biz-teal);
 }
 .eyebrowRule {
   display: block;
   flex: none;
   width: 34px;
   height: 1px;
-  background: var(--biz-line-strong);
+  background: linear-gradient(90deg, var(--biz-teal), rgba(20, 184, 166, 0));
   /* The hero rule draws itself outward from the margin. */
   transform-origin: left center;
 }
@@ -195,6 +226,19 @@
   overflow: hidden;
   padding-top: clamp(120px, 16vh, 176px);
   padding-bottom: clamp(84px, 12vh, 140px);
+}
+/* Ambient depth, not a light show: two very wide, very low radials that
+   make the ground read as lit rather than as flat black. Sits behind the
+   word field, which supplies the actual texture. */
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(88% 62% at 76% 16%, rgba(20, 184, 166, 0.11), transparent 62%),
+    radial-gradient(70% 58% at 12% 82%, rgba(14, 165, 233, 0.05), transparent 64%);
 }
 
 .heroShell {
@@ -227,25 +271,28 @@
   color: var(--biz-muted);
 }
 
+/* The one filled control on the page. It keeps the label, the tracking and
+   the arrow it always had; what changes is that the accent now carries it.
+   Deliberately no transform: this is the magnetic CTA and GSAP owns its
+   transform, so the hover is expressed in light instead. */
 .cta {
   display: inline-flex;
   align-items: center;
   gap: 14px;
   margin-top: clamp(34px, 4vw, 54px);
-  padding-bottom: 8px;
-  border-bottom: 1px solid var(--biz-line-strong);
+  padding: 13px 22px;
+  border: 1px solid rgba(34, 211, 238, 0.3);
+  border-radius: 3px;
+  background: linear-gradient(135deg, var(--biz-teal), var(--biz-cyan));
   font-size: var(--t-label);
   font-weight: 600;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: var(--biz-ink);
-  transition: border-color 300ms var(--ease-out);
-}
-.cta:hover {
-  border-color: var(--biz-ink);
-}
-.cta:hover .ctaArrow {
-  transform: translateX(6px);
+  color: #04171a;
+  box-shadow: 0 12px 30px -22px rgba(34, 211, 238, 0.8);
+  transition:
+    box-shadow 300ms var(--biz-ease),
+    filter 300ms var(--biz-ease);
 }
 
 /* Discreet motion control for the word field. */
@@ -261,7 +308,7 @@
   padding: 8px 14px;
   border: 1px solid var(--biz-line);
   border-radius: 999px;
-  background: rgba(247, 247, 243, 0.72);
+  background: rgba(11, 29, 33, 0.72);
   backdrop-filter: blur(4px);
   font-family: var(--biz-font);
   font-size: var(--t-micro);
@@ -273,21 +320,33 @@
     color 240ms var(--ease-out),
     border-color 240ms var(--ease-out);
 }
-.pause:hover {
-  color: var(--biz-ink);
-  border-color: var(--biz-line-strong);
-}
 .pauseIcon {
   width: 10px;
   height: 10px;
   flex: none;
 }
 
-/* ---------- Sections ---------- */
+/* ---------- Sections ----------
+   The divider is a rule that fades out of both margins rather than a line
+   ruled edge to edge — the same hairline discipline, drawn in teal. */
 .section {
   position: relative;
-  border-top: 1px solid var(--biz-line);
   padding-block: clamp(72px, 11vh, 152px);
+}
+.section::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    rgba(20, 184, 166, 0) 0%,
+    rgba(20, 184, 166, 0.28) 22%,
+    rgba(34, 211, 238, 0.2) 62%,
+    rgba(20, 184, 166, 0) 100%
+  );
 }
 
 .sectionHead {
@@ -310,77 +369,123 @@
   color: var(--biz-faint);
 }
 
-/* ---------- Projects ---------- */
-/* The project rows, one below the next, divided by a hairline. Side by
-   side they read as a broken row on a wide monitor — the second row sat
-   ~100px lower than the first and that offset stops looking deliberate
-   past about 1600px. Stacked, the rhythm holds at any width. */
-.projectList {
+/* ---------- Projects ----------
+   Four equal cards on one row. Compact and editorial: the cover, the
+   title, the standfirst, the methods, and one unmistakable way in. The
+   full question / evidence / insight write-up lives in the case study
+   that each card opens. */
+.projectGrid {
   display: grid;
-}
-.row {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  gap: clamp(28px, 4vw, 72px);
-  align-items: start;
-  padding-block: clamp(44px, 5.5vw, 80px);
-  border-top: 1px solid var(--biz-line);
-}
-.row:first-child {
-  border-top: 0;
-  padding-top: 0;
-}
-/* The feature earns its weight from the column split, the cover ratio and
-   the title size — not from breaking out of the sequence. */
-.rowFeature {
-  grid-template-columns: minmax(0, 1.24fr) minmax(0, 1fr);
-}
-.rowBody {
-  padding-top: clamp(4px, 1vw, 16px);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(16px, 1.7vw, 26px);
+  align-items: stretch;
 }
 
-.cover {
+.card {
   position: relative;
-  aspect-ratio: 4 / 3;
+  /* A permanent stacking context, so the highlight below can sit at z-index
+     -1 — above the card's own background, beneath every piece of its
+     content — without depending on the transform that only exists on hover.
+     It also leaves `.card` as the containing block for the click overlay,
+     which is what lets one control cover the whole card. */
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--card-border);
+  border-radius: 4px;
+  background: var(--card-bg);
+  box-shadow: 0 10px 26px -22px rgba(0, 0, 0, 0.9);
+  transition:
+    transform 300ms var(--biz-ease),
+    border-color 300ms var(--biz-ease),
+    background-color 300ms var(--biz-ease),
+    box-shadow 300ms var(--biz-ease);
+}
+/* The restrained internal highlight: a 135° wash across the whole card and
+   a little light pooling up from its lower edge. It is present at rest —
+   it is what stops the surface reading as a flat swatch — and gains about
+   a third on hover. Never a neon rim. */
+.card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  pointer-events: none;
+  background:
+    radial-gradient(108% 74% at 50% 116%, var(--biz-glow), transparent 62%),
+    linear-gradient(135deg, rgba(20, 184, 166, 0.1), rgba(34, 211, 238, 0.025));
+  opacity: 0.68;
+  transition: opacity 300ms var(--biz-ease);
+}
+
+.cardCover {
+  position: relative;
+  aspect-ratio: 16 / 10;
   overflow: hidden;
-  background: var(--biz-panel);
-  border: 1px solid var(--biz-line);
-  color: var(--biz-ink);
+  border-bottom: 1px solid var(--card-border);
+  border-radius: 3px 3px 0 0;
+  /* The cover art in Covers.tsx draws at 0.12–0.42 opacity — weights chosen
+     for ink on paper. Against a dark ground the same strokes need both a
+     brighter colour and something lit to sit on, or the frame reads empty. */
+  background:
+    radial-gradient(124% 104% at 50% 0%, rgba(15, 118, 110, 0.26), transparent 66%),
+    #061114;
+  color: var(--biz-cyan);
 }
-.coverFeature {
-  aspect-ratio: 16 / 11;
-}
-/* Overscanned top and bottom so a ±6% drift never pulls an edge into frame.
-   `.cover` clips, so the extra height is only ever seen as movement. */
+/* Overscanned top and bottom so the ±6% scroll drift never pulls an edge
+   into frame. `.cardCover` clips, so the extra height is only ever seen as
+   movement. GSAP owns this element's transform; the hover scale belongs to
+   the art inside it, so the two systems never write the same property. */
 .coverInner {
   position: absolute;
   inset: -7% 0;
   will-change: transform;
 }
-.coverSvg,
-.coverImg {
+.coverArt {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   display: block;
+  transition:
+    transform 300ms var(--biz-ease),
+    filter 300ms var(--biz-ease);
 }
 .coverImg {
   object-fit: cover;
 }
 .coverIndex {
   position: absolute;
-  left: 18px;
-  top: 15px;
+  z-index: 2;
+  left: 14px;
+  top: 12px;
   font-size: var(--t-label);
   font-weight: 600;
   letter-spacing: 0.2em;
-  color: var(--biz-faint);
+  color: var(--biz-teal);
+}
+
+/* Deliberately unpositioned: the containing block for the click overlay
+   below has to be `.card`, not this. */
+.cardBody {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: clamp(16px, 1.3vw, 22px) clamp(16px, 1.3vw, 22px) clamp(18px, 1.4vw, 24px);
+}
+
+.cardTop {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
 }
 
 .status {
   display: inline-block;
-  padding: 5px 11px;
+  margin-bottom: 12px;
+  padding: 4px 9px;
   border: 1px dashed var(--biz-line-strong);
   font-size: var(--t-micro);
   font-weight: 600;
@@ -389,110 +494,173 @@
   color: var(--biz-faint);
 }
 
-.featureTitle {
-  margin-top: 20px;
-  font-size: clamp(1.5rem, 2.5vw, 2.1rem);
-  font-weight: 400;
-  letter-spacing: -0.018em;
-}
 .cardTitle {
-  margin-top: 18px;
-  font-size: clamp(1.25rem, 1.9vw, 1.6rem);
-  font-weight: 400;
-  letter-spacing: -0.015em;
+  /* Four across needs a smaller step than the full-width row it replaces;
+     everything else about the setting is unchanged. */
+  font-size: clamp(1.02rem, 1.12vw, 1.22rem);
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: -0.012em;
+  color: var(--biz-ink);
+  text-wrap: balance;
 }
 
-.standfirst {
-  margin-top: 12px;
-  max-width: 46ch;
-  font-size: var(--t-body);
-  line-height: 1.7;
+.cardText {
+  margin-top: 10px;
+  font-size: var(--t-small);
+  line-height: 1.62;
   color: var(--biz-muted);
 }
 
-.fields {
-  margin-top: clamp(24px, 3vw, 38px);
-  border-top: 1px solid var(--biz-line);
-}
-.field {
-  display: grid;
-  grid-template-columns: 172px minmax(0, 1fr);
-  gap: 20px;
-  align-items: start;
-  padding: 16px 0;
-  border-bottom: 1px solid var(--biz-line);
-}
-.field dt {
-  padding-top: 3px;
-  font-size: var(--t-micro);
-  font-weight: 600;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--biz-faint);
-}
-.field dd {
-  font-size: var(--t-body);
-  line-height: 1.65;
-  color: var(--biz-ink-soft);
-}
-/* The card's question, summary and key-insight values sit a shade lighter
-   than the card title and standfirst, so the title stays dominant. Needs
-   the `.field dd` compound to win — a bare `.ph` loses the specificity
-   fight with `.field dd` and silently does nothing. Both shades clear AA. */
-.ph,
-.field dd.ph {
-  color: var(--biz-faint);
-}
-
+/* Pushed to the foot of the card so the tag rows line up across all four
+   however long the standfirst above them runs. */
 .chips {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 6px;
+  margin-top: auto;
+  padding-top: 18px;
 }
 .chip {
   display: inline-block;
-  padding: 5px 10px;
-  border: 1px solid var(--biz-line-strong);
-  font-size: var(--t-label);
+  padding: 4px 9px;
+  border: 1px solid rgba(20, 184, 166, 0.28);
+  border-radius: 3px;
+  background: rgba(15, 118, 110, 0.16);
+  font-size: var(--t-micro);
   letter-spacing: 0.06em;
-  color: var(--biz-ink-soft);
+  color: var(--biz-muted);
+  transition:
+    border-color 300ms var(--biz-ease),
+    color 300ms var(--biz-ease);
 }
 
-.caseLink,
-.caseLinkOff {
+/* The way in. A real 34px control holding the ↗, whose ::after is stretched
+   over the whole card — so the entire card is clickable, the accessible
+   name is still the control's own, and the focus ring is drawn around the
+   card rather than around the icon. */
+.cardOpen {
+  flex: none;
   display: inline-flex;
   align-items: center;
-  gap: 12px;
-  margin-top: 28px;
-  font-family: inherit;
-  font-size: var(--t-label);
-  font-weight: 600;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  /* button reset — .caseLink is a <button> when the study opens in-page */
-  background: none;
-  border: 0;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  margin: -4px -4px 0 0;
   padding: 0;
-}
-.caseLink {
-  padding-bottom: 6px;
-  border-bottom: 1px solid var(--biz-ink);
-  color: var(--biz-ink);
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: rgba(34, 211, 238, 0.06);
+  color: var(--biz-teal);
+  font-family: inherit;
   cursor: pointer;
+  transition:
+    color 300ms var(--biz-ease),
+    background-color 300ms var(--biz-ease),
+    border-color 300ms var(--biz-ease);
 }
-.caseLink:hover .ctaArrow {
-  transform: translateX(6px);
-}
-.caseLinkOff {
-  color: var(--biz-faint);
-  cursor: default;
-}
-.caseLinkOff::before {
+.cardOpen::after {
   content: "";
-  display: block;
-  width: 20px;
-  height: 1px;
-  background: var(--biz-line-strong);
+  position: absolute;
+  inset: 0;
+  border-radius: 5px;
+}
+.openIcon {
+  width: 15px;
+  height: 15px;
+  flex: none;
+  transition: transform 300ms var(--biz-ease);
+}
+/* No study and no external link: the affordance is withheld, not faked. */
+.cardOpenOff {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  margin: -4px -4px 0 0;
+  color: var(--biz-teal-deep);
+}
+.cardSoon {
+  margin-top: 14px;
+  font-size: var(--t-micro);
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--biz-faint);
+}
+
+/* ---------- Project card interaction ----------
+   Five small things at once, none of them loud: the card lifts, its border
+   and surface come up, the internal highlight gains, the art scales a
+   little inside its clip, and the ↗ moves toward the corner it points at.
+   Pointer devices only — a touch device holds :hover after the tap. */
+@media (hover: hover) {
+  .card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(34, 211, 238, 0.34);
+    background-color: var(--biz-elevated);
+    box-shadow:
+      0 20px 40px -26px rgba(0, 0, 0, 0.95),
+      0 16px 44px -28px rgba(34, 211, 238, 0.5);
+  }
+  .card:hover::before {
+    opacity: 1;
+  }
+  .card:hover .coverArt {
+    transform: scale(1.035);
+    filter: saturate(1.12) brightness(1.06);
+  }
+  .card:hover .cardOpen {
+    color: var(--biz-cyan);
+    background: rgba(34, 211, 238, 0.13);
+    border-color: rgba(34, 211, 238, 0.3);
+  }
+  .card:hover .openIcon {
+    transform: translate(3px, -3px);
+  }
+  .card:hover .chip {
+    border-color: rgba(20, 184, 166, 0.42);
+    color: var(--biz-ink-soft);
+  }
+
+  .cta:hover {
+    box-shadow: 0 18px 36px -20px rgba(34, 211, 238, 0.62);
+    filter: brightness(1.07);
+  }
+  .cta:hover .ctaArrow {
+    transform: translateX(6px);
+  }
+  .contactLink:hover,
+  .verify:hover {
+    color: var(--biz-cyan);
+    border-color: var(--biz-cyan);
+  }
+  .pause:hover {
+    color: var(--biz-cyan);
+    border-color: var(--biz-line-strong);
+  }
+}
+
+/* The keyboard gets the same report the pointer does. `:has` carries the
+   card's own state; the ring on the stretched ::after is what actually
+   guarantees a visible target, and that needs no `:has` support at all. */
+.card:has(.cardOpen:focus-visible) {
+  border-color: rgba(34, 211, 238, 0.34);
+  background-color: var(--biz-elevated);
+}
+.card:has(.cardOpen:focus-visible)::before {
+  opacity: 1;
+}
+.card:has(.cardOpen:focus-visible) .cardOpen {
+  color: var(--biz-cyan);
+  background: rgba(34, 211, 238, 0.13);
+}
+
+/* Used by badge titles that have neither artwork nor a verification link. */
+.ph {
+  color: var(--biz-faint);
 }
 
 /* ---------- Continuous learning ---------- */
@@ -535,7 +703,8 @@
   align-items: center;
   justify-content: center;
   margin-bottom: 22px;
-  color: var(--biz-ink);
+  /* The drawn marks take the accent; real issuer artwork is left alone. */
+  color: var(--biz-teal);
 }
 .badgeImg {
   max-width: 100%;
@@ -552,6 +721,7 @@
   font-size: var(--t-body);
   font-weight: 500;
   line-height: 1.45;
+  color: var(--biz-ink);
 }
 .badgeMeta {
   margin-top: 4px;
@@ -569,8 +739,11 @@
 }
 .verify {
   padding-bottom: 3px;
-  border-bottom: 1px solid var(--biz-ink);
-  color: var(--biz-ink);
+  border-bottom: 1px solid var(--biz-teal);
+  color: var(--biz-teal);
+  transition:
+    color 300ms var(--biz-ease),
+    border-color 300ms var(--biz-ease);
 }
 .verifyOff {
   color: var(--biz-faint);
@@ -593,6 +766,24 @@
   font-size: var(--t-body-l);
   line-height: 1.76;
   color: var(--biz-muted);
+}
+/* One last quiet wash, so the page closes on the same lit ground it opened
+   on instead of falling away to flat black. */
+.closing::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    76% 58% at 82% 100%,
+    rgba(20, 184, 166, 0.08),
+    transparent 64%
+  );
+}
+.closing .shell {
+  position: relative;
+  z-index: 1;
 }
 
 .contact {
@@ -627,13 +818,14 @@
 .contactLink {
   padding-bottom: 2px;
   border-bottom: 1px solid var(--biz-line-strong);
-  transition: border-color 240ms var(--ease-out);
-}
-.contactLink:hover {
-  border-color: var(--biz-ink);
+  color: var(--biz-teal);
+  transition:
+    color 240ms var(--ease-out),
+    border-color 240ms var(--ease-out);
 }
 
 .bizFooter {
+  position: relative;
   border-top: 1px solid var(--biz-line);
   padding-block: 28px 40px;
 }
@@ -652,23 +844,31 @@
 /* ---------- Focus ---------- */
 .page a:focus-visible,
 .page button:focus-visible {
-  outline: 2px solid var(--biz-ink);
+  outline: 2px solid var(--biz-cyan);
   outline-offset: 3px;
   border-radius: 1px;
 }
+/* The card's ring belongs to the stretched overlay, not to the 34px icon —
+   the visitor's target is the whole card, so that is what has to be drawn
+   around. Needs the `.page` compound to outrank the generic rule above;
+   without it the icon keeps its own ring and the card wears two. */
+.page .cardOpen:focus-visible {
+  outline: none;
+}
+.page .cardOpen:focus-visible::after {
+  outline: 2px solid var(--biz-cyan);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
 
-/* ---------- Responsive ---------- */
-@media (max-width: 1000px) {
-  .row,
-  .rowFeature {
-    grid-template-columns: minmax(0, 1fr);
-    gap: clamp(22px, 3.5vw, 36px);
-  }
-  .rowBody {
-    padding-top: 0;
-  }
-  .field {
-    grid-template-columns: 156px minmax(0, 1fr);
+/* ---------- Responsive ----------
+   Four across is a desktop layout. Below the wide-desktop step the row
+   halves rather than squeezing, and on a phone it goes single — a card is
+   allowed to be shorter, never narrower than its content. */
+@media (max-width: 1180px) {
+  .projectGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(20px, 2.6vw, 32px);
   }
 }
 
@@ -690,12 +890,15 @@
     min-height: 92svh;
     padding-top: clamp(132px, 22vh, 180px);
   }
-  .field {
+  .projectGrid {
     grid-template-columns: minmax(0, 1fr);
-    gap: 6px;
+    gap: 22px;
   }
-  .field dt {
-    padding-top: 0;
+  .cardTitle {
+    font-size: 1.15rem;
+  }
+  .cardText {
+    font-size: var(--t-body-s);
   }
   .badges {
     grid-template-columns: minmax(0, 1fr);
@@ -712,14 +915,10 @@
 
   /* Hairline-underlined text links are the right look and the wrong touch
      target. Extend the hit area without touching the drawing. */
-  .cta,
-  .caseLink,
   .contactLink,
   .verify {
     position: relative;
   }
-  .cta::after,
-  .caseLink::after,
   .contactLink::after,
   .verify::after {
     content: "";
@@ -736,7 +935,23 @@
   .ctaArrow,
   .cta,
   .contactLink,
-  .pause {
+  .pause,
+  .card,
+  .card::before,
+  .coverArt,
+  .cardOpen,
+  .openIcon,
+  .chip,
+  .verify {
     transition: none;
+  }
+  /* The state still reports — it simply arrives rather than travels. */
+  .card:hover,
+  .card:hover .coverArt,
+  .card:hover .openIcon {
+    transform: none;
+  }
+  .coverInner {
+    will-change: auto;
   }
 }

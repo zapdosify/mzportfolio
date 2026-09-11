@@ -61,12 +61,14 @@
   mask-composite: intersect;
 }
 
+/* Cooled a few degrees off the page's own ink, so the column reads as
+   vapour lit by the room rather than as faint white text. */
 .word {
   position: absolute;
   top: 0;
   left: 0;
   white-space: nowrap;
-  color: var(--biz-ink);
+  color: #cfe7e8;
   opacity: 0;
   font-family: var(--biz-font);
   line-height: 1;

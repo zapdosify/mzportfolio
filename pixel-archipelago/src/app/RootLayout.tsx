@@ -89,7 +89,7 @@ export default function RootLayout() {
         : `${identity.name} — Design Portfolio`;
     document
       .querySelector('meta[name="theme-color"]')
-      ?.setAttribute("content", target === "business" ? "#f7f7f3" : "#050505");
+      ?.setAttribute("content", target === "business" ? "#071417" : "#050505");
   }, [target]);
 
   // Move focus to main content on route change (a11y), and crossfade the
