@@ -18,6 +18,7 @@ import Cover from "./Covers";
 import BadgeIcon from "./BadgeIcons";
 import SplitWords from "../motion/SplitWords";
 import BusinessCaseStudy from "./BusinessCaseStudy";
+import BusinessOrb from "./BusinessOrb";
 import type { BusinessProject } from "../../data/businessContent";
 import styles from "./BusinessPortfolio.module.css";
 
@@ -341,6 +342,11 @@ export default function BusinessPortfolio() {
 
   return (
     <div ref={rootRef} className={styles.page}>
+      {/* The archipelago's orb, crossing this world as a soft white glow.
+          Outside <main> so it survives the homepage <-> case-study swap, and
+          frozen while this page is only being revealed under a mode drag. */}
+      <BusinessOrb reducedMotion={reducedMotion} paused={!live} />
+
       {/* Identity — held at the same inset and scale as the design world
           nameplate, so the crossfade reads as one header changing typeface
           rather than two headers swapping places. */}

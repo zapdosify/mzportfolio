@@ -413,6 +413,32 @@ html[data-intro] .mode-dock {
   transition: opacity 700ms cubic-bezier(0.16, 1, 0.3, 1) 320ms;
 }
 
+/* ---------- The business portfolio's orb cursor ----------
+   The white orb is that world's pointer, so the real one steps aside. Two
+   conditions, both load-bearing:
+
+   `[data-biz-orb="on"]` is raised by BusinessOrb only once the orb is on
+   screen. Before the first mouse move it does not yet know where the pointer
+   is, and hiding the cursor then would leave the visitor with none at all
+   until they happened to move one. The flag drops again when the pointer
+   leaves the window, or while the page is frozen behind a mode drag.
+
+   `(pointer: fine)` because a finger has no cursor to replace — and the
+   component does not even mount its loop on a coarse pointer.
+
+   Unlike the archipelago's orb, this one's canvas is viewport-fixed and
+   unclamped: there is no region of the page it cannot follow the pointer
+   into, which is what makes hiding the real cursor safe here. It covers the
+   mode switch as well, which is why this rule is global rather than scoped
+   to the business page. */
+@media (pointer: fine) {
+  html[data-biz-orb="on"],
+  html[data-biz-orb="on"] a,
+  html[data-biz-orb="on"] button {
+    cursor: none;
+  }
+}
+
 /* The global focus ring and the skip link are both white — correct on the
    archipelago, and correct against the business ground too, but the accent
    is what the rest of that world uses to say "this one". */

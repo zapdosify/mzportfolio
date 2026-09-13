@@ -1,0 +1,19 @@
+/* The orb's canvas: viewport-fixed and over everything, because it is the
+   cursor. `pointer-events: none` so every click, hover and text selection
+   underneath behaves exactly as it did without it. */
+.orb {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 80; /* above the progress hairline (60) and the masthead (40) */
+  pointer-events: none;
+}
+
+/* Nothing to follow on a touch device — the component does not even mount its
+   loop there, and this keeps the element out of the way regardless. */
+@media (pointer: coarse) {
+  .orb {
+    display: none;
+  }
+}

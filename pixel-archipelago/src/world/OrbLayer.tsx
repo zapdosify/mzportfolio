@@ -1,5 +1,6 @@
 import { useEffect, useRef, type RefObject } from "react";
 import type { Category } from "../data/types";
+import { drawOrb, ORB_AMBER, ORB_TRAIL_MAX } from "./orbArt";
 import styles from "./OrbLayer.module.css";
 
 interface Props {
@@ -240,7 +241,7 @@ export default function OrbLayer({
         // trail
         if (!rmRef.current && moving) {
           trail.current.push({ ...pos.current });
-          if (trail.current.length > 14) trail.current.shift();
+          if (trail.current.length > ORB_TRAIL_MAX) trail.current.shift();
         } else if (trail.current.length) {
           trail.current.shift();
         }
@@ -268,68 +269,13 @@ export default function OrbLayer({
       raf = requestAnimationFrame(frame);
     };
 
+    // The drawing itself lives in orbArt.ts, shared with the business
+    // portfolio's cursor: same trail, rings, core and timings, amber here and
+    // white there. Clearing stays local — only this knows its canvas size.
     const draw = (c: CanvasRenderingContext2D, now: number) => {
       const { w, h } = size.current;
       c.clearRect(0, 0, w, h);
-      const p = pos.current;
-      const t = now / 1000;
-      const rm = rmRef.current;
-
-      // trail — warm amber, matching the centre orb and the pulse wave
-      for (let i = 0; i < trail.current.length; i++) {
-        const tp = trail.current[i];
-        const a = (i / trail.current.length) * 0.28;
-        c.beginPath();
-        c.arc(tp.x, tp.y, 2 + i * 0.25, 0, Math.PI * 2);
-        c.fillStyle = `rgba(255,214,140,${a})`;
-        c.fill();
-      }
-
-      // outer glow
-      const glow = c.createRadialGradient(p.x, p.y, 0, p.x, p.y, 34);
-      glow.addColorStop(0, "rgba(255,224,160,0.55)");
-      glow.addColorStop(0.3, "rgba(255,205,110,0.18)");
-      glow.addColorStop(1, "rgba(255,205,90,0)");
-      c.fillStyle = glow;
-      c.fillRect(p.x - 40, p.y - 40, 80, 80);
-
-      // orbiting rings
-      const rings = [
-        { rx: 20, ry: 8, rot: rm ? 0.4 : t * 0.7 },
-        { rx: 15, ry: 18, rot: rm ? -0.6 : -t * 0.5 + 1 },
-        { rx: 24, ry: 13, rot: rm ? 1.2 : t * 0.35 + 2 },
-      ];
-      for (const r of rings) {
-        c.save();
-        c.translate(p.x, p.y);
-        c.rotate(r.rot);
-        c.beginPath();
-        c.ellipse(0, 0, r.rx, r.ry, 0, 0, Math.PI * 2);
-        c.strokeStyle = "rgba(255,216,150,0.5)";
-        c.lineWidth = 1;
-        c.stroke();
-        // orbiting particle on the ring
-        if (!rm) {
-          const px = Math.cos(t * 1.5 + r.rot) * r.rx;
-          const py = Math.sin(t * 1.5 + r.rot) * r.ry;
-          c.beginPath();
-          c.arc(px, py, 1.6, 0, Math.PI * 2);
-          c.fillStyle = "rgba(255,232,180,0.9)";
-          c.fill();
-        }
-        c.restore();
-      }
-
-      // core (breathing) — hot near-white centre with a warm amber bloom,
-      // echoing the .orbCore gradient (#fff6d8 → #ffd76b)
-      const breathe = rm ? 1 : 1 + Math.sin(t * 1.6) * 0.12;
-      c.beginPath();
-      c.arc(p.x, p.y, 5 * breathe, 0, Math.PI * 2);
-      c.fillStyle = "#fff3d6";
-      c.shadowColor = "rgba(255,205,90,0.95)";
-      c.shadowBlur = 16;
-      c.fill();
-      c.shadowBlur = 0;
+      drawOrb(c, pos.current, trail.current, now / 1000, ORB_AMBER, rmRef.current);
     };
 
     raf = requestAnimationFrame(frame);

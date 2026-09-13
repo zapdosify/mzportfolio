@@ -4,7 +4,10 @@
     {
       "name": "dev",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev"],
+      "runtimeArgs": [
+        "run",
+        "dev"
+      ],
       "cwd": "pixel-archipelago",
       "port": 5173,
       "autoPort": true
@@ -12,9 +15,26 @@
     {
       "name": "dev-alt",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev"],
+      "runtimeArgs": [
+        "run",
+        "dev"
+      ],
       "cwd": "pixel-archipelago",
       "port": 5183,
+      "autoPort": true
+    },
+    {
+      "name": "preview",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run",
+        "preview",
+        "--",
+        "--port",
+        "4173"
+      ],
+      "cwd": "pixel-archipelago",
+      "port": 4173,
       "autoPort": true
     }
   ]

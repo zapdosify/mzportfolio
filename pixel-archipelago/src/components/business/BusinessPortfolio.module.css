@@ -74,6 +74,11 @@
   -webkit-font-smoothing: antialiased;
 }
 
+/* The hidden cursor is in global.css, keyed on `html[data-biz-orb]` — the
+   flag BusinessOrb raises only while the orb is actually on screen. It has to
+   be global because the orb's canvas is viewport-fixed and covers the mode
+   switch too, which lives outside this page. */
+
 .shell {
   width: 100%;
   max-width: var(--biz-maxw);

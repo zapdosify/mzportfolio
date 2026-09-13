@@ -41,7 +41,17 @@ let businessChunk: Promise<unknown> | null = null;
 
 /* Same specifier as RootLayout's lazy import, so Vite resolves it to the same
    chunk. Called the moment the visitor shows intent — hover, focus, or the
-   press that starts a drag. */
+   press that starts a drag — and, before any of that, once on idle.
+
+   Intent is not enough on its own. The switch pulls five files — the page,
+   its CSS, SplitWords and its CSS, and GSAP, ~69 kB. Vite preloads them in
+   parallel, so this is not a waterfall; the problem is simply that ALL of
+   them have to arrive before React can render anything, and until they do the
+   Suspense fallback is an empty viewport with the crossfade already running.
+   Off a dev server that is a few milliseconds from local disk. Over a real
+   connection it is the entire visible lag, and a hover 200ms ahead of the
+   click does not cover it. Fetching on idle moves it into dead time, seconds
+   before anyone reaches for the switch. */
 function warmBusiness(): Promise<unknown> {
   if (!businessChunk) {
     businessChunk = import("../business/BusinessPortfolio").then(
@@ -85,6 +95,31 @@ export default function ModeSwitch() {
 
   const navigate = useNavigate();
   const location = useLocation();
+
+  /* Pull the other portfolio during idle time, so the first switch is not
+     paying for five chained requests at the moment it is asked for.
+     `requestIdleCallback` will not fire while the landing's intro is still
+     animating, so this cannot compete with the art for the main thread; the
+     timeout is the backstop for a page that never goes idle.
+
+     Skipped on a metered or very slow connection, where 69 kB of a portfolio
+     the visitor may never open is not a trade worth making for them. Hover,
+     focus and press still warm it there — the behaviour this replaces. */
+  useEffect(() => {
+    if (target !== "design" || businessReady) return;
+    const conn = (navigator as Navigator & {
+      connection?: { saveData?: boolean; effectiveType?: string };
+    }).connection;
+    if (conn?.saveData) return;
+    if (conn?.effectiveType && /2g$/.test(conn.effectiveType)) return;
+
+    if (typeof window.requestIdleCallback === "function") {
+      const id = window.requestIdleCallback(() => warmBusiness(), { timeout: 4000 });
+      return () => window.cancelIdleCallback?.(id);
+    }
+    const id = window.setTimeout(warmBusiness, 2000);
+    return () => window.clearTimeout(id);
+  }, [target]);
 
   const trackRef = useRef<HTMLDivElement>(null);
   const btnRefs = useRef<(HTMLButtonElement | null)[]>([]);
