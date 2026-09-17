@@ -669,20 +669,6 @@
 }
 
 /* ---------- Continuous learning ---------- */
-.learnHead {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
-  gap: clamp(24px, 4vw, 72px);
-  align-items: end;
-  max-width: none;
-}
-.learnIntro {
-  max-width: 54ch;
-  font-size: var(--t-body);
-  line-height: 1.76;
-  color: var(--biz-muted);
-}
-
 /* Hairline rows only — no cell grid. The list can hold three badges or
    thirty and the rules always land correctly. */
 .badges {
@@ -880,13 +866,6 @@
 @media (max-width: 900px) {
   .badges {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-@media (max-width: 860px) {
-  .learnHead {
-    grid-template-columns: minmax(0, 1fr);
-    align-items: start;
   }
 }
 
