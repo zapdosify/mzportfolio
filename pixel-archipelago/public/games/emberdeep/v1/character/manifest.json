@@ -1,0 +1,321 @@
+{
+ "idle_fps": 7.0,
+ "stride_per_height": 0.72,
+ "run_stride_factor": 1.7,
+ "contacts": {
+  "E": [
+   1,
+   4
+  ],
+  "SE": [
+   0,
+   4
+  ],
+  "S": [
+   0,
+   5
+  ],
+  "SW": [
+   3,
+   7
+  ],
+  "W": [
+   0,
+   3
+  ],
+  "NW": [
+   0,
+   3
+  ],
+  "N": [
+   1,
+   4
+  ],
+  "NE": [
+   0,
+   3
+  ]
+ },
+ "facings": {
+  "E": {
+   "walk": {
+    "file": "motion_walk_E.webp",
+    "frame_width": 288,
+    "frame_height": 288,
+    "frames": 8,
+    "figure_px": 245.64,
+    "offset": [
+     0.0,
+     136.0
+    ]
+   },
+   "idle": {
+    "file": "motion_idle_E.webp",
+    "frame_width": 288,
+    "frame_height": 288,
+    "frames": 8,
+    "figure_px": 249.7,
+    "offset": [
+     0.0,
+     136.0
+    ]
+   },
+   "run": {
+    "file": "motion_run_E.webp",
+    "frame_width": 288,
+    "frame_height": 288,
+    "frames": 8,
+    "figure_px": 243.61,
+    "offset": [
+     0.0,
+     136.0
+    ]
+   }
+  },
+  "SE": {
+   "walk": {
+    "file": "motion_walk_SE.webp",
+    "frame_width": 288,
+    "frame_height": 288,
+    "frames": 8,
+    "figure_px": 143.0,
+    "offset": [
+     0.0,
+     136.0
+    ]
+   },
+   "idle": {
+    "file": "motion_idle_SE.webp",
+    "frame_width": 288,
+    "frame_height": 288,
+    "frames": 8,
+    "figure_px": 153.0,
+    "offset": [
+     0.0,
+     136.0
+    ]
+   },
+   "run": {
+    "file": "motion_run_E.webp",
+    "frame_width": 288,
+    "frame_height": 288,
+    "frames": 8,
+    "figure_px": 243.61,
+    "offset": [
+     0.0,
+     136.0
+    ]
+   }
+  },
+  "S": {
+   "walk": {
+    "file": "motion_walk_S.webp",
+    "frame_width": 288,
+    "frame_height": 288,
+    "frames": 8,
+    "figure_px": 245.0,
+    "offset": [
+     0.0,
+     136.0
+    ]
+   },
+   "idle": {
+    "file": "motion_idle_S.webp",
+    "frame_width": 288,
+    "frame_height": 288,
+    "frames": 8,
+    "figure_px": 253.0,
+    "offset": [
+     0.0,
+     136.0
+    ]
+   },
+   "run": {
+    "file": "motion_run_S.webp",
+    "frame_width": 288,
+    "frame_height": 288,
+    "frames": 8,
+    "figure_px": 247.0,
+    "offset": [
+     0.0,
+     136.0
+    ]
+   }
+  },
+  "SW": {
+   "walk": {
+    "file": "motion_walk_SW.webp",
+    "frame_width": 288,
+    "frame_height": 288,
+    "frames": 8,
+    "figure_px": 133.0,
+    "offset": [
+     0.0,
+     136.0
+    ]
+   },
+   "idle": {
+    "file": "motion_idle_SW.webp",
+    "frame_width": 288,
+    "frame_height": 288,
+    "frames": 8,
+    "figure_px": 136.0,
+    "offset": [
+     0.0,
+     136.0
+    ]
+   },
+   "run": {
+    "file": "motion_run_W.webp",
+    "frame_width": 288,
+    "frame_height": 288,
+    "frames": 8,
+    "figure_px": 239.67,
+    "offset": [
+     0.0,
+     136.0
+    ]
+   }
+  },
+  "W": {
+   "walk": {
+    "file": "motion_walk_W.webp",
+    "frame_width": 288,
+    "frame_height": 288,
+    "frames": 8,
+    "figure_px": 244.57,
+    "offset": [
+     0.0,
+     136.0
+    ]
+   },
+   "idle": {
+    "file": "motion_idle_W.webp",
+    "frame_width": 288,
+    "frame_height": 288,
+    "frames": 8,
+    "figure_px": 240.65,
+    "offset": [
+     0.0,
+     136.0
+    ]
+   },
+   "run": {
+    "file": "motion_run_W.webp",
+    "frame_width": 288,
+    "frame_height": 288,
+    "frames": 8,
+    "figure_px": 239.67,
+    "offset": [
+     0.0,
+     136.0
+    ]
+   }
+  },
+  "NW": {
+   "walk": {
+    "file": "motion_walk_NW.webp",
+    "frame_width": 288,
+    "frame_height": 288,
+    "frames": 8,
+    "figure_px": 129.4,
+    "offset": [
+     0.0,
+     136.0
+    ]
+   },
+   "idle": {
+    "file": "motion_idle_NW.webp",
+    "frame_width": 288,
+    "frame_height": 288,
+    "frames": 8,
+    "figure_px": 128.38,
+    "offset": [
+     0.0,
+     136.0
+    ]
+   },
+   "run": {
+    "file": "motion_run_W.webp",
+    "frame_width": 288,
+    "frame_height": 288,
+    "frames": 8,
+    "figure_px": 239.67,
+    "offset": [
+     0.0,
+     136.0
+    ]
+   }
+  },
+  "N": {
+   "walk": {
+    "file": "motion_walk_N.webp",
+    "frame_width": 288,
+    "frame_height": 288,
+    "frames": 8,
+    "figure_px": 253.7,
+    "offset": [
+     0.0,
+     136.0
+    ]
+   },
+   "idle": {
+    "file": "motion_idle_N.webp",
+    "frame_width": 288,
+    "frame_height": 288,
+    "frames": 8,
+    "figure_px": 254.72,
+    "offset": [
+     0.0,
+     136.0
+    ]
+   },
+   "run": {
+    "file": "motion_run_N.webp",
+    "frame_width": 288,
+    "frame_height": 288,
+    "frames": 8,
+    "figure_px": 251.66,
+    "offset": [
+     0.0,
+     136.0
+    ]
+   }
+  },
+  "NE": {
+   "walk": {
+    "file": "motion_walk_NE.webp",
+    "frame_width": 288,
+    "frame_height": 288,
+    "frames": 8,
+    "figure_px": 126.34,
+    "offset": [
+     0.0,
+     136.0
+    ]
+   },
+   "idle": {
+    "file": "motion_idle_NE.webp",
+    "frame_width": 288,
+    "frame_height": 288,
+    "frames": 8,
+    "figure_px": 129.4,
+    "offset": [
+     0.0,
+     136.0
+    ]
+   },
+   "run": {
+    "file": "motion_run_E.webp",
+    "frame_width": 288,
+    "frame_height": 288,
+    "frames": 8,
+    "figure_px": 243.61,
+    "offset": [
+     0.0,
+     136.0
+    ]
+   }
+  }
+ }
+}

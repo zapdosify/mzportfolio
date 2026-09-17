@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0">
+		<title>EMBERDEEP — Emberglass Folklore</title>
+		<!--
+			EMBERDEEP portfolio build shell (web/portfolio/README.md). Godot's own
+			shell, restyled for the page around it: black, IBM Plex Mono status line,
+			and the load progress also posted to the parent page
+			(`emberdeep:progress`, same origin only).
+		-->
+		<style>
+html, body, #canvas {
+	margin: 0;
+	padding: 0;
+	border: 0;
+}
+
+html, body {
+	width: 100%;
+	height: 100%;
+}
+
+body {
+	color: #f2f2f2;
+	background-color: #050505;
+	overflow: hidden;
+	touch-action: none;
+}
+
+#canvas {
+	display: block;
+	width: 100%;
+	height: 100%;
+}
+
+#canvas:focus {
+	outline: none;
+}
+
+#status {
+	position: absolute;
+	inset: 0;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	gap: 14px;
+	background-color: #050505;
+	font-family: "IBM Plex Mono", "Geist Mono", ui-monospace, SFMono-Regular, monospace;
+	font-size: 12px;
+	letter-spacing: 0.12em;
+	text-transform: uppercase;
+	color: #b6b6b6;
+	visibility: hidden;
+}
+
+#status-bar {
+	width: min(280px, 60%);
+	height: 2px;
+	background: #292929;
+	overflow: hidden;
+}
+
+#status-fill {
+	height: 100%;
+	width: 0;
+	background: #f2f2f2;
+	transition: width 120ms linear;
+}
+
+#status-notice {
+	display: none;
+	max-width: 32rem;
+	margin: 0 2rem;
+	padding: 1rem;
+	border: 1px solid #575757;
+	text-transform: none;
+	letter-spacing: normal;
+	line-height: 1.5;
+	text-align: center;
+	color: #f2f2f2;
+}
+		</style>
+		<link id="-gd-engine-icon" rel="icon" type="image/png" href="index.icon.png" />
+<link rel="apple-touch-icon" href="index.apple-touch-icon.png"/>
+
+	</head>
+	<body>
+		<canvas id="canvas" tabindex="0" aria-label="EMBERDEEP game">
+			Your browser does not support the canvas tag.
+		</canvas>
+
+		<noscript>
+			Your browser does not support JavaScript.
+		</noscript>
+
+		<div id="status" role="status" aria-live="polite">
+			<span id="status-text">Opening the inn</span>
+			<div id="status-bar"><div id="status-fill"></div></div>
+			<div id="status-notice"></div>
+		</div>
+
+		<script src="index.js"></script>
+		<script>
+const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":true,"executable":"index","experimentalVK":false,"fileSizes":{"index.pck":91593108,"index.wasm":39514754},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4};
+const GODOT_THREADS_ENABLED = false;
+const engine = new Engine(GODOT_CONFIG);
+
+(function () {
+	const statusOverlay = document.getElementById('status');
+	const statusText = document.getElementById('status-text');
+	const statusBar = document.getElementById('status-bar');
+	const statusFill = document.getElementById('status-fill');
+	const statusNotice = document.getElementById('status-notice');
+	let initializing = true;
+
+	function tellPage(message) {
+		if (window.parent !== window) {
+			window.parent.postMessage(JSON.stringify(message), window.location.origin);
+		}
+	}
+
+	function showProgress(current, total) {
+		statusOverlay.style.visibility = 'visible';
+		const fraction = total > 0 ? current / total : 0;
+		statusFill.style.width = (fraction * 100).toFixed(1) + '%';
+		statusText.textContent = total > 0 ? 'Opening the inn — ' + Math.round(fraction * 100) + '%' : 'Opening the inn';
+		tellPage({ type: 'emberdeep:progress', current: current, total: total });
+	}
+
+	function displayFailureNotice(err) {
+		console.error(err);
+		const text = err instanceof Error ? err.message : (typeof err === 'string' ? err : 'An unknown error occurred.');
+		statusOverlay.style.visibility = 'visible';
+		statusText.textContent = 'The inn could not open';
+		statusBar.style.display = 'none';
+		statusNotice.textContent = text;
+		statusNotice.style.display = 'block';
+		initializing = false;
+		tellPage({ type: 'emberdeep:error', message: text });
+	}
+
+	const missing = Engine.getMissingFeatures({
+		threads: GODOT_THREADS_ENABLED,
+	});
+
+	if (missing.length !== 0) {
+		displayFailureNotice('This browser is missing features the game needs:\n' + missing.join('\n'));
+		return;
+	}
+
+	showProgress(0, 0);
+	engine.startGame({
+		'onProgress': function (current, total) {
+			if (initializing) {
+				showProgress(current, total);
+			}
+		},
+	}).then(() => {
+		initializing = false;
+		statusOverlay.remove();
+		tellPage({ type: 'emberdeep:started' });
+	}, displayFailureNotice);
+}());
+		</script>
+	</body>
+</html>
+

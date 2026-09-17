@@ -17,7 +17,7 @@
   #    shell. Without this, a dropped og-image.jpg would answer 200 with
   #    HTML and a scraper would just report "image unavailable" with no clue
   #    why. Only real routes should fall through to React Router.
-  RewriteRule \.(js|mjs|css|map|png|jpe?g|gif|svg|webp|avif|ico|mp4|webm|woff2?|ttf|otf|docx|pdf|txt|xml|json)$ - [R=404,L]
+  RewriteRule \.(js|mjs|css|map|png|jpe?g|gif|svg|webp|avif|ico|mp4|webm|woff2?|ttf|otf|docx|pdf|txt|xml|json|wasm|pck)$ - [R=404,L]
 
   # 3. Everything else is a client-side route (/about, /design/<project>, …).
   #    Serve the shell with a 200 so both visitors and link-preview crawlers

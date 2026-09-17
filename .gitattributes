@@ -1,0 +1,5 @@
+# Godot web exports (pixel-archipelago/public/games/): never line-ending-
+# converted or diffed. Git would guess right from the NUL bytes, but a wrong
+# guess on this autocrlf checkout would silently corrupt the game.
+*.pck binary
+*.wasm binary

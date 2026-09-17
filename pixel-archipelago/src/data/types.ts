@@ -106,6 +106,75 @@ export interface VideoEmbed {
   caption?: string;
 }
 
+/**
+ * A game playable on the project page, in a same-origin iframe loaded on
+ * request. `sprites` is the character layer's folder (manifest.json + sheets):
+ * the character can walk out of the game and onto the page.
+ */
+export interface PlayableGame {
+  /** the web export's page, served from this site */
+  src: string;
+  sprites: string;
+  /** accessible name for the iframe */
+  title: string;
+  poster: string;
+  posterAlt: string;
+  /** download size, set under the Play button: "About 130 MB" */
+  size: string;
+  /** key groups and what they do: [["WASD", "↑↓←→"], "walk"] */
+  controls: [keys: string[], action: string][];
+  /** one-line tip; `[[K]]` renders K as a key */
+  tip?: string;
+}
+
+/** An image in a game case study. `pixel` keeps pixel art crisp when scaled. */
+export interface CaseFigure {
+  src: string;
+  alt: string;
+  caption?: string;
+  pixel?: boolean;
+}
+
+/**
+ * The blocks of a game case study, in reading order. Prose supports three
+ * inline marks: `**strong**`, `*emphasis*` and `[[K]]` for a key.
+ */
+export type GameCaseBlock =
+  | { kind: "prose"; paragraphs: string[] }
+  /** dated steps of the project, read left to right */
+  | { kind: "timeline"; items: CaseFigure[] }
+  | { kind: "pipeline"; steps: [title: string, text: string][] }
+  | { kind: "figures"; columns: 1 | 2; items: CaseFigure[] }
+  /** before/after pairs with a draggable split */
+  | {
+      kind: "compare";
+      items: {
+        before: CaseFigure;
+        after: CaseFigure;
+        beforeLabel: string;
+        afterLabel: string;
+        /** accessible name for the slider */
+        label: string;
+        caption: string;
+      }[];
+    }
+  | { kind: "problems"; items: { title: string; why?: string; fix: string }[] }
+  | { kind: "stats"; items: [value: string, label: string][] }
+  /** prose beside one figure */
+  | { kind: "aside"; paragraphs: string[]; figure: CaseFigure };
+
+export interface GameCaseSection {
+  number: string;
+  title: string;
+  blocks: GameCaseBlock[];
+}
+
+export interface GameCaseStudy {
+  /** the owner's own line, set large before the first section */
+  quote: { text: string; source: string };
+  sections: GameCaseSection[];
+}
+
 export interface ProcessStage {
   title: string;
   description?: string;
@@ -123,6 +192,13 @@ export interface Project {
   slug: string;
   title: string;
   subtitle?: string;
+  /**
+   * The detail page's own title and subtitle, when they should differ from
+   * the card's (a short h1 under a longer card title).
+   */
+  heading?: { title: string; subtitle?: string };
+  /** replaces the hero's generated Year/Role/Tools row with these pairs */
+  details?: { label: string; value: string }[];
   categoryId: string;
   year?: string; // omit when unknown — never invented
   client?: string;
@@ -164,6 +240,10 @@ export interface Project {
   book?: BookBlock[];
   /** a scripted scroll through a spatial project — replaces the gallery */
   exhibit?: ExhibitScene[];
+  /** a game, playable on the page, directly under the hero */
+  play?: PlayableGame;
+  /** a game's case study — replaces the gallery */
+  gameCaseStudy?: GameCaseStudy;
   externalLinks?: ExternalLink[];
   /** sub-cases inside one project (e.g. Exhibition Design's three prompts) */
   subProjects?: SubProject[];

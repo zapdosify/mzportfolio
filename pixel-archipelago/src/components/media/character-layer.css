@@ -1,0 +1,100 @@
+/* EMBERDEEP — Ilva on the page.
+   Global on purpose: character-layer.ts builds these elements itself and
+   names them `ilva-*`, so a CSS module's hashed names could never reach them.
+   Loaded only with the project-page chunk that imports PlayableGame.
+
+   Layer 90: over the page and its header (40) and the mode switch (45), under
+   overlays (100) and modals (1000), so the index menu and the lightbox still
+   cover her. */
+
+.ilva-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  z-index: 90;
+  pointer-events: none;
+}
+
+.ilva-actor {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: translate3d(-9999px, -9999px, 0);
+  outline: none;
+  will-change: transform;
+}
+
+.ilva-sprite {
+  background-repeat: no-repeat;
+  image-rendering: pixelated;
+  pointer-events: auto;
+  cursor: pointer;
+  filter: drop-shadow(0 6px 6px rgba(0, 0, 0, 0.55));
+}
+
+/* A soft contact shadow under her feet, like the game's blob. */
+.ilva-actor::after {
+  content: "";
+  position: absolute;
+  left: var(--ilva-foot-x, 50%);
+  top: var(--ilva-foot-y, 100%);
+  width: 46px;
+  height: 12px;
+  margin: -6px 0 0 -23px;
+  border-radius: 50%;
+  background: radial-gradient(rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0) 70%);
+  z-index: -1;
+}
+
+.ilva-actor:focus-visible .ilva-sprite {
+  filter: drop-shadow(0 0 1px var(--white)) drop-shadow(0 6px 6px rgba(0, 0, 0, 0.55));
+}
+
+.ilva-actor.is-waiting .ilva-sprite { opacity: 0.8; }
+
+/* The two labels over her head share one look: the site's mono chip. */
+.ilva-actor.is-waiting::before,
+.ilva-prompt:not(:empty) {
+  position: absolute;
+  left: var(--ilva-foot-x, 50%);
+  top: 0;
+  white-space: nowrap;
+  padding: var(--space-1) var(--space-2);
+  background: var(--black);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
+.ilva-actor.is-waiting::before {
+  content: "Click Ilva to keep walking";
+  transform: translate(-50%, -100%);
+  border: 1px solid var(--border-active);
+  letter-spacing: 0.1em;
+  color: var(--text-secondary);
+}
+
+.ilva-prompt:not(:empty) {
+  transform: translate(-50%, -110%);
+  border: 1px solid var(--text-primary);
+  letter-spacing: 0.12em;
+  color: var(--text-primary);
+}
+
+.ilva-layer.is-returning .ilva-sprite {
+  opacity: 0;
+  transition: opacity 200ms linear;
+}
+
+/* Whatever she is standing on, lit the way the site lights a hovered frame. */
+.is-ilva-target {
+  border-color: var(--text-primary) !important;
+  box-shadow: var(--glow-soft);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ilva-layer.is-returning .ilva-sprite { transition: none; }
+}

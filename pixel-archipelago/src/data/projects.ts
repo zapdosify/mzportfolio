@@ -2,6 +2,7 @@ import type { Project, ProjectMedia } from "./types";
 import { solarpunkStory } from "./solarpunkStory";
 import { manifestoBook } from "./manifestoBook";
 import { avengersExhibition } from "./avengersExhibition";
+import { emberdeepCaseStudy, emberdeepPlay } from "./emberdeepCaseStudy";
 
 // ---------------------------------------------------------------------------
 // Media helpers. Content migrated verbatim from the previous portfolio.
@@ -190,6 +191,28 @@ export const projects: Project[] = [
     cardImageFit: "contain",
     relatedProjectIds: ["solarpunk", "bookbabies"],
     sourceUrl: "https://mznoor8.wixsite.com/portfolio/website-design",
+  },
+  {
+    id: "emberdeep",
+    slug: "emberdeep",
+    title: "EMBERDEEP — A Night at Cinder Inn",
+    subtitle: "My first game: one enchanted room, playable in the browser",
+    heading: { title: "EMBERDEEP", subtitle: "A Night at Cinder Inn — my first game" },
+    categoryId: "website-design",
+    year: "2026",
+    role: "Game design & development",
+    tools: ["Godot 4.7", "SpriteCook", "Meshy", "Codex"],
+    details: [
+      { label: "Role", value: "Game design & development" },
+      { label: "Made with", value: "Godot 4.7 · SpriteCook · Meshy · Codex" },
+      { label: "Time", value: "3 days, 14–16 Sep 2026" },
+    ],
+    summary:
+      "One enchanted bedroom and one pixel-art priestess, built in Godot. Walk around, open the chest, read at the desk, look through the telescope and go to bed. Or walk out the door and onto this page.",
+    cardImage: `${IMG}/emberdeep/card.webp`,
+    play: emberdeepPlay,
+    gameCaseStudy: emberdeepCaseStudy,
+    relatedProjectIds: ["ripple"],
   },
 
   // ========================= VISUAL ARTWORK =========================

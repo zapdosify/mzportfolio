@@ -23,6 +23,15 @@ export function setLenis(l: Lenis | null) {
 }
 
 /**
+ * The running engine, for code that has to drive the scroll itself frame by
+ * frame (EMBERDEEP's character layer follows Ilva down the page). Null when
+ * Lenis is not running, in which case native scrolling is the right call.
+ */
+export function getLenis(): Lenis | null {
+  return instance;
+}
+
+/**
  * Jump to an absolute offset immediately.
  *
  * Every programmatic scroll in business mode must go through here: Lenis

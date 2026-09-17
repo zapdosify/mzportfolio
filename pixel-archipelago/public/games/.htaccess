@@ -1,0 +1,22 @@
+# Playable games (EMBERDEEP: /games/emberdeep/v1/). Read on top of the site's
+# root .htaccess, whose SPA rewrite already serves these files as themselves.
+
+<IfModule mod_mime.c>
+  # Godot's web export fetches the engine with WebAssembly.instantiateStreaming,
+  # which refuses anything not served as application/wasm.
+  AddType application/wasm .wasm
+  AddType application/octet-stream .pck
+</IfModule>
+
+<IfModule mod_deflate.c>
+  # The .wasm shrinks from ~40 MB to ~10 MB; the .pck is already packed.
+  AddOutputFilterByType DEFLATE application/wasm
+</IfModule>
+
+<IfModule mod_headers.c>
+  # Each export lives in its own version folder (v1, v2 …) and never changes
+  # in place, so everything under it — its index.html included — can be
+  # cached for good. A new export goes in a new folder, never over this one.
+  # Deliberately no COOP/COEP: the build is single-threaded and needs neither.
+  Header set Cache-Control "public, max-age=31536000, immutable"
+</IfModule>

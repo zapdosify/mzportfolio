@@ -31,7 +31,7 @@ export const categories: Category[] = [
     pagePreviewImage: img("website-design", "page-preview.webp"),
     worldPosition: { x: 28.7, y: 24.2 },
     activationRadius: 9,
-    projectIds: ["ripple"],
+    projectIds: ["ripple", "emberdeep"],
     relatedCategoryIds: ["app-design"],
     kind: "projects",
   },
