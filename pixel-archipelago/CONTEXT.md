@@ -10,17 +10,21 @@ Runtime deps: `react`, `react-dom`, `react-router`, `zustand`, `gsap`, and **`le
 
 ---
 
-## 0 · State at the last pause — 12 September 2026
+## 0 · State at the last pause — 17 September 2026
 
-**Section 9 is the most recent work** — the business portfolio's dark teal
-rebuild, the orb in both worlds, and the switch's first-use cost. ⚠️ It
+**Section 10 is the most recent work** — EMBERDEEP, the owner's first game,
+playable on its own case-study page, on branch `feature/emberdeep` (not merged,
+not pushed, not deployed at the time of writing).
+
+**Section 9 is the one to read before touching the business side** — its dark
+teal rebuild, the orb in both worlds, and the switch's first-use cost. ⚠️ It
 invalidates every "light world" / "paper" / "ink" description written before it,
 in this file and in the root `CONTEXT.md` § 11, and it retunes two colour values
 inside § 8's glass. Read § 9.1 and § 9.2 before trusting anything earlier about
 how the business side looks.
 
 The table below is the verification from the *earlier* pause at `e783919`;
-sections 5, 7, 8 and 9 each carry their own.
+sections 5, 7, 8, 9 and 10 each carry their own.
 
 Verified at that commit, not assumed:
 
@@ -1040,3 +1044,150 @@ was never flipped. **Safari is untested** for all of it. And every frame number
 above is one machine through the Browser pane — the business page measured 75fps,
 but that is a capped display on a desktop GPU and says nothing about a laptop on
 battery.
+
+---
+
+## 10 · EMBERDEEP — a playable game on its own case-study page — 17 September 2026
+
+| commit | what |
+|---|---|
+| `805dc9b` | A new Website Design card opens `/website-design/emberdeep`: the owner's quote, the Godot web build in a click-to-load iframe, and six sections of build diary. The game's heroine, Ilva, can walk out of the room and onto the article, use things on it, and walk back in. |
+
+Branch `feature/emberdeep`. The owner approved the plan, the copy, the hosting
+choice and a layout to try before any of it was written; pushing and deploying
+each need a separate yes.
+
+### Where it came from
+
+The game lives in **another repo** and must not be edited from here:
+`C:\Users\zab\Documents\Codex\2026-09-14\build-emberdeep-a-playable-top-down\outputs\emberdeep-godot`
+(branch `interaction-lab`). Its `web/portfolio/` holds the handoff
+(`HANDOFF.md`), the plan (`INTEGRATION.md`), the approved copy
+(`CASE_STUDY.md`), the **postMessage contract** (`README.md`) and the
+prototype page. The built files came from `…\build\portfolio-prototype\`. A
+re-export runs in that repo (`tools/portfolio/export_web.ps1`), only with the
+owner's agreement.
+
+### Decisions the owner made (2026-09-17)
+
+- **Hosting: committed to git.** `index.pck` is 92 MB — under GitHub's 100 MB
+  hard limit, over its 50 MB warning — and each re-export adds ~130 MB of
+  history. Git LFS was ruled out because Hostinger's git deploy is unlikely to
+  fetch LFS objects.
+- **Layout: a dedicated one** (the plan's "option 2"), on trial — "if I don't
+  like it we'll go back to option 1", which is existing `exhibit` scenes plus
+  two small new blocks. If that happens, `GameCaseBlock`'s `compare` and
+  `problems` are the two to keep.
+- **Copy: approved as written.** `src/data/emberdeepCaseStudy.ts` is verbatim.
+- **Phones: poster + "Play anyway · Best on desktop".** No real device has
+  been tested, and the textures are desktop-compressed.
+- **Category:** the owner will rename "Website Design" to "Web / Game Design"
+  later. Nothing here depends on the name.
+
+### How it's wired
+
+- **Data.** `Project` gained `play` (`PlayableGame`), `gameCaseStudy`
+  (`GameCaseStudy`), `heading` (the page's own h1/subtitle when shorter than
+  the card's: the card says "EMBERDEEP — A Night at Cinder Inn", the page
+  says "EMBERDEEP") and `details` (replaces the generated Year/Role/Tools row;
+  here it reads Role / Made with / Time). Content is in
+  `src/data/emberdeepCaseStudy.ts`. Prose supports `**strong**`, `*em*` and
+  `[[K]]` for a key, rendered by `components/game/InlineMarks.tsx`; no HTML
+  is ever injected.
+- **`components/media/PlayableGame.tsx`** follows `VideoEmbed`: a poster and a
+  button until asked, then the iframe (`allow="autoplay; fullscreen; gamepad"`,
+  focused on load). An effect builds the `CharacterLayer` and the touch
+  controls and destroys both on unmount. The touch controls are portalled to
+  `<body>`: they are `position: fixed`, and the interior motion's entrance
+  transforms would otherwise pin them to the article.
+- **`components/media/character-layer.ts`** is the game repo's
+  `site/character-layer.js` with types added. Four deliberate additions, all
+  because a React page unmounts and the prototype never did: `destroy()`
+  removes the return-button listener and any highlight; the manifest is
+  fetched once; `_hide()` clears the element she was standing on; and
+  `mountTouchControls` returns a cleanup. **Change it only together with the
+  game side** (the contract is in that repo's README).
+- **`character-layer.css` is global**, not a module: the layer builds its own
+  `ilva-*` elements, so hashed class names can never reach them. It is only
+  loaded with the project-page chunk. Ilva sits at z 90: over the header (40)
+  and the switch (45), under overlays (100) and modals (1000).
+- **Scroll-follow goes through `scrollToInstant`**, looked up per call, so
+  Lenis stays the one engine moving the document (§ 8). `lenisInstance.ts`
+  also gained `getLenis()`, currently unused by the layer.
+- **`components/game/GameCaseStudy.tsx`**: the quote, then numbered sections
+  from blocks — `prose`, `timeline`, `pipeline`, `figures`, `compare`,
+  `problems`, `stats` and `aside`. Headings are `SectionHead` (title + number
+  as meta); frames take each image's measured aspect; every image opens in one
+  shared `Lightbox`, in reading order. It replaces the gallery in
+  `ProjectDetail`, as `book` and `exhibit` do.
+- **Things Ilva can use** carry `data-ilva-interact="label"`: every figure
+  ("Look", opens the Lightbox), each slider ("Swap", flips the split end to
+  end), each problem card ("Read", then marked "✓ Read by Ilva"), and, on game
+  pages only, the two return buttons. Her E press arrives as `element.click()`
+  with `detail === 0`. The slider and the cards react only to that, so a
+  visitor's own mouse click never reads as hers.
+- **Hosting.** The site is on **Hostinger**, so the handoff's `vercel.json`
+  headers would have done nothing. `public/games/.htaccess` sets
+  `application/wasm`, deflate for the `.wasm` (40 → ~10 MB), and immutable
+  caching for everything under the versioned folder. **A new export goes in
+  `v2/`, never over `v1/`**, or visitors keep the old one for a year. The root
+  `.htaccess` rule that 404s missing assets now covers `.wasm` and `.pck`, so a
+  missing file fails loudly instead of returning the app shell. `vercel.json`
+  carries the same caching for parity. No COOP/COEP: the build is
+  single-threaded.
+- **Repo plumbing.** A root `.gitattributes` marks `*.pck` and `*.wasm` binary,
+  because a wrong guess on this `autocrlf` checkout would corrupt the game.
+  oxlint ignores `public/games/**` (Godot's generated engine code).
+  `mediaDimensions.ts` was regenerated: the 25 new images, plus 32 rows that
+  were stale for images already committed (worst aspect drift 0.1%, no layout
+  change). Three of the 25 images are shipped but not used by the copy:
+  `fail-rig-weights`, `furniture-render-vs-painting`,
+  `pipeline-registered-walk`.
+
+### Bundle
+
+Against the branch's starting point (`1680bbe`), built side by side:
+
+| chunk | before | after |
+|---|---|---|
+| entry (`index`) | 168.72 kB / 59.64 gzip | 178.05 kB / 63.47 gzip |
+| `ProjectDetail` (lazy) | 43.66 kB / 10.93 gzip | 67.41 kB / 17.96 gzip |
+
+The +3.8 kB gzip on the entry is the case-study copy: `projects.ts` imports it,
+the same way it already imports the Avengers, Manifesto and Solarpunk content.
+GSAP is still off the critical path. The game itself costs nothing until
+someone presses Play.
+
+### Verified, not assumed
+
+Local dev server, Browser pane, 1081×914 desktop and 375×812 touch emulation:
+
+| check | result |
+|---|---|
+| card | renders in Website Design beside Ripple, same `ProjectCard` |
+| page | h1 "EMBERDEEP", breadcrumb, Role / Made with / Time, 6 sections + Related, 21 images, none broken |
+| before/after slider | `--split` follows the input; `aria-valuetext` reads both halves |
+| Play | logo reveal, then the room; layer `game`, iframe focused, one Lenis |
+| out of the room | through the door and off the edge in 2.25 s; full exit payload received; focus moved to Ilva |
+| on the page | walks on `walk_S`, settles on `idle_S` at key-up; the page followed her 512 → 593 → 1216 through Lenis |
+| E prompt | "E · Look" over the figure she stood on, and the figure lit |
+| E press | opened that image in the Lightbox; Ilva paused; Escape closed the Lightbox only, and focus came back to her |
+| problem card / slider | a mouse click (`detail 1`) left the card alone; her E marked it read; E flipped the slider 20% → 100% |
+| Escape | sent her home: `emberdeep:returned`, focus to the game, nothing left lit, she stands on the landing |
+| walking back in | across the east edge 0.8 s after arming; a key released afterwards was forwarded as `emberdeep:release` |
+| leaving the page | iframe, layer and touch controls all removed; coming back shows a fresh Play button |
+| phone | "Play anyway · Best on desktop · About 130 MB"; no horizontal overflow; touch controls appear once the game is ready; a real drag on the joystick sent input ramping toward 0.74, 0.67 and back to 0 |
+| `tsc` / `lint` / `build` | green; 5 pre-existing `router.tsx` warnings only |
+
+The only console error is the game's own: Godot warns that TAA needs the
+Forward+ renderer (the web build uses Compatibility). It is harmless, and it
+belongs to the game repo.
+
+**Not verified:**
+- **Real keyboard play.** The pane's automation can't hold two keys at once, so
+  she was walked out with the game's joystick message (the same one the touch
+  controls send). Her page walk was driven by key events sent to her element.
+- **Hostinger itself.** The `.htaccess` rules, the `.wasm` content type and the
+  92 MB file have not been through a deploy yet.
+- **A real phone or tablet**, Safari, and `prefers-reduced-motion` under real
+  OS emulation.
