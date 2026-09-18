@@ -485,17 +485,14 @@ export default function BusinessPortfolio() {
         {/* ---------------- Continuous learning ---------------- */}
         <section className={styles.section} aria-labelledby="biz-learning-title">
           <div className={styles.shell}>
-            <div className={`${styles.sectionHead} ${styles.learnHead}`} data-reveal="">
-              <div>
-                <p className={styles.eyebrow}>
-                  <span className={styles.eyebrowRule} aria-hidden="true" />
-                  {businessCopy.learning.eyebrow}
-                </p>
-                <h2 id="biz-learning-title" className={styles.sectionTitle}>
-                  <SplitWords text={businessCopy.learning.heading} />
-                </h2>
-              </div>
-              <p className={styles.learnIntro}>{businessCopy.learning.intro}</p>
+            <div className={styles.sectionHead} data-reveal="">
+              <p className={styles.eyebrow}>
+                <span className={styles.eyebrowRule} aria-hidden="true" />
+                {businessCopy.learning.eyebrow}
+              </p>
+              <h2 id="biz-learning-title" className={styles.sectionTitle}>
+                <SplitWords text={businessCopy.learning.heading} />
+              </h2>
             </div>
 
             {/* The grid takes however many credentials the data holds —

@@ -43,8 +43,6 @@ export const businessCopy = {
     // simply repeat it back.
     eyebrow: "Credentials",
     heading: "Continuous learning",
-    intro:
-      "Coursework completed alongside the degree — the course title, the institution, the completion date, and a link to verify each one.",
     note: "Every credential links to its issuer's official verification record.",
   },
 

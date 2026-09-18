@@ -2,6 +2,7 @@ import type { Project, ProjectMedia } from "./types";
 import { solarpunkStory } from "./solarpunkStory";
 import { manifestoBook } from "./manifestoBook";
 import { avengersExhibition } from "./avengersExhibition";
+import { emberdeepCaseStudy, emberdeepPlay } from "./emberdeepCaseStudy";
 
 // ---------------------------------------------------------------------------
 // Media helpers. Content migrated verbatim from the previous portfolio.
@@ -190,6 +191,28 @@ export const projects: Project[] = [
     cardImageFit: "contain",
     relatedProjectIds: ["solarpunk", "bookbabies"],
     sourceUrl: "https://mznoor8.wixsite.com/portfolio/website-design",
+  },
+  {
+    id: "emberdeep",
+    slug: "emberdeep",
+    title: "EMBERDEEP — A Night at Cinder Inn",
+    subtitle: "A small room with a world behind it",
+    heading: { title: "EMBERDEEP", subtitle: "A small room with a world behind it" },
+    categoryId: "website-design",
+    year: "2026",
+    role: "Creative direction · environment and interaction design",
+    tools: ["Godot", "SpriteCook", "Meshy", "Claude and Codex"],
+    details: [
+      { label: "Role", value: "Creative direction · environment and interaction design · iterative review" },
+      { label: "Format", value: "Playable room showcase" },
+      { label: "Made with", value: "Godot · SpriteCook · Meshy · Claude and Codex" },
+    ],
+    summary:
+      "An interactive fantasy room designed to feel personal, lived-in and quietly magical. I shaped its visual direction, layout and interactions, using an AI-assisted workflow to bring a pixel-art heroine into a three-dimensional space.",
+    cardImage: `${IMG}/emberdeep/card.webp`,
+    play: emberdeepPlay,
+    gameCaseStudy: emberdeepCaseStudy,
+    relatedProjectIds: ["ripple"],
   },
 
   // ========================= VISUAL ARTWORK =========================
@@ -427,7 +450,7 @@ export const projects: Project[] = [
     gallery: [2, 3, 4, 5, 6, 7, 8, 9, 10].map((num, i) =>
       im("poster-design", `${String(i + 1).padStart(2, "0")}_poster-${num}.webp`, `Poster ${num}`),
     ),
-    relatedProjectIds: ["visual-artwork", "design-manifesto"],
+    relatedProjectIds: ["digital-painting", "design-manifesto"],
     sourceUrl: "https://mznoor8.wixsite.com/portfolio/posters",
   },
 
@@ -455,7 +478,7 @@ export const projects: Project[] = [
       vid("animation-animated-shorts", "02_329c98fc64.mp4", "animation-animated-shorts", "02_53ff1d_329c98fc64264ea8896bec0a97b90302f000.webp", "Animated short 2"),
       vid("animation-animated-shorts", "03_c568b7816c.mp4", "animation-animated-shorts", "03_53ff1d_c568b7816c2d4c08b601550835c15f29f000.webp", "Original trailer concept for animated TV series"),
     ],
-    relatedProjectIds: ["documentary", "renders"],
+    relatedProjectIds: ["social-pandemic", "renders"],
     sourceUrl: "https://mznoor8.wixsite.com/portfolio/animation",
   },
 

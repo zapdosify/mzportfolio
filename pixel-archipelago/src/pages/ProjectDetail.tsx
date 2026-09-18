@@ -8,7 +8,10 @@ import VideoEmbed from "../components/media/VideoEmbed";
 import StoryScroll from "../components/story/StoryScroll";
 import BookScroll from "../components/story/BookScroll";
 import ExhibitScroll from "../components/exhibit/ExhibitScroll";
+import PlayableGame from "../components/media/PlayableGame";
+import GameCaseStudy from "../components/game/GameCaseStudy";
 import { manifestoLinks } from "../data/manifestoBook";
+import { dimensionsFor } from "../data/mediaDimensions";
 import { useInteriorMotion } from "../hooks/useInteriorMotion";
 import SplitWords from "../components/motion/SplitWords";
 import SectionHead from "../components/motion/SectionHead";
@@ -23,28 +26,35 @@ export default function ProjectDetail() {
 
   if (!project || !category) return <NotFound />;
 
+  const heading = project.heading ?? { title: project.title, subtitle: project.subtitle };
+  const coverSize = dimensionsFor(project.coverImage);
+
   const meta: { label: string; value: string }[] = [];
-  if (project.year) meta.push({ label: "Year", value: project.year });
-  if (project.client) meta.push({ label: "Client", value: project.client });
-  if (project.context) meta.push({ label: "Context", value: project.context });
-  if (project.role) meta.push({ label: "Role", value: project.role });
-  if (project.collaborators?.length)
-    meta.push({ label: "Collaborators", value: project.collaborators.join(", ") });
-  if (project.tools?.length) meta.push({ label: "Tools", value: project.tools.join(" · ") });
+  if (project.details) {
+    meta.push(...project.details);
+  } else {
+    if (project.year) meta.push({ label: "Year", value: project.year });
+    if (project.client) meta.push({ label: "Client", value: project.client });
+    if (project.context) meta.push({ label: "Context", value: project.context });
+    if (project.role) meta.push({ label: "Role", value: project.role });
+    if (project.collaborators?.length)
+      meta.push({ label: "Collaborators", value: project.collaborators.join(", ") });
+    if (project.tools?.length) meta.push({ label: "Tools", value: project.tools.join(" · ") });
+  }
 
   return (
     <article className={`container ${s.page}`} ref={rootRef}>
       <header className={s.hero} style={{ marginBottom: "var(--space-16)" }} data-hero="">
         <div className={s.heroText}>
           <p className={s.breadcrumb} data-hero-line="">
-            <Link to={category.route}>WORLD / {category.title}</Link> / {project.title}
+            <Link to={category.route}>WORLD / {category.title}</Link> / {heading.title}
           </p>
           <h1 className={s.title} data-hero-title="">
-            <SplitWords text={project.title} />
+            <SplitWords text={heading.title} />
           </h1>
-          {project.subtitle && (
+          {heading.subtitle && (
             <p className={s.tagline} data-hero-line="">
-              {project.subtitle}
+              {heading.subtitle}
             </p>
           )}
           {project.summary && (
@@ -75,8 +85,20 @@ export default function ProjectDetail() {
           </div>
         ) : (
           project.coverImage && (
-            <div className={s.heroArt} data-hero-art="">
-              <img src={project.coverImage} alt={`${project.title} cover`} />
+            // The cover's measured shape is set before it loads, so the page
+            // below it does not jump when it arrives. Same source of truth as
+            // MediaFigure: the dimensions measured from the file on disk.
+            <div
+              className={s.heroArt}
+              data-hero-art=""
+              style={coverSize ? { aspectRatio: `${coverSize[0]} / ${coverSize[1]}` } : undefined}
+            >
+              <img
+                src={project.coverImage}
+                alt={`${project.title} cover`}
+                width={coverSize?.[0]}
+                height={coverSize?.[1]}
+              />
             </div>
           )
         )}
@@ -84,6 +106,11 @@ export default function ProjectDetail() {
 
       {/* Looping title sequence, directly under the hero */}
       {project.ambientVideo && <AmbientVideo video={project.ambientVideo} />}
+
+      {/* A game, playable right here, then its case study. The study replaces
+          the gallery: every image is already a block inside it. */}
+      {project.play && <PlayableGame game={project.play} />}
+      {project.gameCaseStudy && <GameCaseStudy study={project.gameCaseStudy} />}
 
       {project.imageryPending && (
         <p className={s.note} style={{ marginBottom: "var(--space-12)" }}>
@@ -197,7 +224,7 @@ export default function ProjectDetail() {
       )}
 
       {/* Gallery */}
-      {!project.book && !project.exhibit && project.gallery && project.gallery.length > 0 && (
+      {!project.book && !project.exhibit && !project.gameCaseStudy && project.gallery && project.gallery.length > 0 && (
         <section className={s.section} aria-labelledby="gallery-h">
           <SectionHead
             id="gallery-h"
@@ -264,8 +291,23 @@ export default function ProjectDetail() {
       )}
 
       <div className={s.returnStrip}>
-        <Link to={category.route} className={s.returnBtn} data-magnetic="">← Back to {category.title}</Link>
-        <Link to="/" className={s.returnBtn} data-magnetic="">Return to World</Link>
+        {/* On a game page the heroine can walk here and use these too. */}
+        <Link
+          to={category.route}
+          className={s.returnBtn}
+          data-magnetic=""
+          data-ilva-interact={project.play ? `Back to ${category.title}` : undefined}
+        >
+          ← Back to {category.title}
+        </Link>
+        <Link
+          to="/"
+          className={s.returnBtn}
+          data-magnetic=""
+          data-ilva-interact={project.play ? "Return to world" : undefined}
+        >
+          Return to World
+        </Link>
       </div>
     </article>
   );

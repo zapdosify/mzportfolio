@@ -10,11 +10,21 @@ Runtime deps: `react`, `react-dom`, `react-router`, `zustand`, `gsap`, and **`le
 
 ---
 
-## 0 · State at the last pause — 8 September 2026
+## 0 · State at the last pause — 17 September 2026
 
-**Section 8 (the portfolio switch's drag reveal) is the most recent work.** The
-table below is the verification from the *earlier* pause at `e783919`; sections
-5, 7 and 8 each carry their own.
+**Section 10 is the most recent work** — EMBERDEEP, the owner's first game,
+playable on its own case-study page, on branch `feature/emberdeep` (not merged,
+not pushed, not deployed at the time of writing).
+
+**Section 9 is the one to read before touching the business side** — its dark
+teal rebuild, the orb in both worlds, and the switch's first-use cost. ⚠️ It
+invalidates every "light world" / "paper" / "ink" description written before it,
+in this file and in the root `CONTEXT.md` § 11, and it retunes two colour values
+inside § 8's glass. Read § 9.1 and § 9.2 before trusting anything earlier about
+how the business side looks.
+
+The table below is the verification from the *earlier* pause at `e783919`;
+sections 5, 7, 8, 9 and 10 each carry their own.
 
 Verified at that commit, not assumed:
 
@@ -44,6 +54,11 @@ open, in rough priority:
    placeholder left anywhere on the site.
 3. **Original Tableau corrections** before any live workbook link — § 2.
 4. Small stuff: the `Anayltics` folder typo, the About-page degree wording — § 2.
+5. **`dist/` is 241 MB.** Interior project media, not on any critical path, but
+   there are a dozen-plus single images over 1 MB (Avengers posters, Solarpunk
+   spreads, HODL screens). Nothing has been measured on those pages; if one ever
+   feels heavy on mobile, start there and use the `preview` launch config, not the
+   dev server (§ 9.5).
 
 Deliberately *not* done, with the reasoning recorded so it is not re-litigated: no hero
 pin (§ 4), no charts on the design side (§ 4), no tilt on cards or gallery tiles (§ 4),
@@ -177,6 +192,18 @@ direction was kept deliberately** — the whole budget went on motion and struct
 reskin. A dark "dashboard" idiom was considered and rejected: it breaks the light-vs-dark
 premise the mode switch is built on, and it visually asserts exactly what the case-study
 copy carefully refuses to claim.
+
+> ⚠️ **Overturned on 2026-09-12 (`b600c64`), at the user's explicit request** — see
+> § 9.1. The page is dark now, so the light-vs-dark premise above is gone: the two
+> worlds are told apart by *hue* (amber archipelago, teal analytics) rather than by
+> inversion, and the switch's own two states were repainted to match. The second half
+> of the objection was the real one and it still holds — a dark page must not be
+> allowed to drift into dashboard idiom and assert what the copy refuses to claim,
+> which is why § 9.1 spends the accent budget on hairlines, eyebrows and exactly one
+> measured figure per exhibit rather than on panels, gauges and glow. The chart
+> colours below changed with it: supporting series `#0f766e`, the finding `#22d3ee`.
+> **The numbers themselves did not** — the provenance rules under "The four charts"
+> are untouched and still binding.
 
 ### The four charts
 
@@ -648,7 +675,10 @@ portfolios at once, with the boundary where your finger left it.
   curve was chosen numerically rather than by eye: its fastest moment is ~1.5x
   its average against ~3x for the settle curve, which is the whole difference
   between a sheet being drawn across and a snap.
-- **The glass is pure CSS**, in `global.css` after the `.mode-reveal` rules and
+- **The glass is pure CSS** — ⚠️ but read § 9.2 first: its business-side
+  `--glass-lift` and specular gradient were tuned for a *paper* destination and
+  were retuned in `b600c64` when that side went dark. Everything else below is
+  still exact. It lives in `global.css` after the `.mode-reveal` rules and
   interpolated from `--mode-pos` through `--mode-reveal-p` (direction-normalised
   so 0 always means "just appearing") and `--mg` (how much glass is left).
   `::after` is the pane — `backdrop-filter: blur() saturate() brightness()`, an
@@ -737,3 +767,427 @@ activate *any* native button on the page); it was tested through `.click()`,
 which is what the browser dispatches for it. And **Safari is untested** — the
 glass leans on `backdrop-filter`, which Safari supports, but the backdrop-root
 behaviour in the first gotcha was only ever reproduced in Chrome.
+
+---
+
+## 9 · Teal Insight, the orb in both worlds, and the switch's first-use cost — 12 September 2026
+
+| commit | what |
+|---|---|
+| `b600c64` | The business portfolio stops being the light counterweight and becomes a dark teal one. Four full-width project rows become four equal cards. |
+| `5d7f60f` | The landing's hidden cursor is scoped to the region the orb can actually reach, so the index button can be aimed at again. |
+| `03ceceb` | The orb crosses into the business world as a soft white glow, and the switch stops paying for that world's chunk at the moment it is asked for. |
+
+### 9.1 · The business portfolio is dark now (`b600c64`)
+
+⚠️ **This invalidates every "light world" / "paper" / "ink" claim written before
+it**, here and in the root `CONTEXT.md` § 11. The art direction it replaced was
+soft white paper with near-black ink; what is there now is a faintly teal black.
+The *discipline* is unchanged — hairlines instead of boxes, generous margins,
+measured asymmetry, one accent family and no chart furniture. Only the ground
+moved.
+
+The ground is the point, and it is why this reads as cohesive rather than
+painted-on: `#071417` is not a neutral black, it is a desaturated dark teal, and
+surfaces step up through `#0b1d21` to `#10262b`. The accents then sit *in* the
+page instead of on top of it.
+
+The accent family is a hierarchy, enforced rather than decorative, and the
+contrast ratios are what enforce it (all against `#071417`):
+
+| token | value | on the ground | allowed to carry |
+|---|---|---|---|
+| `--biz-teal-deep` | `#0f766e` | 3.4:1 | borders, fills, de-emphasised bars — **never text** |
+| `--biz-teal` | `#14b8a6` | 7.5:1 | the primary accent: eyebrows, rules, icons, badge marks |
+| `--biz-cyan` | `#22d3ee` | 10.4:1 | what you can act on, and the one measured figure per exhibit |
+| `--biz-sky` | `#0ea5e9` | 6.8:1 | occasional secondary |
+| `--biz-muted` | `#a6b8bc` | 9.1:1 | lede, standfirst, card copy |
+| `--biz-faint` | `#7a9297` | 5.7:1 | eyebrow values, notes, axis labels, badge lines |
+
+`--biz-faint` is deliberately **not** the lighter sibling from the brief. It
+carries every small label on the page, so it has to stay faint *and* clear AA on
+its own. Anything lighter stops being faint; anything darker fails.
+
+**The project row is the one structural change.** Four full-width rows, each
+carrying a four-field definition list (`question` / `summary` / `methods` /
+`outcome`), became four equal cards: cover, title, `standfirst`, method tags, and
+one `↗`. Nothing was removed from `businessContent.ts` — the question, the
+evidence and the key insight are all restated at length in the case study each
+card opens, which is where they were always going to be read properly.
+
+The card mechanics that are easy to break:
+
+- **`.card` takes `isolation: isolate` permanently.** The internal highlight sits
+  at `z-index: -1` — above the card's own background, beneath all of its content
+  — and a stacking context that only exists on hover would not do.
+- **`.cardBody` is deliberately unpositioned.** The click overlay is
+  `.cardOpen::after { inset: 0 }`, and its containing block has to be `.card`. Give
+  `.cardBody` `position: relative` and the overlay silently shrinks to the text
+  area, leaving the cover unclickable.
+- **The hover scale belongs to the art *inside* `.coverInner`, never to
+  `.coverInner` itself.** GSAP owns that element's transform for the cover
+  parallax. Two systems writing one property is a bug waiting for a scroll.
+- **The card stagger uses `clearProps: "transform"`.** Without it a GSAP `from`
+  tween leaves `transform: translate(0,0)` inline on every card, and an inline
+  transform silently beats the CSS hover lift for the rest of the visit.
+- Four across is a **desktop** layout. It halves at 1180px, not 900 — four
+  columns inside 1024px is ~200px of card. Single column below 640px.
+- Everything interactive is inside `@media (hover: hover)`, so a tap does not
+  leave a card stuck in its hover state.
+
+**Three shared things had to be repainted**, because they encoded "business =
+the light world". All three are scoped to that mode alone, and the design
+portfolio is untouched:
+
+- `html[data-mode="business"] body`, its focus ring (now cyan) and its skip link.
+- `.track[data-mode="business"]` on the switch. Both portfolios are dark now, so
+  the two states read as a change of hue rather than as an inversion.
+- **The drag reveal's business half — see the correction to § 8 below.**
+
+### 9.2 · Correction to § 8: the glass's business side
+
+§ 8 describes the liquid-glass reveal as it was built, against a paper
+destination. The mechanism, geometry and timings there are all still exact. Two
+*colour* values in it were tuned for white and are no longer, and § 8 should be
+read with this attached:
+
+- **`--glass-lift` went `-4%` → `9%`.** Paper seen through the pane sat back a
+  little; a dark page lifts, the way the design side always did. Business is the
+  shade lighter of the two dark worlds, so it lifts slightly less than Design's
+  `11%`.
+- **The `::before` specular catch was a dark shade either side of a bright core**
+  — which is how a real pane reads on a white surface, and is invisible on this
+  one. It is now the same specular ramp the design world uses, with the faintest
+  teal in the falloff so the edge belongs to the page it is uncovering. Same
+  eleven stops, same positions, same opacity curve; only what the light is made
+  of changed.
+
+The `filter`-inside-a-backdrop-root gotcha in § 8 still stands and is still the
+most expensive mistake available in that file.
+
+### 9.3 · The landing's cursor could not reach the index (`5d7f60f`)
+
+Reported as "the orb stops before the index and I can't click it". The button was
+never unclickable — hover fired, hit-testing found it, the panel opened. What was
+missing was any *visible pointer* up there, which feels identical.
+
+Two regions that were assumed to be one:
+
+- **`.stage`** is locked to the art's 1672:941. The orb is drawn on a canvas
+  sized to that box and clamped inside it, so it physically cannot leave.
+- **`.hud`** (title, index, world map, legend) spans the whole `.world`.
+
+`cursor: none` was on `.world` — everywhere. On any viewport **taller than
+16:9** the stage letterboxes, and the index button lands in a band with no orb
+*and* no cursor:
+
+| viewport | stage top | orb's highest reach | button bottom | dead band |
+|---|---|---|---|---|
+| 1195×910 (1.31) | 123px | y=143 | y=62 | **81px** |
+| 1100×1000 (1.10) | 195px | y=213 | y=62 | **151px** |
+| 1600×900 (16:9) | 4px | y=31 | y=62 | overlaps — no bug |
+
+That last row is why it survived to production: on a 16:9 monitor the letterbox
+closes up and the orb reaches the button. It only appears once the window is
+taller than the art, which is most laptops the moment a window is not full
+height.
+
+**The fix is to scope the hidden cursor to the region the orb actually covers**
+— `cursor: none` moved from `.world` to `.stage` (and `.stage a, .stage button`),
+with `.hud button, .hud a, .srNav a` given `cursor: pointer`. It is the same
+trade the phone layout at the bottom of `Landing.module.css` already makes when
+the orb goes away, applied in space instead of at a breakpoint.
+
+The OS arrow now appears in the letterbox bands. That is the intended signal
+that you have stepped off the scene, and it is what makes the button findable.
+
+**Deliberately not taken:** letting the orb roam the full viewport by moving its
+canvas from `.stage` to `.world`. The orb's coordinates are percent-of-stage, and
+both the island proximity test and the position persisted to the store read them
+that way. That is a refactor, not a fix for this.
+
+### 9.4 · The orb is one object in two palettes (`03ceceb`)
+
+`src/world/orbArt.ts` (new) is now the **only** place the orb is drawn — same
+trail, same three orbiting rings and their particles, same breathing core, same
+radii and timings. `OrbLayer` lost sixty lines and calls it with `ORB_AMBER`;
+`components/business/BusinessOrb.tsx` calls it with `ORB_WHITE`. Edit the drawing
+once and both worlds move together, which was the whole reason not to copy it.
+
+`ORB_WHITE` is white at the core and along the rings with only the faintest cool
+cast in the falloff — enough that the light belongs to the teal ground, not so
+much that it reads as a cyan orb. `drawOrb`'s optional `scale` swells the body
+(glow, rings, core) without touching the trail, which belongs to the path
+travelled rather than to the orb.
+
+**What differs is the world, not the orb.** The archipelago is a *scene*: its orb
+lives inside the stage and proximity to an island is the entire point. The
+business page is a *document*, so the orb is simply the pointer — one
+viewport-fixed canvas, no clamp, no proximity, `pointer-events: none`. That is
+deliberate and it is the direct lesson of § 9.3: **a hidden cursor is only safe
+when the thing replacing it can reach every pixel.** A full-viewport canvas
+cannot have that bug.
+
+Two guards, both load-bearing:
+
+- **`cursor: none` is keyed on `html[data-biz-orb]`** (the rule lives in
+  `global.css`, not the module, because the canvas covers the mode switch too).
+  `BusinessOrb` raises that flag only once the orb is actually drawn. Before the
+  first mouse move the orb does not know where the pointer is, and hiding the
+  cursor then would leave the visitor with **no pointer at all** until they
+  happened to move one. The flag drops again when the pointer leaves the window,
+  while the page is frozen behind a mode drag, and on unmount.
+- **Fine pointers only.** On a coarse pointer the effect bails before wiring
+  anything up, the canvas is `display: none`, and the page keeps its ordinary
+  cursor.
+
+The orb swells 1.32× over `a, button, [role="button"]`, which is what replaces
+the pointer affordance the native cursor would have given. Under reduced motion
+it still follows — it is a cursor, it has to exist — but without trail, ring
+rotation or breathing.
+
+### 9.5 · The switch's first-use cost (`03ceceb`)
+
+Reported as: switching to Business is slow deployed, fine on the dev server. That
+is the wrong way round, and the inversion was the whole clue.
+
+It is the first time the browser needs that portfolio at all. The click pulls
+**five files, ~69 kB** — the page, its CSS, `SplitWords` and its CSS, and **GSAP
+(44 kB, the bulk of it)**. Vite preloads a lazy chunk's dependency graph in
+parallel, so this is **not** a waterfall; the problem is simply that all of them
+must arrive before React can render anything, and until they do the Suspense
+fallback is an empty viewport with the crossfade already running. Off a dev
+server that is milliseconds from local disk. Over a real connection it is the
+entire visible lag.
+
+A prefetch already existed on hover, focus and press, and it works — but only if
+the visitor dwells. A hover 200ms ahead of the click does not cover 69 kB.
+
+**So the chunk is fetched on idle**, well before anyone reaches for the switch,
+with intent kept as the fallback. `requestIdleCallback` will not fire while the
+landing's intro is animating, so it cannot compete with the art for the main
+thread. Skipped on `saveData` or a 2G connection, where 69 kB of a portfolio the
+visitor may never open is not a trade worth making for them.
+
+Measured on the production build (`npm run preview`), clicking cold with no
+dwell:
+
+| | network at click | frames > 32ms | worst frame |
+|---|---|---|---|
+| before | 5 requests, 69 kB | 1 | 63ms |
+| after | **0** | **0** | **27ms** |
+
+Two things worth knowing before optimising this further:
+
+- **Repeat switches already fetched nothing.** This was only ever a
+  first-switch-per-visit cost, which is exactly why it is easy to miss and easy
+  to mis-attribute to the transition's rendering.
+- **The header's `backdrop-filter` is not the problem.** It was the obvious
+  suspect — a fixed full-width element blurring a backdrop the word field
+  animates continuously. Measured with and without, on the business hero: **75fps
+  either way** (13.34ms vs 13.30ms). Left alone.
+
+`.claude/launch.json` gained a `preview` entry so the production build can be
+served locally the way this was diagnosed. **Diagnose anything performance-shaped
+there, never on the dev server** — that difference is this entire section.
+
+### Gotchas, each of which cost real time
+
+- **A GSAP `from` tween leaves an inline transform behind.** It beats every CSS
+  hover rule for the rest of the visit, silently. `clearProps: "transform"` on any
+  entrance tween whose target also has a CSS hover transform.
+- **An absolutely-positioned `::after` resolves against the nearest *positioned*
+  ancestor.** Positioning an intermediate wrapper for a z-index is enough to
+  shrink a full-card click overlay to the text area without any visible error.
+- **`.page button:focus-visible` (0,2,1) outranks `.cardOpen:focus-visible`
+  (0,2,0).** The card-specific reset needs the `.page` compound or the card wears
+  two focus rings — the overlay's and the icon's.
+- **Vite's CSS-module HMR can return an empty `styles` object** after a module is
+  rewritten from outside the editor. A chart rendered completely unstyled and the
+  production build was fine; a hard reload fixed it. Suspect the dev server before
+  the stylesheet, and confirm against `dist/`.
+- **The Browser pane's synthetic key events do not activate native buttons.**
+  Same finding as § 8. Test activation through `.click()`; a button that "does not
+  respond to Enter" in the pane is the harness, not the page. Verify against a
+  control you have not touched before believing otherwise.
+- **rAF is throttled to ~1fps when the pane is not fronted.** Any frame-timing
+  measurement taken while it is hidden is worthless and *looks* plausible — check
+  `document.visibilityState` before trusting a number.
+
+### Verified, not assumed
+
+Driven in a real browser. The palette work on the dev server, everything
+performance-shaped on `npm run preview` against the production build.
+
+| check | result |
+|---|---|
+| 4-up grid at 1200px | 4 × 248.5px, even gaps, all four cards exactly 473px tall, no overflow |
+| responsive | 1024px → 2 columns; 375px → 1 column, no horizontal scroll |
+| card hover | lift −5px, border .14→.34, surface `#0b1d21`→`#10262b`, glow .68→1, art `scale(1.035) saturate(1.12) brightness(1.06)`, icon cyan + `translate(3px,-3px)` |
+| whole card clickable | hit test at the cover centre returns the button; accessible name `Read the case study: {title}` |
+| keyboard | focus ring drawn around the card, not the icon; `:has()` brightening confirmed |
+| reduced motion (business) | 4 cards at opacity 1, `transform: none`, no inline styles, no progress bar, Lenis off |
+| touch | `hover: hover` false — no sticky hover after tap; card tap target 331×452 |
+| charts | supporting series `#0f766e`, the finding `#22d3ee`, stat values 49.6px cyan |
+| drag reveal, mid-gesture | `--mode-pos` 0.657, panel `rgb(7,20,23)`, `--glass-lift` 9%, teal specular, `blur(4.45px) saturate(1.29) brightness(1.03)` |
+| design portfolio after the orb refactor | unchanged — orb tracked to POSTER DESIGN, lit the nameplate, raised the enter card |
+| landing cursor fix | index `cursor: pointer`, letterbox bands `auto`, stage and nameplates still `none` |
+| orb cursor handoff | before any mouse move flag `null` + cursor `auto`; after, flag `on` + cursor `none` |
+| leaving business mode | flag cleared, cursor `auto`, one canvas left |
+| prefetch ordering, fresh visit | landing art completes at 45ms, business prefetch starts at 55ms |
+| `tsc` / `lint` / `build` | green; 5 pre-existing `router.tsx` warnings only |
+
+**Not verified:** `prefers-reduced-motion` under real OS emulation — same
+limitation as § 8; the CSS rules were read back out of the loaded stylesheet and
+the JS paths tested by patching `window.matchMedia`, but the media query itself
+was never flipped. **Safari is untested** for all of it. And every frame number
+above is one machine through the Browser pane — the business page measured 75fps,
+but that is a capped display on a desktop GPU and says nothing about a laptop on
+battery.
+
+---
+
+## 10 · EMBERDEEP — a playable game on its own case-study page — 17 September 2026
+
+| commit | what |
+|---|---|
+| `805dc9b` | A new Website Design card opens `/website-design/emberdeep`: the owner's quote, the Godot web build in a click-to-load iframe, and six sections of build diary. The game's heroine, Ilva, can walk out of the room and onto the article, use things on it, and walk back in. |
+
+Branch `feature/emberdeep`. The owner approved the plan, the copy, the hosting
+choice and a layout to try before any of it was written; pushing and deploying
+each need a separate yes.
+
+### Where it came from
+
+The game lives in **another repo** and must not be edited from here:
+`C:\Users\zab\Documents\Codex\2026-09-14\build-emberdeep-a-playable-top-down\outputs\emberdeep-godot`
+(branch `interaction-lab`). Its `web/portfolio/` holds the handoff
+(`HANDOFF.md`), the plan (`INTEGRATION.md`), the approved copy
+(`CASE_STUDY.md`), the **postMessage contract** (`README.md`) and the
+prototype page. The built files came from `…\build\portfolio-prototype\`. A
+re-export runs in that repo (`tools/portfolio/export_web.ps1`), only with the
+owner's agreement.
+
+### Decisions the owner made (2026-09-17)
+
+- **Hosting: committed to git.** `index.pck` is 92 MB — under GitHub's 100 MB
+  hard limit, over its 50 MB warning — and each re-export adds ~130 MB of
+  history. Git LFS was ruled out because Hostinger's git deploy is unlikely to
+  fetch LFS objects.
+- **Layout: a dedicated one** (the plan's "option 2"), on trial — "if I don't
+  like it we'll go back to option 1", which is existing `exhibit` scenes plus
+  two small new blocks. If that happens, `GameCaseBlock`'s `compare` and
+  `problems` are the two to keep.
+- **Copy: approved as written.** `src/data/emberdeepCaseStudy.ts` is verbatim.
+- **Phones: poster + "Play anyway · Best on desktop".** No real device has
+  been tested, and the textures are desktop-compressed.
+- **Category:** the owner will rename "Website Design" to "Web / Game Design"
+  later. Nothing here depends on the name.
+
+### How it's wired
+
+- **Data.** `Project` gained `play` (`PlayableGame`), `gameCaseStudy`
+  (`GameCaseStudy`), `heading` (the page's own h1/subtitle when shorter than
+  the card's: the card says "EMBERDEEP — A Night at Cinder Inn", the page
+  says "EMBERDEEP") and `details` (replaces the generated Year/Role/Tools row;
+  here it reads Role / Made with / Time). Content is in
+  `src/data/emberdeepCaseStudy.ts`. Prose supports `**strong**`, `*em*` and
+  `[[K]]` for a key, rendered by `components/game/InlineMarks.tsx`; no HTML
+  is ever injected.
+- **`components/media/PlayableGame.tsx`** follows `VideoEmbed`: a poster and a
+  button until asked, then the iframe (`allow="autoplay; fullscreen; gamepad"`,
+  focused on load). An effect builds the `CharacterLayer` and the touch
+  controls and destroys both on unmount. The touch controls are portalled to
+  `<body>`: they are `position: fixed`, and the interior motion's entrance
+  transforms would otherwise pin them to the article.
+- **`components/media/character-layer.ts`** is the game repo's
+  `site/character-layer.js` with types added. Four deliberate additions, all
+  because a React page unmounts and the prototype never did: `destroy()`
+  removes the return-button listener and any highlight; the manifest is
+  fetched once; `_hide()` clears the element she was standing on; and
+  `mountTouchControls` returns a cleanup. **Change it only together with the
+  game side** (the contract is in that repo's README).
+- **`character-layer.css` is global**, not a module: the layer builds its own
+  `ilva-*` elements, so hashed class names can never reach them. It is only
+  loaded with the project-page chunk. Ilva sits at z 90: over the header (40)
+  and the switch (45), under overlays (100) and modals (1000).
+- **Scroll-follow goes through `scrollToInstant`**, looked up per call, so
+  Lenis stays the one engine moving the document (§ 8). `lenisInstance.ts`
+  also gained `getLenis()`, currently unused by the layer.
+- **`components/game/GameCaseStudy.tsx`**: the quote, then numbered sections
+  from blocks — `prose`, `timeline`, `pipeline`, `figures`, `compare`,
+  `problems`, `stats` and `aside`. Headings are `SectionHead` (title + number
+  as meta); frames take each image's measured aspect; every image opens in one
+  shared `Lightbox`, in reading order. It replaces the gallery in
+  `ProjectDetail`, as `book` and `exhibit` do.
+- **Things Ilva can use** carry `data-ilva-interact="label"`: every figure
+  ("Look", opens the Lightbox), each slider ("Swap", flips the split end to
+  end), each problem card ("Read", then marked "✓ Read by Ilva"), and, on game
+  pages only, the two return buttons. Her E press arrives as `element.click()`
+  with `detail === 0`. The slider and the cards react only to that, so a
+  visitor's own mouse click never reads as hers.
+- **Hosting.** The site is on **Hostinger**, so the handoff's `vercel.json`
+  headers would have done nothing. `public/games/.htaccess` sets
+  `application/wasm`, deflate for the `.wasm` (40 → ~10 MB), and immutable
+  caching for everything under the versioned folder. **A new export goes in
+  `v2/`, never over `v1/`**, or visitors keep the old one for a year. The root
+  `.htaccess` rule that 404s missing assets now covers `.wasm` and `.pck`, so a
+  missing file fails loudly instead of returning the app shell. `vercel.json`
+  carries the same caching for parity. No COOP/COEP: the build is
+  single-threaded.
+- **Repo plumbing.** A root `.gitattributes` marks `*.pck` and `*.wasm` binary,
+  because a wrong guess on this `autocrlf` checkout would corrupt the game.
+  oxlint ignores `public/games/**` (Godot's generated engine code).
+  `mediaDimensions.ts` was regenerated: the 25 new images, plus 32 rows that
+  were stale for images already committed (worst aspect drift 0.1%, no layout
+  change). Three of the 25 images are shipped but not used by the copy:
+  `fail-rig-weights`, `furniture-render-vs-painting`,
+  `pipeline-registered-walk`.
+
+### Bundle
+
+Against the branch's starting point (`1680bbe`), built side by side:
+
+| chunk | before | after |
+|---|---|---|
+| entry (`index`) | 168.72 kB / 59.64 gzip | 178.05 kB / 63.47 gzip |
+| `ProjectDetail` (lazy) | 43.66 kB / 10.93 gzip | 67.41 kB / 17.96 gzip |
+
+The +3.8 kB gzip on the entry is the case-study copy: `projects.ts` imports it,
+the same way it already imports the Avengers, Manifesto and Solarpunk content.
+GSAP is still off the critical path. The game itself costs nothing until
+someone presses Play.
+
+### Verified, not assumed
+
+Local dev server, Browser pane, 1081×914 desktop and 375×812 touch emulation:
+
+| check | result |
+|---|---|
+| card | renders in Website Design beside Ripple, same `ProjectCard` |
+| page | h1 "EMBERDEEP", breadcrumb, Role / Made with / Time, 6 sections + Related, 21 images, none broken |
+| before/after slider | `--split` follows the input; `aria-valuetext` reads both halves |
+| Play | logo reveal, then the room; layer `game`, iframe focused, one Lenis |
+| out of the room | through the door and off the edge in 2.25 s; full exit payload received; focus moved to Ilva |
+| on the page | walks on `walk_S`, settles on `idle_S` at key-up; the page followed her 512 → 593 → 1216 through Lenis |
+| E prompt | "E · Look" over the figure she stood on, and the figure lit |
+| E press | opened that image in the Lightbox; Ilva paused; Escape closed the Lightbox only, and focus came back to her |
+| problem card / slider | a mouse click (`detail 1`) left the card alone; her E marked it read; E flipped the slider 20% → 100% |
+| Escape | sent her home: `emberdeep:returned`, focus to the game, nothing left lit, she stands on the landing |
+| walking back in | across the east edge 0.8 s after arming; a key released afterwards was forwarded as `emberdeep:release` |
+| leaving the page | iframe, layer and touch controls all removed; coming back shows a fresh Play button |
+| phone | "Play anyway · Best on desktop · About 130 MB"; no horizontal overflow; touch controls appear once the game is ready; a real drag on the joystick sent input ramping toward 0.74, 0.67 and back to 0 |
+| `tsc` / `lint` / `build` | green; 5 pre-existing `router.tsx` warnings only |
+
+The only console error is the game's own: Godot warns that TAA needs the
+Forward+ renderer (the web build uses Compatibility). It is harmless, and it
+belongs to the game repo.
+
+**Not verified:**
+- **Real keyboard play.** The pane's automation can't hold two keys at once, so
+  she was walked out with the game's joystick message (the same one the touch
+  controls send). Her page walk was driven by key events sent to her element.
+- **Hostinger itself.** The `.htaccess` rules, the `.wasm` content type and the
+  92 MB file have not been through a deploy yet.
+- **A real phone or tablet**, Safari, and `prefers-reduced-motion` under real
+  OS emulation.

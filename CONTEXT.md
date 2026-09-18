@@ -1065,7 +1065,15 @@ lives as long as the session that started it. Restart it, don't debug the app.
 
 ## 11 · Business Analytics mode (added 2026-09-06 evening)
 
-A **second, fully designed portfolio** living inside the same app: light, editorial,
+> ⚠️ **This section was written when the business portfolio was a LIGHT world, and
+> that is no longer true.** On 2026-09-12 (`b600c64`) it was rebuilt on a faintly
+> teal black ground — see § 9.1 of `pixel-archipelago/CONTEXT.md` for the palette,
+> the contrast ratios and the card mechanics. The structural notes below (mode not
+> route, the transition, the switch, the clearance tokens, the word field, content
+> as data) are all still correct; **every description of colour is not.** The
+> individual claims that went stale are corrected in place below.
+
+A **second, fully designed portfolio** living inside the same app: dark teal, editorial,
 Montserrat, one continuous scrolling page. Reached by a two-position switch fixed at the top
 centre of the header. The design portfolio is untouched — see "What was touched" below for the
 complete list of edits to existing files.
@@ -1167,12 +1175,17 @@ gutter also removes the same 15px jump that already existed between the landing 
 interior pages. Cost: the landing stage is 1425px instead of 1440px at a 1440
 viewport. Platforms with overlay scrollbars (macOS, mobile) are unaffected.
 
-### Light-world focus states
-`global.css`'s focus ring and skip link are white — correct on the archipelago,
-invisible on paper. `html[data-mode="business"]` repaints both. The business page also
-sets its own ring on `.page a/button`. On phones the hairline-underlined text links
-(CTA, case link, contact, verify) carry a `::after` hit-area extension so a 22px-tall
-link is a ~46px target without changing the drawing.
+### Business-world focus states
+`global.css`'s focus ring and skip link are white. `html[data-mode="business"]` repaints
+both — **cyan `#22d3ee` since `b600c64`**; before that they were near-black, for the
+paper world this section was written against. The business page also sets its own ring on
+`.page a/button`. On phones the hairline-underlined text links (contact, verify) carry a
+`::after` hit-area extension so a 22px-tall link is a ~46px target without changing the
+drawing.
+
+Since `03ceceb` that world also hides the cursor entirely and draws its own — see § 9.4
+of the app handoff. The rule is keyed on `html[data-biz-orb]`, raised only while the orb
+is actually on screen, so the visitor is never left with no pointer at all.
 
 ### Pre-existing issue found and fixed during this pass (easily reverted)
 Below 900px the interior header's identity + Return to World + breadcrumb + Index were
@@ -1207,10 +1220,14 @@ rejected again** (it proposes Archivo + Space Grotesk and a blue accent, which c
 brief's Montserrat-on-soft-white) — same call as §6. Its *rule* checks found real defects:
 
 - **`--biz-faint` was `#93938c` — 2.88:1 on the paper, and it carried every eyebrow,
-  placeholder value, section note, badge line and cover numeral on the page.** Now `#6f6f68`
-  (4.71:1). The inert "Verification link" was `#a9a9a2` at 2.20:1 and now shares the token.
-  **All 78 real text elements measure ≥4.71:1**; re-check with the snippet in §11's log before
-  changing any grey. The word field is exempt — it is `aria-hidden` decoration, not content.
+  placeholder value, section note, badge line and cover numeral on the page.** It became
+  `#6f6f68` (4.71:1) here, and — since the ground went dark in `b600c64` — is now `#7a9297`,
+  **5.7:1 on `#071417`**. The inert "Verification link" was `#a9a9a2` at 2.20:1 and now
+  shares the token. The rule this bullet exists to protect is unchanged and still binding:
+  **that one token carries nearly every small label on the page, so it has to stay visibly
+  faint *and* clear AA on its own.** Re-check with the snippet in §11's log before changing
+  any of it. The word field is exempt — it is `aria-hidden` decoration, not content.
+  § 9.1 of the app handoff has the full ratio table for the current palette.
 - **The type scale was fourteen near-duplicate sizes bottoming out at 8.5px.** It is now six
   tokens (`--t-micro` 11 / `--t-label` 12 / `--t-small` 13 / `--t-body-s` 15 / `--t-body` 16 /
   `--t-body-l` 17). Reading text is 16px everywhere, including mobile. Use the tokens.
@@ -1220,7 +1237,16 @@ brief's Montserrat-on-soft-white) — same call as §6. Its *rule* checks found 
   clear AA.
 - Badge and cover images carry `loading="lazy"` + `decoding="async"`.
 
-### Projects are stacked, not paired (user request, 2026-09-07)
+### Projects are stacked, not paired (user request, 2026-09-07) — ⚠️ SUPERSEDED
+
+**Superseded by `b600c64` (2026-09-12): the stacked rows are now four equal cards in one
+row.** The reasoning below is kept because it explains why the *paired* layout was wrong
+and must not come back — the full-width stack it describes is simply no longer what is
+there. `.projectList` / `.row` / `.rowFeature` / `.rowBody` are gone; the classes are
+`.projectGrid` / `.card` / `.cardCover` / `.cardBody`. See § 9.1 of the app handoff.
+
+The original note, for the record:
+
 The original layout was a feature row plus two side-by-side cards, the second offset down by
 `clamp(0px, 7vw, 104px)`. On a wide monitor that offset stops reading as composition and
 starts reading as breakage — the user reported it as "distorted when I make the website full
@@ -1245,7 +1271,15 @@ Everything the user will replace lives in one commented file: `businessCopy` (al
 - **Covers** (`components/business/Covers.tsx`) are three deterministic abstract line drawings
   (contour / orbit / strata). Deliberately not charts — no axes, no legend, no dashboard furniture.
 
-### What was touched in the existing app (the complete list)
+### What was touched in the existing app (the complete list as of 2026-09-07)
+
+⚠️ Three later passes added to this list. `b600c64` repainted
+`ModeSwitch.module.css`'s `[data-mode="business"]` block and `global.css`'s business
+body / focus ring / skip link / drag-reveal panel; `5d7f60f` moved `cursor: none` from
+`.world` to `.stage` in `Landing.module.css`; `03ceceb` added `world/orbArt.ts` (shared
+by `OrbLayer`), the idle prefetch in `ModeSwitch.tsx`, and the orb-cursor rule in
+`global.css`. All still scoped so the design portfolio is unaffected — § 9 of the app
+handoff has the detail. The original list:
 `RootLayout.tsx` (branch on mode, mount `ModeSwitch`, `data-mode`/title/theme-color effect),
 `index.html` (Montserrat 300/400/500/600 added to the existing Google Fonts link),
 `global.css` (mode wash + `.mode-in/.mode-out` + `.mode-dock`, then `scrollbar-gutter` and
@@ -1292,6 +1326,14 @@ styling is in CSS modules scoped inside `.page`, so it cannot reach the design p
 5. Judgement calls the user may want to overturn: mode persistence in `localStorage`
    (one line in `initialMode()`), the switch keeping IBM Plex Mono in both worlds,
    hiding the switch during the galaxy intro, and the breadcrumb breakpoint above.
-6. Content: three project placeholders and six badge slots are waiting for real
-   material — see `src/data/businessContent.ts`, every block has a "TO ADD A REAL …"
-   comment.
+6. Content: ⚠️ **stale.** The three project placeholders became four real case
+   studies (see § 2 / § 3 of the app handoff). What is still genuinely open is the
+   **issuer badge artwork** — the only visible placeholder left anywhere on the site —
+   and the Tableau corrections before any live workbook link.
+
+**Since this list was written**, three passes landed and each carries its own
+verification in `pixel-archipelago/CONTEXT.md`: § 9.1 (the dark teal rebuild and the
+4-up project cards), § 9.3 (the landing's cursor could not reach the index), § 9.4 and
+§ 9.5 (the orb in both worlds, and the switch's first-use cost). Item 1 above — the CSS
+`prefers-reduced-motion` blocks under a real OS setting — is **still open**, and is now
+the longest-standing unverified thing on the site.
