@@ -91,7 +91,44 @@
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: var(--space-6);
-  align-items: start;
+  align-items: stretch;
+}
+
+/*
+ * Figures sitting side by side read as one row, so their pictures have to be
+ * one height and their captions have to start on one line. Left alone each
+ * figure is only as tall as its own picture, and a row holding a 16:9 next to
+ * a 4:3 put its captions 54px apart.
+ *
+ * Every figure spans the row's two tracks — picture, then caption — as a
+ * subgrid, so the picture track is sized once for the whole row and every
+ * caption begins directly under it. Stretching the figure instead would even
+ * out the total heights while leaving the pictures themselves different sizes,
+ * and a fixed aspect-ratio would crop to that ratio whatever the picture is —
+ * which ruins the wide comparison diagrams.
+ */
+.twoUp,
+.timeline {
+  grid-auto-rows: auto;
+}
+.twoUp > .figure,
+.timeline > li {
+  grid-row: span 2;
+  display: grid;
+  grid-template-rows: subgrid;
+  row-gap: var(--space-2);
+}
+.timeline > li > .figure {
+  grid-row: span 2;
+  grid-template-rows: subgrid;
+  row-gap: var(--space-2);
+}
+/* Fill the shared picture track, so the bordered cards in a row are one size
+   rather than each shrinking to its own image. Paired images are chosen to be
+   near enough in shape that `cover` trims a little edge, never the subject. */
+.twoUp > .figure > .frame,
+.timeline > li > .figure > .frame {
+  height: 100%;
 }
 
 /* ---------- 01 · the dated timeline ---------- */

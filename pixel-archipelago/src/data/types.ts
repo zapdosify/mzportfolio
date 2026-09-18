@@ -170,8 +170,11 @@ export interface GameCaseSection {
 }
 
 export interface GameCaseStudy {
-  /** the owner's own line, set large before the first section */
-  quote: { text: string; source: string };
+  /**
+   * The owner's own line, set large before the first section. Optional: a study
+   * that opens straight into its first section simply omits it.
+   */
+  quote?: { text: string; source: string };
   sections: GameCaseSection[];
 }
 

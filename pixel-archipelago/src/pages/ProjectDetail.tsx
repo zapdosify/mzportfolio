@@ -11,6 +11,7 @@ import ExhibitScroll from "../components/exhibit/ExhibitScroll";
 import PlayableGame from "../components/media/PlayableGame";
 import GameCaseStudy from "../components/game/GameCaseStudy";
 import { manifestoLinks } from "../data/manifestoBook";
+import { dimensionsFor } from "../data/mediaDimensions";
 import { useInteriorMotion } from "../hooks/useInteriorMotion";
 import SplitWords from "../components/motion/SplitWords";
 import SectionHead from "../components/motion/SectionHead";
@@ -26,6 +27,7 @@ export default function ProjectDetail() {
   if (!project || !category) return <NotFound />;
 
   const heading = project.heading ?? { title: project.title, subtitle: project.subtitle };
+  const coverSize = dimensionsFor(project.coverImage);
 
   const meta: { label: string; value: string }[] = [];
   if (project.details) {
@@ -83,8 +85,20 @@ export default function ProjectDetail() {
           </div>
         ) : (
           project.coverImage && (
-            <div className={s.heroArt} data-hero-art="">
-              <img src={project.coverImage} alt={`${project.title} cover`} />
+            // The cover's measured shape is set before it loads, so the page
+            // below it does not jump when it arrives. Same source of truth as
+            // MediaFigure: the dimensions measured from the file on disk.
+            <div
+              className={s.heroArt}
+              data-hero-art=""
+              style={coverSize ? { aspectRatio: `${coverSize[0]} / ${coverSize[1]}` } : undefined}
+            >
+              <img
+                src={project.coverImage}
+                alt={`${project.title} cover`}
+                width={coverSize?.[0]}
+                height={coverSize?.[1]}
+              />
             </div>
           )
         )}

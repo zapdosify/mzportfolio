@@ -42,10 +42,12 @@ export default function GameCaseStudy({ study }: { study: Study }) {
 
   return (
     <>
-      <blockquote className={g.quote} data-reveal="">
-        <p>“{study.quote.text}”</p>
-        <cite>{study.quote.source}</cite>
-      </blockquote>
+      {study.quote && (
+        <blockquote className={g.quote} data-reveal="">
+          <p>“{study.quote.text}”</p>
+          <cite>{study.quote.source}</cite>
+        </blockquote>
+      )}
 
       {study.sections.map((section) => (
         <section
