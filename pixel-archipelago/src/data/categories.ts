@@ -23,7 +23,7 @@ export const categories: Category[] = [
   {
     id: "website-design",
     index: 2,
-    title: "Website Design",
+    title: "Web / Game Design",
     route: "/website-design",
     description: "Digital experiences that are purposeful, intuitive, and timeless.",
     tagline: "Crafting digital experiences across devices.",

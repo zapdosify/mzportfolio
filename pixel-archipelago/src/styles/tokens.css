@@ -8,10 +8,15 @@
   --surface-raised: #1c1c1c;
   --border-dark: #292929;
   --border-active: #575757;
-  --text-muted: #777777;
-  --text-secondary: #b6b6b6;
-  --text-primary: #f2f2f2;
+  /* Text is white everywhere: the three roles still separate label from body
+     from heading (size, weight, letter-spacing, case), but never by dimming —
+     grey text on this black was too hard to read. */
+  --text-muted: #ffffff;
+  --text-secondary: #ffffff;
+  --text-primary: #ffffff;
   --white: #ffffff;
+  /* The one place a dimmer grey still means something: unentered input. */
+  --text-placeholder: #8a8a8a;
 
   /* Restrained T-Mobile accent — used ONLY on the T-Mobile page where authentic */
   --tmobile: #e20074;

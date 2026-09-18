@@ -1078,11 +1078,26 @@ owner's agreement.
   like it we'll go back to option 1", which is existing `exhibit` scenes plus
   two small new blocks. If that happens, `GameCaseBlock`'s `compare` and
   `problems` are the two to keep.
-- **Copy: approved as written.** `src/data/emberdeepCaseStudy.ts` is verbatim.
+- **Copy: rewritten to the editorial revision (17 Sep).** The first version was
+  approved as written and ran verbatim. It was then replaced to follow
+  `web/portfolio/PORTFOLIO_EDITORIAL_REVISION.md` in the game repo: the page
+  presents the work as **directed**, not as produced, so dates, durations, the
+  commit count, the lines-of-notes tally, the research-pass count, the measured
+  sleep-loop percentages and the "around day three" pull quote are all out, and
+  the AI tools are credited for the specific assets they made rather than for
+  the project. `GameCaseStudy.quote` is optional because of this, and the
+  percentages had to be relabelled inside `fix-blanket-motion.webp`, where they
+  were painted into the picture. Claims trace to that repo's `notes/EVIDENCE.md`.
 - **Phones: poster + "Play anyway · Best on desktop".** No real device has
   been tested, and the textures are desktop-compressed.
-- **Category:** the owner will rename "Website Design" to "Web / Game Design"
-  later. Nothing here depends on the name.
+- **Category:** the owner renamed it to **"Web / Game Design"** (17 Sep). Only
+  `categories.ts` carries the name; the id, route and folders stay
+  `website-design`, so no link or image path moved.
+- **Text is white** (also 17 Sep): `--text-muted`, `--text-secondary` and
+  `--text-primary` are all `#ffffff` — the greys were hard to read on this
+  black. The three roles still separate label from body from heading by size,
+  weight, case and letter-spacing, never by dimming. `--text-placeholder`
+  (`#8a8a8a`) is the one dim grey left, for the contact textarea.
 
 ### How it's wired
 

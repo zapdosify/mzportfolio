@@ -137,7 +137,7 @@
   min-height: 132px;
 }
 .input::placeholder,
-.textarea::placeholder { color: var(--text-muted); }
+.textarea::placeholder { color: var(--text-placeholder); }
 .input:focus,
 .textarea:focus {
   outline: none;
